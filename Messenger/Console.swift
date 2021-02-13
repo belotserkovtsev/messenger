@@ -10,9 +10,14 @@ import Foundation
 class Console {
 	static var enableLogging: Bool { get { true } }
 	
-	static func log(_ data: Any) {
+	static func conditionalLog(_ items: Any..., separator: String = " ", terminator: String = "\n") {
 		if enableLogging {
-			print(data)
+			for i in items.indices {
+				print(items[i],
+					  separator: separator,
+					  terminator: i == (items.endIndex - 1) ? terminator : separator
+				)
+			}
 		}
 	}
 }

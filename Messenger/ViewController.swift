@@ -12,37 +12,37 @@ class ViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		// Do any additional setup after loading the view.
-		Console.log(#function)
+		Console.conditionalLog(#function)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		Console.log(#function)
+		Console.conditionalLog(#function)
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
-		Console.log(#function)
+		Console.conditionalLog(#function)
 	}
 	
 	override func viewWillLayoutSubviews() {
 		super.viewWillLayoutSubviews()
-		Console.log(#function)
+		Console.conditionalLog(#function)
 	}
 	
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
-		Console.log(#function)
+		Console.conditionalLog(#function)
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
-		Console.log(#function)
+		Console.conditionalLog(#function)
 	}
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
-		Console.log(#function)
+		Console.conditionalLog(#function)
 	}
 
 

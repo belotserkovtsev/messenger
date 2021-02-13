@@ -18,23 +18,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	//MARK: State tracking
 	func applicationWillResignActive(_ application: UIApplication) {
-		Console.log("Application moved from active to inactive: \(#function)")
+		Console.conditionalLog("Application moved from active to inactive: \(#function)")
 	}
 	
 	func applicationDidEnterBackground(_ application: UIApplication) {
-		Console.log("Application moved from inactive to background: \(#function)")
+		Console.conditionalLog("Application moved from inactive to background: \(#function)")
 	}
 	
 	func applicationWillEnterForeground(_ application: UIApplication) {
-		Console.log("Application moved from background to inactive: \(#function)")
+		Console.conditionalLog("Application moved from background to inactive: \(#function)")
 	}
 	
 	func applicationDidBecomeActive(_ application: UIApplication) {
-		Console.log("Application moved from inactive to active: \(#function)")
+		Console.conditionalLog("Application moved from inactive to active: \(#function)")
 	}
 	
 	func applicationWillTerminate(_ application: UIApplication) {
-		Console.log("Application will be terminated")
+		Console.conditionalLog("Application will be terminated")
 	}
 
 	
