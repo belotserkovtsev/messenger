@@ -17,14 +17,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0Ta-yf-5PC">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xaV-ta-Rex">
                                 <rect key="frame" x="87" y="96" width="240" height="240"/>
                                 <color key="backgroundColor" systemColor="systemYellowColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="240" id="Fwl-mR-SAK"/>
-                                    <constraint firstAttribute="height" constant="240" id="Uj1-0J-XO1"/>
+                                    <constraint firstAttribute="width" constant="240" id="D8C-qM-YSb"/>
+                                    <constraint firstAttribute="height" constant="240" id="smq-DB-Rha"/>
                                 </constraints>
-                            </view>
+                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bogdan Belotserkovtsev" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ByR-15-Tx1">
                                 <rect key="frame" x="71" y="368" width="272" height="29"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
@@ -57,22 +57,23 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="ByR-15-Tx1" firstAttribute="top" secondItem="0Ta-yf-5PC" secondAttribute="bottom" constant="32" id="CqT-JF-EE9"/>
-                            <constraint firstItem="0Ta-yf-5PC" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="NbT-bK-o9Y"/>
+                            <constraint firstItem="ByR-15-Tx1" firstAttribute="top" secondItem="xaV-ta-Rex" secondAttribute="bottom" constant="32" id="Miy-Ud-u7D"/>
                             <constraint firstItem="ysJ-Kg-6XN" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="W3W-Ce-8M7"/>
-                            <constraint firstItem="5za-F7-bkA" firstAttribute="centerY" secondItem="0Ta-yf-5PC" secondAttribute="centerY" id="Wb9-Ue-jHt"/>
                             <constraint firstItem="ByR-15-Tx1" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Xzp-u8-E5k"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="7Cj-ha-Det" secondAttribute="bottom" constant="30" id="aoz-HL-TJD"/>
-                            <constraint firstItem="5za-F7-bkA" firstAttribute="centerX" secondItem="0Ta-yf-5PC" secondAttribute="centerX" id="d94-mU-Q70"/>
+                            <constraint firstItem="5za-F7-bkA" firstAttribute="centerX" secondItem="xaV-ta-Rex" secondAttribute="centerX" id="euf-RQ-0PO"/>
+                            <constraint firstItem="xaV-ta-Rex" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="eyC-GV-5MU"/>
                             <constraint firstItem="ysJ-Kg-6XN" firstAttribute="top" secondItem="ByR-15-Tx1" secondAttribute="bottom" constant="32" id="fF4-5z-znP"/>
-                            <constraint firstItem="0Ta-yf-5PC" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="52" id="vwp-A7-JVp"/>
+                            <constraint firstItem="xaV-ta-Rex" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="52" id="g4l-pI-z6q"/>
+                            <constraint firstItem="5za-F7-bkA" firstAttribute="centerY" secondItem="xaV-ta-Rex" secondAttribute="centerY" id="gde-o7-bPs"/>
                             <constraint firstItem="7Cj-ha-Det" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ycL-re-lGs"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="editButton" destination="7Cj-ha-Det" id="GzC-wN-jDy"/>
-                        <outlet property="nameAndLastname" destination="ByR-15-Tx1" id="zHL-1t-AtO"/>
-                        <outlet property="profilePicture" destination="0Ta-yf-5PC" id="TrV-nb-cVp"/>
+                        <outlet property="initialsLabel" destination="5za-F7-bkA" id="AXj-c5-nfG"/>
+                        <outlet property="nameAndLastnameLabel" destination="ByR-15-Tx1" id="zHL-1t-AtO"/>
+                        <outlet property="profilePictureView" destination="xaV-ta-Rex" id="aLo-Sc-JKM"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
