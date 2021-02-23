@@ -7,7 +7,10 @@
 
 import UIKit
 
-class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ProfileViewController: UIViewController,
+							 UIImagePickerControllerDelegate,
+							 UINavigationControllerDelegate,
+							 UIGestureRecognizerDelegate {
 	
 	@IBOutlet weak var profilePictureView: UIImageView?
 	@IBOutlet weak var nameAndLastnameLabel: UILabel?
@@ -46,35 +49,42 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
 		dismiss(animated: true, completion:nil)
 	}
 	
-	func presentImagePicker(_ picker: UIImagePickerController ,with sourceType: UIImagePickerController.SourceType) {
-		picker.sourceType = sourceType
-		self.present(picker, animated: true, completion: nil)
+	func presentImagePicker(with sourceType: UIImagePickerController.SourceType) {
+		let imagePicker = UIImagePickerController()
+		imagePicker.sourceType = sourceType
+		imagePicker.allowsEditing = false
+		imagePicker.delegate = self
+		self.present(imagePicker, animated: true, completion: nil)
 	}
 	
 	//MARK: Gestures
 	@objc func handleProfilePictureTap(_ sender: UITapGestureRecognizer) {
 		let alert = UIAlertController(title: "Set profile picture", message: nil, preferredStyle: .actionSheet)
 		
-		let imagePicker = UIImagePickerController()
-		imagePicker.allowsEditing = false
-		imagePicker.delegate = self
-
 		alert.addAction(UIAlertAction(title: "Library", style: .default, handler: { _ in
 			if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-				self.presentImagePicker(imagePicker, with: .photoLibrary)
+				self.presentImagePicker(with: .photoLibrary)
 			}
-			
 		}))
 		
 		alert.addAction(UIAlertAction(title: "Take picture", style: .default, handler: { _ in
 			if UIImagePickerController.isSourceTypeAvailable(.camera) {
-				self.presentImagePicker(imagePicker, with: .camera)
+				self.presentImagePicker(with: .camera)
 			}
 		}))
 		
 		alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
 		
 		self.present(alert, animated: true, completion: nil)
+	}
+	
+	func gestureRecognizer(_ gr: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+		if let bounds = profilePictureView?.bounds, let cornerRadius = profilePictureView?.layer.cornerRadius {
+			let bezierPath = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
+			let point = touch.location(in: profilePictureView)
+			return bezierPath.contains(point)
+		}
+		return false
 	}
 	
 	//MARK: Lifecycle
@@ -89,6 +99,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
 		let tap = UITapGestureRecognizer(target: self, action: #selector(handleProfilePictureTap(_:)))
 		profilePictureView?.addGestureRecognizer(tap)
 		profilePictureView?.isUserInteractionEnabled = true
+		
+		tap.delegate = self
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
