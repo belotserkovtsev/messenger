@@ -16,6 +16,7 @@ class ProfileViewController: UIViewController,
 	@IBOutlet weak var nameAndLastnameLabel: UILabel?
 	@IBOutlet weak var editButton: UIButton?
 	@IBOutlet weak var initialsLabel: UILabel?
+	@IBOutlet weak var descriptionLabel: UILabel?
 	
 	private var profilePicture: UIImage? {
 		willSet {
@@ -95,6 +96,9 @@ class ProfileViewController: UIViewController,
 		profilePictureView?.layer.cornerRadius = 240 / 2
 		editButton?.layer.cornerRadius = 14
 		editButton?.isEnabled = false
+		
+		nameAndLastnameLabel?.preferredMaxLayoutWidth = 280
+		descriptionLabel?.preferredMaxLayoutWidth = 200
 		
 		let tap = UITapGestureRecognizer(target: self, action: #selector(handleProfilePictureTap(_:)))
 		profilePictureView?.addGestureRecognizer(tap)
