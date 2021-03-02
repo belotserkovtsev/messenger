@@ -13,7 +13,7 @@ class ConversationTableViewCell: UITableViewCell {
 	@IBOutlet weak var trailingPaddingConstraint: NSLayoutConstraint?
 	@IBOutlet weak var leadingPaddingConstraint: NSLayoutConstraint?
 	
-	func configure(with data: ConversationViewController.Message) {
+	func configure(with data: ConversationViewController.ConversationDataModel.Message) {
 		messageView?.layer.cornerRadius = 12
 		messageTextLabel?.text = data.text
 		

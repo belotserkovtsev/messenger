@@ -7,54 +7,14 @@
 
 import UIKit
 
-class ConversationsListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-	
-	struct ChatDataModel {
-		var name: String?
-		var message: String?
-		var date: Date?
-		var online: Bool
-		var hasUnreadMessages: Bool
-	}
+class ConversationsListViewController: UIViewController {
 	
 	@IBOutlet weak var tableView: UITableView?
 	private let cellIdentifier = String(describing: ConversationsListTableViewCell.self)
 	
-	//MARK: Table View Delegate Methods
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		chatData[section].count
-	}
-	
-	func numberOfSections(in tableView: UITableView) -> Int {
-		chatData.count
-	}
-	
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let section = chatData[indexPath.section]
-		let data = section[indexPath.row]
-		guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-				as? ConversationsListTableViewCell else { return UITableViewCell() }
-		cell.configure(with: data)
-		return cell
-	}
-	
-	func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		section == 0 ? "Online" : "History"
-	}
-	
-	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let storyBoard : UIStoryboard = UIStoryboard(name: "Conversation", bundle: nil)
-		let conversation = storyBoard.instantiateViewController(withIdentifier: "ConversationViewController") as? ConversationViewController
-		conversation?.title = chatData[indexPath.section][indexPath.row].name ?? "No name"
-		if let conversationViewController = conversation {
-			navigationController?.pushViewController(conversationViewController, animated: true)
-		}
-		tableView.deselectRow(at: indexPath, animated: true)
-	}
-	
 	//MARK: Nav Bar Tap Handlers
 	@objc private func profileTapHandler() {
-		let storyBoard : UIStoryboard = UIStoryboard(name: "Profile", bundle: nil)
+		let storyBoard = UIStoryboard(name: "Profile", bundle: nil)
 		let profile = storyBoard.instantiateViewController(withIdentifier: "ProfileViewController") as? ProfileViewController
 		if let profileViewController = profile {
 			present(profileViewController, animated: true, completion: nil)
@@ -112,7 +72,19 @@ class ConversationsListViewController: UIViewController, UITableViewDataSource, 
 	}
 	
 	//MARK: Data
-	private var chatData: [[ChatDataModel]] =
+	struct ChatsDataModel {
+		var chats: [[Chat]]
+		
+		struct Chat {
+			var name: String?
+			var message: String?
+			var date: Date?
+			var online: Bool
+			var hasUnreadMessages: Bool
+		}
+	}
+	
+	private var chatsData: ChatsDataModel = .init(chats:
 		[[.init(name: "Egor Nosov", message: "What are you up to?", date: Date(), online: true, hasUnreadMessages: false),
 		.init(name: "Alex Firsov", message: "I was trying to reach you but you were not ansering so i thought i would message you instead. Well, to be honest", date: Date(timeIntervalSinceNow: TimeInterval(-336_000)), online: true, hasUnreadMessages: false),
 		.init(name: "Anastasia Bazueva", message: "Some bread, milk, youghurt and paper towels", date: Date(timeIntervalSinceNow: TimeInterval(-536_000)), online: true, hasUnreadMessages: true),
@@ -133,5 +105,42 @@ class ConversationsListViewController: UIViewController, UITableViewDataSource, 
 		.init(name: "Egor Nosov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
 		.init(name: "Egor Nosov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
 		.init(name: "Egor Nosov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Egor Nosov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false)]]
+		.init(name: "Egor Nosov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false)]])
+}
+
+//MARK: UITableViewDataSource
+extension ConversationsListViewController: UITableViewDataSource {
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		chatsData.chats[section].count
+	}
+	
+	func numberOfSections(in tableView: UITableView) -> Int {
+		chatsData.chats.count
+	}
+	
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		let section = chatsData.chats[indexPath.section]
+		let data = section[indexPath.row]
+		guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
+				as? ConversationsListTableViewCell else { return UITableViewCell() }
+		cell.configure(with: data)
+		return cell
+	}
+	
+	func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		section == 0 ? "Online" : "History"
+	}
+}
+
+//MARK: UITableViewDelegate
+extension ConversationsListViewController: UITableViewDelegate {
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		let storyBoard : UIStoryboard = UIStoryboard(name: "Conversation", bundle: nil)
+		let conversation = storyBoard.instantiateViewController(withIdentifier: "ConversationViewController") as? ConversationViewController
+		conversation?.title = chatsData.chats[indexPath.section][indexPath.row].name ?? "No name"
+		if let conversationViewController = conversation {
+			navigationController?.pushViewController(conversationViewController, animated: true)
+		}
+		tableView.deselectRow(at: indexPath, animated: true)
+	}
 }
