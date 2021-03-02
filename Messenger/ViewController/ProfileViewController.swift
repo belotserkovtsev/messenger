@@ -18,6 +18,10 @@ class ProfileViewController: UIViewController,
 	@IBOutlet weak var initialsLabel: UILabel?
 	@IBOutlet weak var descriptionLabel: UILabel?
 	
+	@IBAction func handleDismissTap(_ sender: UIButton) {
+		dismiss(animated: true, completion: nil)
+	}
+	
 	private var profilePicture: UIImage? {
 		willSet {
 			if let img = newValue {
@@ -28,14 +32,6 @@ class ProfileViewController: UIViewController,
 				initialsLabel?.isHidden = false
 			}
 		}
-	}
-	
-	required init?(coder: NSCoder) {
-		super.init(coder: coder)
-		print("In \(#function): ", editButton?.frame ?? "nil")
-		
-//		мы получаем nil так как
-//		на этом этапе вьюшки еще не созданы
 	}
 	
 	//MARK: Image Picker
@@ -91,7 +87,7 @@ class ProfileViewController: UIViewController,
 	//MARK: Lifecycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		print("In \(#function): ", editButton?.frame ?? "nil")
+		title = "Profile"
 		
 		profilePictureView?.layer.cornerRadius = 240 / 2
 		editButton?.layer.cornerRadius = 14
@@ -100,22 +96,11 @@ class ProfileViewController: UIViewController,
 		nameAndLastnameLabel?.preferredMaxLayoutWidth = 280
 		descriptionLabel?.preferredMaxLayoutWidth = 200
 		
-		let tap = UITapGestureRecognizer(target: self, action: #selector(handleProfilePictureTap(_:)))
-		profilePictureView?.addGestureRecognizer(tap)
+		let editTap = UITapGestureRecognizer(target: self, action: #selector(handleProfilePictureTap))
+		profilePictureView?.addGestureRecognizer(editTap)
 		profilePictureView?.isUserInteractionEnabled = true
 		
-		tap.delegate = self
-	}
-	
-	override func viewDidAppear(_ animated: Bool) {
-		print("In \(#function): ", editButton?.frame ?? "nil")
-		
-//		к моменту вызова viewDidLoad вьюшки будут созданы,
-//		но границы и размеры еще не установлены.
-//		Из-за того, что в сториборде мы работаем
-//		с айфоном 5, а запускаем на айфоне 11 к моменту вызова
-//		viewDidAppear фрейм будет сдвинут по y,
-//		чтобы соответсвовать констрейнам.
+		editTap.delegate = self
 	}
 
 
