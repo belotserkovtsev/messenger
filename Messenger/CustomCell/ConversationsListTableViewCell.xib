@@ -73,7 +73,7 @@
                         <color key="textColor" systemColor="systemGrayColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="14/08/21" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cg7-Wa-A7Z">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="14/08/21" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cg7-Wa-A7Z">
                         <rect key="frame" x="221" y="26.5" width="59" height="18"/>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <color key="textColor" systemColor="systemGrayColor"/>
@@ -96,7 +96,7 @@
                     <constraint firstAttribute="trailing" secondItem="L2C-xZ-Ojz" secondAttribute="trailing" constant="12" id="Yvz-gs-VYW"/>
                     <constraint firstItem="8ET-Ey-flP" firstAttribute="leading" secondItem="2Vq-Xx-Aum" secondAttribute="trailing" constant="12" id="ckh-kM-QJ3"/>
                     <constraint firstItem="8ET-Ey-flP" firstAttribute="top" secondItem="2Vq-Xx-Aum" secondAttribute="top" id="g0a-ea-ZEJ"/>
-                    <constraint firstItem="cg7-Wa-A7Z" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8ET-Ey-flP" secondAttribute="trailing" constant="2" id="hgE-PO-CLq"/>
+                    <constraint firstItem="cg7-Wa-A7Z" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8ET-Ey-flP" secondAttribute="trailing" constant="6" id="hgE-PO-CLq"/>
                     <constraint firstItem="cg7-Wa-A7Z" firstAttribute="top" secondItem="2Vq-Xx-Aum" secondAttribute="top" id="kAw-Cs-dzb"/>
                     <constraint firstItem="L2C-xZ-Ojz" firstAttribute="bottom" secondItem="2Vq-Xx-Aum" secondAttribute="bottom" id="oKX-Oo-juZ"/>
                     <constraint firstAttribute="trailing" secondItem="cg7-Wa-A7Z" secondAttribute="trailing" constant="12" id="s3z-18-FjY"/>
