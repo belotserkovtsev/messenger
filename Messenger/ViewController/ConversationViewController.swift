@@ -31,7 +31,7 @@ class ConversationViewController: UIViewController {
 		var messages: [Message]
 		
 		struct Message {
-			var text: String
+			var text: String?
 			var messageType: MessageType
 		}
 		
@@ -43,7 +43,7 @@ class ConversationViewController: UIViewController {
 	private var conversationData =
 		ConversationDataModel(messages:
 				[.init(text: "Hey!", messageType: .incoming),
-				 .init(text: "Hey man", messageType: .outgoing),
+				 .init(text: nil, messageType: .outgoing),
 				 .init(text: "Wassup", messageType: .incoming),
 				 .init(text: "Nm hbu? Justo habitasse in ornare tortor, vestibulum aenean integer mattis orci, nisi quis, lectus nec non ultricies. Tortor, vitae in dictum.", messageType: .outgoing),
 				 .init(text: "Justo habitasse in ornare tortor, vestibulum aenean integer mattis orci, nisi quis", messageType: .outgoing),
@@ -61,10 +61,6 @@ class ConversationViewController: UIViewController {
 extension ConversationViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		conversationData.messages.count
-	}
-	
-	func numberOfSections(in tableView: UITableView) -> Int {
-		1
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

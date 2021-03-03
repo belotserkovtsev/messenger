@@ -15,7 +15,14 @@ class ConversationTableViewCell: UITableViewCell {
 	
 	func configure(with data: ConversationViewController.ConversationDataModel.Message) {
 		messageView?.layer.cornerRadius = 12
-		messageTextLabel?.text = data.text
+		if let text = data.text {
+			messageTextLabel?.text = text
+			messageTextLabel?.font = UIFont.systemFont(ofSize: 16)
+		} else {
+			messageTextLabel?.text = "Unable to load message"
+			messageTextLabel?.font = UIFont.italicSystemFont(ofSize: 16)
+		}
+		
 		
 		switch data.messageType {
 		case .incoming:

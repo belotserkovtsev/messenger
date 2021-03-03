@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xaV-ta-Rex">
-                                <rect key="frame" x="87" y="168.5" width="240" height="240"/>
+                                <rect key="frame" x="87" y="156.5" width="240" height="240"/>
                                 <color key="backgroundColor" systemColor="systemYellowColor"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="240" id="D8C-qM-YSb"/>
@@ -26,13 +26,13 @@
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bogdan Belotserkovtsev" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ByR-15-Tx1">
-                                <rect key="frame" x="71" y="440.5" width="272" height="29"/>
+                                <rect key="frame" x="71" y="428.5" width="272" height="29"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="iOS Developer, engineer Saint-Petersburg, Russia" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ysJ-Kg-6XN">
-                                <rect key="frame" x="117.5" y="501.5" width="179.5" height="38.5"/>
+                                <rect key="frame" x="117.5" y="489.5" width="179.5" height="38.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -48,7 +48,7 @@
                                 <state key="normal" title="Edit"/>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BB" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5za-F7-bkA">
-                                <rect key="frame" x="134.5" y="216.5" width="145.5" height="144"/>
+                                <rect key="frame" x="134.5" y="204.5" width="145.5" height="144"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="120"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -73,7 +73,7 @@
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Xmp-fW-PHE" secondAttribute="trailing" constant="16" id="Cav-Ub-7hg"/>
                             <constraint firstItem="1QJ-cN-N1q" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="Clu-FY-3be"/>
-                            <constraint firstItem="xaV-ta-Rex" firstAttribute="top" secondItem="1QJ-cN-N1q" secondAttribute="bottom" constant="56" id="M2H-YY-Aq6"/>
+                            <constraint firstItem="xaV-ta-Rex" firstAttribute="top" secondItem="1QJ-cN-N1q" secondAttribute="bottom" constant="44" id="M2H-YY-Aq6"/>
                             <constraint firstItem="ByR-15-Tx1" firstAttribute="top" secondItem="xaV-ta-Rex" secondAttribute="bottom" constant="32" id="Miy-Ud-u7D"/>
                             <constraint firstItem="ysJ-Kg-6XN" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="W3W-Ce-8M7"/>
                             <constraint firstItem="1QJ-cN-N1q" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="37" id="XOc-6y-saV"/>
