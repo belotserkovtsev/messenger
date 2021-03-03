@@ -15,31 +15,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Override point for customization after application launch.
 		return true
 	}
-	
-	//MARK: State tracking
-	func applicationWillResignActive(_ application: UIApplication) {
-		Console.conditionalLog("Application moved from active to inactive: \(#function)")
-	}
-	
-	func applicationDidEnterBackground(_ application: UIApplication) {
-		Console.conditionalLog("Application moved from inactive to background: \(#function)")
-	}
-	
-	func applicationWillEnterForeground(_ application: UIApplication) {
-		Console.conditionalLog("Application moved from background to inactive: \(#function)")
-	}
-	
-	func applicationDidBecomeActive(_ application: UIApplication) {
-		Console.conditionalLog("Application moved from inactive to active: \(#function)")
-	}
-	
-	func applicationWillTerminate(_ application: UIApplication) {
-		Console.conditionalLog("Application will be terminated")
-	}
-
-	
-	
-
-
 }
 
