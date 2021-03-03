@@ -13,7 +13,7 @@ class ProfileViewController: UIViewController,
 							 UIGestureRecognizerDelegate {
 	
 	@IBOutlet weak var profilePictureView: UIImageView?
-	@IBOutlet weak var nameAndLastnameLabel: UILabel?
+	@IBOutlet weak var nameLabel: UILabel?
 	@IBOutlet weak var editButton: UIButton?
 	@IBOutlet weak var initialsLabel: UILabel?
 	@IBOutlet weak var descriptionLabel: UILabel?
@@ -93,7 +93,7 @@ class ProfileViewController: UIViewController,
 		editButton?.layer.cornerRadius = 14
 		editButton?.isEnabled = false
 		
-		nameAndLastnameLabel?.preferredMaxLayoutWidth = 280
+		nameLabel?.preferredMaxLayoutWidth = 280
 		descriptionLabel?.preferredMaxLayoutWidth = 200
 		
 		let editTap = UITapGestureRecognizer(target: self, action: #selector(handleProfilePictureTap))
