@@ -23,16 +23,17 @@ class ConversationTableViewCell: UITableViewCell {
 			messageTextLabel?.font = UIFont.italicSystemFont(ofSize: 16)
 		}
 		
-		
 		switch data.messageType {
 		case .incoming:
 			trailingPaddingConstraint?.isActive = false
 			leadingPaddingConstraint?.isActive = true
-			messageView?.backgroundColor = UIColor(named: "IncomingMessage") ?? .gray
+			messageView?.backgroundColor = UIColor(named: "IncomingMessageBubble") ?? .gray
+			messageTextLabel?.textColor = UIColor(named: "IncomingMessageText") ?? .black
 		case .outgoing:
 			trailingPaddingConstraint?.isActive = true
 			leadingPaddingConstraint?.isActive = false
-			messageView?.backgroundColor = UIColor(named: "OutgoingMessage") ?? .green
+			messageView?.backgroundColor = UIColor(named: "OutgoingMessageBubble") ?? .green
+			messageTextLabel?.textColor = .white
 		}
 	}
     
