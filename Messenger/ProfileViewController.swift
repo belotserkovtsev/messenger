@@ -68,11 +68,11 @@ class ProfileViewController: UIViewController,
 			}
 		}))
 		
-		alert.addAction(UIAlertAction(title: "Take picture", style: .default, handler: { _ in
-			if UIImagePickerController.isSourceTypeAvailable(.camera) {
+		if UIImagePickerController.isSourceTypeAvailable(.camera) {
+			alert.addAction(UIAlertAction(title: "Take picture", style: .default, handler: { _ in
 				self.presentImagePicker(with: .camera)
-			}
-		}))
+			}))
+		}
 		
 		alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
 		
