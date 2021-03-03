@@ -10,8 +10,8 @@ import UIKit
 class ConversationTableViewCell: UITableViewCell {
 	@IBOutlet weak var messageTextLabel: UILabel?
 	@IBOutlet weak var messageView: UIView?
-	@IBOutlet weak var trailingPaddingConstraint: NSLayoutConstraint?
-	@IBOutlet weak var leadingPaddingConstraint: NSLayoutConstraint?
+	@IBOutlet var trailingPaddingConstraint: NSLayoutConstraint?
+	@IBOutlet var leadingPaddingConstraint: NSLayoutConstraint?
 	
 	func configure(with data: ConversationViewController.ConversationDataModel.Message) {
 		messageView?.layer.cornerRadius = 12
@@ -27,7 +27,6 @@ class ConversationTableViewCell: UITableViewCell {
 			leadingPaddingConstraint?.isActive = false
 			messageView?.backgroundColor = UIColor(named: "OutgoingMessage") ?? .green
 		}
-		
 	}
     
 }
