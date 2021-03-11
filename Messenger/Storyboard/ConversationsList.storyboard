@@ -13,13 +13,13 @@
         <scene sceneID="EfB-Xc-422">
             <objects>
                 <viewController id="957-cW-a5L" customClass="ConversationsListViewController" customModule="Messenger" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8le-sS-gHG">
+                    <view key="view" contentMode="scaleToFill" id="8le-sS-gHG" customClass="ThemeDependentUIView" customModule="Messenger" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="Jgf-SK-pBU">
-                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Jgf-SK-pBU">
+                                <rect key="frame" x="0.0" y="88" width="414" height="808"/>
+                                <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="zrz-Mk-eJn"/>
@@ -27,8 +27,8 @@
                         <constraints>
                             <constraint firstItem="Jgf-SK-pBU" firstAttribute="leading" secondItem="zrz-Mk-eJn" secondAttribute="leading" id="6Xb-71-EFr"/>
                             <constraint firstItem="Jgf-SK-pBU" firstAttribute="top" secondItem="zrz-Mk-eJn" secondAttribute="top" id="JAp-ES-YKf"/>
+                            <constraint firstItem="Jgf-SK-pBU" firstAttribute="bottom" secondItem="8le-sS-gHG" secondAttribute="bottom" id="R7y-WB-cCA"/>
                             <constraint firstItem="zrz-Mk-eJn" firstAttribute="trailing" secondItem="Jgf-SK-pBU" secondAttribute="trailing" id="dty-vj-iXF"/>
-                            <constraint firstItem="zrz-Mk-eJn" firstAttribute="bottom" secondItem="Jgf-SK-pBU" secondAttribute="bottom" id="i4r-BK-W5H"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Ywd-Wk-hdD"/>

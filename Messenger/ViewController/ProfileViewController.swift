@@ -13,10 +13,10 @@ class ProfileViewController: UIViewController,
 							 UIGestureRecognizerDelegate {
 	
 	@IBOutlet weak var profilePictureView: UIImageView?
-	@IBOutlet weak var nameLabel: UILabel?
-	@IBOutlet weak var editButton: UIButton?
-	@IBOutlet weak var initialsLabel: UILabel?
-	@IBOutlet weak var descriptionLabel: UILabel?
+	@IBOutlet weak var nameLabel: ThemeDependentUILabel?
+	@IBOutlet weak var editButton: ThemeDependentUIButton?
+	@IBOutlet weak var initialsLabel: ThemeDependentUILabel?
+	@IBOutlet weak var descriptionLabel: ThemeDependentUILabel?
 	
 	@IBAction func handleDismissTap(_ sender: UIButton) {
 		dismiss(animated: true, completion: nil)
@@ -55,8 +55,17 @@ class ProfileViewController: UIViewController,
 	}
 	
 	//MARK: Gestures
-	@objc func handleProfilePictureTap(_ sender: UITapGestureRecognizer) {
+	@objc func handleProfilePictureTap() {
 		let alert = UIAlertController(title: "Set profile picture", message: nil, preferredStyle: .actionSheet)
+		
+		switch ThemeManager.currentTheme {
+		case .night:
+			if #available(iOS 13, *) {
+				alert.overrideUserInterfaceStyle = .dark
+			}
+		default:
+			break
+		}
 		
 		alert.addAction(UIAlertAction(title: "Library", style: .default, handler: { _ in
 			if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {

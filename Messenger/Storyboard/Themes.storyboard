@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="6dZ-KY-eB2">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Themes View Controller-->
+        <scene sceneID="ofp-HT-QdR">
+            <objects>
+                <viewController storyboardIdentifier="ThemesViewController" id="6dZ-KY-eB2" customClass="ThemesViewController" customModule="Messenger" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="eww-cb-Swk" customClass="ThemeDependentUIView" customModule="Messenger" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="h6t-3i-B4h">
+                                <rect key="frame" x="57" y="262.5" width="300" height="381.5"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="1Ku-sL-8fv">
+                                        <rect key="frame" x="0.0" y="0.0" width="300" height="100.5"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mHD-w2-EeU">
+                                                <rect key="frame" x="0.0" y="0.0" width="300" height="60"/>
+                                                <subviews>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NVA-FT-3TA">
+                                                        <rect key="frame" x="12" y="10" width="117" height="25"/>
+                                                        <color key="backgroundColor" name="NightIncomingBubble"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="117" id="6IP-Tc-EU0"/>
+                                                            <constraint firstAttribute="height" constant="25" id="a4J-4K-gQk"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="06q-d5-vNj">
+                                                        <rect key="frame" x="171" y="25" width="117" height="25"/>
+                                                        <color key="backgroundColor" name="NightOutgoingBubble"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="117" id="CPA-9G-8Yt"/>
+                                                            <constraint firstAttribute="height" constant="25" id="DU3-aO-dQw"/>
+                                                        </constraints>
+                                                    </view>
+                                                </subviews>
+                                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="trailing" secondItem="06q-d5-vNj" secondAttribute="trailing" constant="12" id="RkX-bT-dNz"/>
+                                                    <constraint firstItem="NVA-FT-3TA" firstAttribute="leading" secondItem="mHD-w2-EeU" secondAttribute="leading" constant="12" id="TFg-xv-5hn"/>
+                                                    <constraint firstAttribute="width" constant="300" id="Uu8-yA-lQc"/>
+                                                    <constraint firstItem="NVA-FT-3TA" firstAttribute="top" secondItem="mHD-w2-EeU" secondAttribute="top" constant="10" id="XVc-fz-KDv"/>
+                                                    <constraint firstAttribute="height" constant="60" id="tYt-G2-qPX"/>
+                                                    <constraint firstAttribute="bottom" secondItem="06q-d5-vNj" secondAttribute="bottom" constant="10" id="u08-Os-RB8"/>
+                                                </constraints>
+                                            </view>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Night" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="86o-bF-oXJ" customClass="ThemeDependentUILabel" customModule="Messenger" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="80" width="300" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="cMF-pP-umr">
+                                        <rect key="frame" x="0.0" y="140.5" width="300" height="100.5"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eMl-Az-kpB">
+                                                <rect key="frame" x="0.0" y="0.0" width="300" height="60"/>
+                                                <subviews>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pb5-qU-5nS">
+                                                        <rect key="frame" x="12" y="10" width="117" height="25"/>
+                                                        <color key="backgroundColor" name="LightIncomingBubble"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="117" id="Hf7-Pz-aHy"/>
+                                                            <constraint firstAttribute="height" constant="25" id="dxx-JC-p1n"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r6f-WS-I9x">
+                                                        <rect key="frame" x="171" y="25" width="117" height="25"/>
+                                                        <color key="backgroundColor" name="LightOutgoingBubble"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="25" id="Lwu-et-Lwp"/>
+                                                            <constraint firstAttribute="width" constant="117" id="ezo-Yo-ASq"/>
+                                                        </constraints>
+                                                    </view>
+                                                </subviews>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstItem="Pb5-qU-5nS" firstAttribute="leading" secondItem="eMl-Az-kpB" secondAttribute="leading" constant="12" id="10r-RI-E2a"/>
+                                                    <constraint firstAttribute="bottom" secondItem="r6f-WS-I9x" secondAttribute="bottom" constant="10" id="6gm-sT-930"/>
+                                                    <constraint firstAttribute="trailing" secondItem="r6f-WS-I9x" secondAttribute="trailing" constant="12" id="EX7-Tf-hzx"/>
+                                                    <constraint firstAttribute="width" constant="300" id="IP7-g9-2Ck"/>
+                                                    <constraint firstAttribute="height" constant="60" id="lOq-06-V9C"/>
+                                                    <constraint firstItem="Pb5-qU-5nS" firstAttribute="top" secondItem="eMl-Az-kpB" secondAttribute="top" constant="10" id="sRV-hH-inB"/>
+                                                </constraints>
+                                            </view>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Light" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h5h-kK-pF8" customClass="ThemeDependentUILabel" customModule="Messenger" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="80" width="300" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ySl-um-gLq">
+                                        <rect key="frame" x="0.0" y="281" width="300" height="100.5"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UFT-Da-k2F">
+                                                <rect key="frame" x="0.0" y="0.0" width="300" height="60"/>
+                                                <subviews>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O04-LR-fPe">
+                                                        <rect key="frame" x="12" y="10" width="117" height="25"/>
+                                                        <color key="backgroundColor" name="LightIncomingBubble"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="117" id="9st-cs-vXi"/>
+                                                            <constraint firstAttribute="height" constant="25" id="GlK-NY-b4R"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fdG-HG-C4O">
+                                                        <rect key="frame" x="171" y="25" width="117" height="25"/>
+                                                        <color key="backgroundColor" name="ClassicOutgoingBubble"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="117" id="jcA-la-5SG"/>
+                                                            <constraint firstAttribute="height" constant="25" id="rfe-eT-L3p"/>
+                                                        </constraints>
+                                                    </view>
+                                                </subviews>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="300" id="1gL-UR-UOi"/>
+                                                    <constraint firstItem="O04-LR-fPe" firstAttribute="top" secondItem="UFT-Da-k2F" secondAttribute="top" constant="10" id="93k-DU-mR6"/>
+                                                    <constraint firstItem="O04-LR-fPe" firstAttribute="leading" secondItem="UFT-Da-k2F" secondAttribute="leading" constant="12" id="KKg-Em-HZJ"/>
+                                                    <constraint firstAttribute="bottom" secondItem="fdG-HG-C4O" secondAttribute="bottom" constant="10" id="KPg-aD-S6l"/>
+                                                    <constraint firstAttribute="height" constant="60" id="VYk-QW-KVr"/>
+                                                    <constraint firstAttribute="trailing" secondItem="fdG-HG-C4O" secondAttribute="trailing" constant="12" id="gwE-2r-OIV"/>
+                                                </constraints>
+                                            </view>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Classic" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yk2-fh-2ak" customClass="ThemeDependentUILabel" customModule="Messenger" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="80" width="300" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Zhu-K7-arj"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="h6t-3i-B4h" firstAttribute="centerY" secondItem="Zhu-K7-arj" secondAttribute="centerY" id="Gyh-nS-KZp"/>
+                            <constraint firstItem="h6t-3i-B4h" firstAttribute="centerX" secondItem="Zhu-K7-arj" secondAttribute="centerX" id="LkH-fw-gG9"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="classicThemeStack" destination="ySl-um-gLq" id="8be-bA-oRd"/>
+                        <outlet property="classicThemeView" destination="UFT-Da-k2F" id="9d9-8V-CI7"/>
+                        <outlet property="lightThemeStack" destination="cMF-pP-umr" id="2ko-sb-oD2"/>
+                        <outlet property="lightThemeView" destination="eMl-Az-kpB" id="OGZ-yJ-s0n"/>
+                        <outlet property="nightThemeStack" destination="1Ku-sL-8fv" id="83W-nZ-ng0"/>
+                        <outlet property="nightThemeView" destination="mHD-w2-EeU" id="L5P-Nl-0te"/>
+                        <outletCollection property="messageBubbleViews" destination="NVA-FT-3TA" collectionClass="NSMutableArray" id="4au-e3-frc"/>
+                        <outletCollection property="messageBubbleViews" destination="06q-d5-vNj" collectionClass="NSMutableArray" id="W33-9c-f21"/>
+                        <outletCollection property="messageBubbleViews" destination="Pb5-qU-5nS" collectionClass="NSMutableArray" id="0bp-2T-IZW"/>
+                        <outletCollection property="messageBubbleViews" destination="r6f-WS-I9x" collectionClass="NSMutableArray" id="uGn-D1-22F"/>
+                        <outletCollection property="messageBubbleViews" destination="O04-LR-fPe" collectionClass="NSMutableArray" id="pd7-pO-EUm"/>
+                        <outletCollection property="messageBubbleViews" destination="fdG-HG-C4O" collectionClass="NSMutableArray" id="i7A-mO-fFl"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YUE-RL-dys" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-13.043478260869566" y="154.6875"/>
+        </scene>
+    </scenes>
+    <resources>
+        <namedColor name="ClassicOutgoingBubble">
+            <color red="0.90326422449999999" green="0.99764901399999995" blue="0.79995232819999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+        <namedColor name="LightIncomingBubble">
+            <color red="0.95686918499999996" green="0.95685130360000004" blue="0.95686346290000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+        <namedColor name="LightOutgoingBubble">
+            <color red="0.36611431840000003" green="0.56239140030000001" blue="0.76475399730000004" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+        <namedColor name="NightIncomingBubble">
+            <color red="0.19607843137254902" green="0.19215686274509805" blue="0.19607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="NightOutgoingBubble">
+            <color red="0.15294117647058825" green="0.37647058823529411" blue="0.77254901960784317" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

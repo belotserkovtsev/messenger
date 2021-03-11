@@ -8,32 +8,37 @@
 import UIKit
 
 class ConversationTableViewCell: UITableViewCell {
-	@IBOutlet weak var messageTextLabel: UILabel?
-	@IBOutlet weak var messageView: UIView?
+	@IBOutlet weak var outgoingMessageTextLabel: UILabel?
+	@IBOutlet weak var incomingMessageTextLabel: UILabel?
+	@IBOutlet weak var incomingMessageView: IncomingMessageUIView?
+	@IBOutlet weak var outgoingMessageView: OutgoingMessageUIView?
 	@IBOutlet var trailingPaddingConstraint: NSLayoutConstraint?
 	@IBOutlet var leadingPaddingConstraint: NSLayoutConstraint?
 	
 	func configure(with data: ConversationViewController.ConversationDataModel.Message) {
-		messageView?.layer.cornerRadius = 12
+		incomingMessageView?.layer.cornerRadius = 12
+		outgoingMessageView?.layer.cornerRadius = 12
 		if let text = data.text {
-			messageTextLabel?.text = text
-			messageTextLabel?.font = UIFont.systemFont(ofSize: 16)
+			outgoingMessageTextLabel?.text = text
+			incomingMessageTextLabel?.text = text
+			outgoingMessageTextLabel?.font = UIFont.systemFont(ofSize: 16)
+			incomingMessageTextLabel?.font = UIFont.systemFont(ofSize: 16)
 		} else {
-			messageTextLabel?.text = "Unable to load message"
-			messageTextLabel?.font = UIFont.italicSystemFont(ofSize: 16)
+			outgoingMessageTextLabel?.text = "Unable to load message"
+			incomingMessageTextLabel?.text = "Unable to load message"
+			outgoingMessageTextLabel?.font = UIFont.italicSystemFont(ofSize: 16)
+			incomingMessageTextLabel?.font = UIFont.italicSystemFont(ofSize: 16)
 		}
 		
 		switch data.messageType {
 		case .incoming:
 			trailingPaddingConstraint?.isActive = false
 			leadingPaddingConstraint?.isActive = true
-			messageView?.backgroundColor = UIColor(named: "IncomingMessageBubble") ?? .gray
-			messageTextLabel?.textColor = UIColor(named: "IncomingMessageText") ?? .black
+			outgoingMessageView?.isHidden = true
 		case .outgoing:
 			trailingPaddingConstraint?.isActive = true
 			leadingPaddingConstraint?.isActive = false
-			messageView?.backgroundColor = UIColor(named: "OutgoingMessageBubble") ?? .green
-			messageTextLabel?.textColor = .white
+			outgoingMessageView?.isHidden = false
 		}
 	}
     

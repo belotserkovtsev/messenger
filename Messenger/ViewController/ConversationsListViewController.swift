@@ -17,7 +17,15 @@ class ConversationsListViewController: UIViewController {
 		let storyBoard = UIStoryboard(name: "Profile", bundle: nil)
 		let profile = storyBoard.instantiateViewController(withIdentifier: "ProfileViewController") as? ProfileViewController
 		if let profileViewController = profile {
-			present(profileViewController, animated: true, completion: nil)
+			navigationController?.pushViewController(profileViewController, animated: true)
+		}
+	}
+	
+	@objc private func settingsTapHandler() {
+		let storyBoard = UIStoryboard(name: "Themes", bundle: nil)
+		let theme = storyBoard.instantiateViewController(withIdentifier: "ThemesViewController") as? ThemesViewController
+		if let themeViewController = theme {
+			navigationController?.pushViewController(themeViewController, animated: true)
 		}
 	}
 	
@@ -27,7 +35,8 @@ class ConversationsListViewController: UIViewController {
 		tableView?.delegate = self
 		
 		title = "Tinkoff Chat"
-		setBarButtonItem()
+		setTrailingBarButtonItem()
+		setLeadingBarButtonItem()
 		
 		tableView?.register(UINib(nibName: String(describing: ConversationsListTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
 		tableView?.dataSource = self
@@ -35,13 +44,23 @@ class ConversationsListViewController: UIViewController {
 	}
 	
 	//MARK: UI Modifiers
-	private func setBarButtonItem() {
+	private func setTrailingBarButtonItem() {
 		if let profileItemImage = UIImage(named: "Profile"),
 		   let resizedProfileItemImage = resizeImage(image: profileItemImage, targetSize: CGSize(width: 22, height: 22))  {
 			navigationItem.rightBarButtonItem = UIBarButtonItem(image: resizedProfileItemImage, style: .plain, target: self, action: #selector(profileTapHandler))
 			navigationItem.rightBarButtonItem?.tintColor = .gray
 		} else {
 			navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Profile", style: .plain, target: self, action: #selector(profileTapHandler))
+		}
+	}
+	
+	private func setLeadingBarButtonItem() {
+		if let settingsItemImage = UIImage(named: "Settings"),
+		   let resizedSettingsItemImage = resizeImage(image: settingsItemImage, targetSize: CGSize(width: 22, height: 22))  {
+			navigationItem.leftBarButtonItem = UIBarButtonItem(image: resizedSettingsItemImage, style: .plain, target: self, action: #selector(settingsTapHandler))
+			navigationItem.leftBarButtonItem?.tintColor = .gray
+		} else {
+			navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Settings", style: .plain, target: self, action: #selector(settingsTapHandler))
 		}
 	}
 	

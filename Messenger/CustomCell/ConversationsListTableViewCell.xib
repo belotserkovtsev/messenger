@@ -21,13 +21,13 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Vq-Xx-Aum">
                         <rect key="frame" x="12" y="26.5" width="52" height="52"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NB" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vmF-9v-ieV">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NB" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vmF-9v-ieV" customClass="ThemeDependentUILabel" customModule="Messenger" customModuleProvider="target">
                                 <rect key="frame" x="14" y="16" width="24" height="20.5"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rVJ-mK-cLv">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rVJ-mK-cLv" customClass="ConversationsIsOnlineStrokeView" customModule="Messenger" customModuleProvider="target">
                                 <rect key="frame" x="34" y="2" width="16" height="16"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JL9-Ih-p9U">
@@ -58,7 +58,7 @@
                             <constraint firstAttribute="height" constant="52" id="lBZ-fb-qs5"/>
                         </constraints>
                     </view>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Nastya Bazueva" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8ET-Ey-flP">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Nastya Bazueva" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8ET-Ey-flP" customClass="ThemeDependentUILabel" customModule="Messenger" customModuleProvider="target">
                         <rect key="frame" x="76" y="26.5" width="114" height="18"/>
                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                         <nil key="textColor"/>
