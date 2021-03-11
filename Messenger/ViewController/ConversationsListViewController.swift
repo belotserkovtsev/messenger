@@ -41,6 +41,16 @@ class ConversationsListViewController: UIViewController {
 		tableView?.register(UINib(nibName: String(describing: ConversationsListTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
 		tableView?.dataSource = self
 		tableView?.rowHeight = 88
+		
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		switch ThemeManager.currentTheme {
+		case .night:
+			tableView?.backgroundColor = .black
+		default:
+			tableView?.backgroundColor = UIColor(white: 0.97, alpha: 1)
+		}
 	}
 	
 	//MARK: UI Modifiers

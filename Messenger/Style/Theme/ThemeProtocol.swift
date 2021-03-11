@@ -19,7 +19,6 @@ protocol ThemeProtocol {
 	var conversationsListUITableViewSeparatorColor: UIColor? { get }
 	var conversationsListSelectedCellView: UIView? { get }
 	var conversationsListCellBackgroundColor: UIColor { get }
-	var conversationsListUITableViewBackgroundColor: UIColor { get }
 //	var conversationsListUITableViewHeaderFooterView: UIView? { get }
 	
 	var conversationUITableViewBackgroundColor: UIColor? { get }
@@ -53,8 +52,6 @@ extension ThemeProtocol {
 			UITableViewCell.appearance(whenContainedInInstancesOf: [ConversationsListViewController.self])
 				.selectedBackgroundView = conversationsListSelectedCellView
 			
-			UITableView.appearance(whenContainedInInstancesOf: [ConversationsListViewController.self])
-				.backgroundColor = conversationsListUITableViewBackgroundColor
 			UITableView.appearance(whenContainedInInstancesOf: [ConversationsListViewController.self])
 				.separatorColor = conversationsListUITableViewSeparatorColor
 			

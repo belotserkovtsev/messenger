@@ -23,8 +23,6 @@ class ClassicTheme: ThemeProtocol {
 	
 	var conversationsListUITableViewSeparatorColor: UIColor? = nil
 	
-	var conversationsListUITableViewBackgroundColor: UIColor = .init(white: 0.97, alpha: 1)
-	
 	var conversationsListSelectedCellView: UIView? = nil
 	
 	var conversationsListCellBackgroundColor: UIColor = .white

@@ -30,7 +30,6 @@ class NightTheme: ThemeProtocol {
 	}
 	
 	var conversationsListCellBackgroundColor: UIColor = .black
-	var conversationsListUITableViewBackgroundColor: UIColor = .black
 	
 //	var conversationsListUITableViewHeaderFooterView: UIView? {
 //		let headerView = UIView()
