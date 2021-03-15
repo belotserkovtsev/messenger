@@ -40,6 +40,14 @@ extension ThemeProtocol {
 			ThemeDependentUIButton.appearance()
 				.backgroundColor = mainButtonsBackgroundColor
 			
+			//Text views
+			UITextView.appearance().backgroundColor = mainViewsBackgroundColor
+			UITextView.appearance().textColor = mainFontsColor
+			UITextField.appearance().textColor = mainFontsColor
+			
+			//Activity
+			UIActivityIndicatorView.appearance().color = mainFontsColor
+			
 			//Navbar
 			UINavigationBar.appearance()
 				.titleTextAttributes = [NSAttributedString.Key.foregroundColor: navigationBarTextColor]
