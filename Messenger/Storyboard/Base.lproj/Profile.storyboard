@@ -57,7 +57,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="pTT-x3-GZb">
                                 <rect key="frame" x="72" y="782" width="270" height="0.0"/>
                                 <subviews>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Eq8-WA-tQ6" customClass="ThemeDependentUIButton" customModule="Messenger" customModuleProvider="target">
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Eq8-WA-tQ6" customClass="ThemeDependentUIButton" customModule="Messenger" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="0.0" height="40"/>
                                         <color key="backgroundColor" systemColor="systemGray5Color"/>
                                         <constraints>
@@ -69,7 +69,7 @@
                                             <action selector="saveGCDTapHandler:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4oy-Xe-YKx"/>
                                         </connections>
                                     </button>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dOD-Gi-p8K" customClass="ThemeDependentUIButton" customModule="Messenger" customModuleProvider="target">
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dOD-Gi-p8K" customClass="ThemeDependentUIButton" customModule="Messenger" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="0.0" height="40"/>
                                         <color key="backgroundColor" systemColor="systemGray5Color"/>
                                         <constraints>
