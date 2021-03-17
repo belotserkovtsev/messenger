@@ -25,7 +25,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			ClassicTheme().apply()
 		}
 		
-		return true
+		if UserDefaults.standard.bool(forKey: "isNthLaunch") {
+			return true
+		} else {
+			// Форсы убрать не забыл. Так и хочу оставить, так как без этих файлов приложение работать будет не очень хорошо
+			let storableData: ProfileDataStorable = .init(name: "Your name here", description: "Tell us something about yourself")
+			let jsonData = try! JSONEncoder().encode(storableData)
+			
+			let documentDirURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+			let profileDataBackupURL = documentDirURL.appendingPathComponent("ProfileDataBackup").appendingPathExtension("json")
+			let profileDataURL = documentDirURL.appendingPathComponent("ProfileData").appendingPathExtension("json")
+			
+			try! jsonData.write(to: profileDataBackupURL)
+			try! jsonData.write(to: profileDataURL)
+			UserDefaults.standard.set(true, forKey: "isNthLaunch")
+			return true
+		}
 	}
 }
 

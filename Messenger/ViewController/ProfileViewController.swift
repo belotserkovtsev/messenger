@@ -64,7 +64,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 				alert.addAction(.init(title: "Ok", style: .default, handler: { _ in self.stopEditing() }))
 				self.present(alert, animated: true, completion: nil)
 			case .cancelled:
-				print("cancelled")
+				print("cancelled write")
 			}
 			self.activityIndicator?.stopAnimating()
 		}
@@ -105,10 +105,10 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 				self.nameTextField?.text = data?.name ?? ""
 				self.profilePicture = data?.profilePicture
 				self.setInitialsLabel()
-			case .failure(let err):
-				print(err)
+			case .failure:
+				print("read error")
 			case .cancelled:
-				print("cancelled")
+				print("cancelled read")
 			}
 			self.activityIndicator?.stopAnimating()
 		}

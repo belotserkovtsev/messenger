@@ -33,20 +33,35 @@ class GCDManager {
 				let imageData = data.profilePicture?.jpegData(compressionQuality: 1)
 				
 				sleep(3)
-				if let isCancelled = self.writeWorkItem?.isCancelled, isCancelled {
-					DispatchQueue.main.async {
-						completion(.cancelled)
-					}
-					self.writeWorkItem = nil
-					return
-				}
+				
 				try jsonData.write(to: userDataFileURL)
 				try imageData?.write(to: imageDataFileURL)
 				
-				DispatchQueue.main.async {
-					completion(.success(data: nil))
+				
+				if let isCancelled = self.writeWorkItem?.isCancelled {
+					if isCancelled {
+						DispatchQueue.main.async {
+							completion(.cancelled)
+						}
+						self.writeWorkItem = nil
+						self.restoreFromBackup()
+					} else {
+						let backupDataURL = try self.getUrl(for: "ProfileDataBackup", dot: "json")
+						let backupImageURL = try self.getUrl(for: "ProfileImageBackup", dot: "png")
+						
+						let jsonBackupData = jsonData
+						try jsonBackupData.write(to: backupDataURL)
+						
+						let backupImageData = imageData
+						try backupImageData?.write(to: backupImageURL)
+						
+						DispatchQueue.main.async {
+							completion(.success(data: nil))
+						}
+					}
 				}
 				self.writeWorkItem = nil
+				
 			} catch {
 				DispatchQueue.main.async {
 					completion(.failure(error: .init(id: 1)))
@@ -91,6 +106,36 @@ class GCDManager {
 		}
 		if let item = readWorkItem {
 			DispatchQueue.global(qos: .userInitiated).async(execute: item)
+		}
+		
+	}
+	
+	//MARK: Private methods
+	
+	private func restoreFromBackup() {
+		do {
+			let backupDataURL = try getUrl(for: "ProfileDataBackup", dot: "json")
+			let backupImageURL = try getUrl(for: "ProfileImageBackup", dot: "png")
+			
+			let imageURL = try getUrl(for: "ProfileImage", dot: "png")
+			let dataURL = try getUrl(for: "ProfileData", dot: "json")
+			
+			let profileData = try String(contentsOf: backupDataURL, encoding: .utf8).data(using: .utf8)
+			
+			let image = UIImage(contentsOfFile: backupImageURL.path)
+			let imageData = image?.jpegData(compressionQuality: 1)
+			
+			try profileData?.write(to: dataURL)
+			
+			if let data = imageData {
+				try data.write(to: imageURL)
+			} else {
+				try FileManager().removeItem(at: imageURL)
+			}
+			
+			
+		} catch {
+			print("error with writing to backup")
 		}
 		
 	}
