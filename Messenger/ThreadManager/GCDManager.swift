@@ -33,16 +33,6 @@ class GCDManager {
 				let imageData = data.profilePicture?.jpegData(compressionQuality: 1)
 				
 				sleep(3)
-				
-				try jsonData.write(to: userDataFileURL)
-				try imageData?.write(to: imageDataFileURL)
-				
-				DispatchQueue.main.async {
-					completion(.success(data: nil))
-				}
-//				self.writeWorkItem = nil
-				
-				
 				if let isCancelled = self.writeWorkItem?.isCancelled, isCancelled {
 					DispatchQueue.main.async {
 						completion(.cancelled)
@@ -50,10 +40,13 @@ class GCDManager {
 					self.writeWorkItem = nil
 					return
 				}
+				try jsonData.write(to: userDataFileURL)
+				try imageData?.write(to: imageDataFileURL)
 				
-				
-				
-				
+				DispatchQueue.main.async {
+					completion(.success(data: nil))
+				}
+				self.writeWorkItem = nil
 			} catch {
 				DispatchQueue.main.async {
 					completion(.failure(error: .init(id: 1)))
