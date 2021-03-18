@@ -114,6 +114,8 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 		}
 		
 		self.hideKeyboardWhenTappedAround()
+		addGestureToImageView()
+		
 		nameTextField?.delegate = self
 		descriptionTextView?.delegate = self
 	}
@@ -191,15 +193,13 @@ extension ProfileViewController {
 		}
 	}
 	
-	private func stopEditing(andHideButtons hideButtons: Bool = true) {
+	private func stopEditing() {
 		restrictEditing()
 		
 		isEditingProfile = false
-		if hideButtons {
-			saveGCDButton?.isHidden = true
-			saveOperationsButton?.isHidden = true
-		}
-		
+		saveGCDButton?.isHidden = true
+		saveOperationsButton?.isHidden = true
+		addGestureToImageView()
 		editButton?.setTitle("Edit", for: .normal)
 	}
 	
@@ -219,13 +219,13 @@ extension ProfileViewController {
 		
 		editButton?.setTitle("Cancel", for: .normal)
 		
-		addGestureToImageView()
-		
 		if selection {
 			nameTextField?.becomeFirstResponder()
 			let newPosition = descriptionTextView?.endOfDocument
-			descriptionTextView?.selectedTextRange = descriptionTextView?
-				.textRange(from: newPosition!, to: newPosition!)
+			if let position = newPosition {
+				descriptionTextView?.selectedTextRange = descriptionTextView?
+					.textRange(from: position, to: position)
+			}
 		}
 	}
 }
@@ -285,6 +285,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate {
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
 		if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
 			profilePicture = image
+			startEditing(withSelection: false)
 			enableSaveButtons()
 		}
 		
