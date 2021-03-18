@@ -20,6 +20,8 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 	
 	private var isEditingProfile = false
 	private var gcdManager = GCDManager()
+	private var operationManager = OperationManager()
+	private var latestSaving: LatestSavingType = .none
 	
 	private var profilePicture: UIImage? {
 		willSet {
@@ -43,10 +45,31 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 	}
 	
 	@IBAction func saveOperationsTapHandler(_ sender: UIButton) {
-		
+		latestSaving = .operations
+		restrictEditing()
+		activityIndicator?.startAnimating()
+		operationManager.save(data:.init(name: nameTextField?.text,
+										 description: descriptionTextView?.text,
+										 profilePicture: profilePicture)) { status in
+			switch status {
+			case .success:
+				print("success")
+				let alert = UIAlertController(title: "Success", message: nil, preferredStyle: .alert)
+				alert.addAction(.init(title: "Ok", style: .default, handler: { _ in self.stopEditing() }))
+				self.present(alert, animated: true, completion: nil)
+			case .failure(let err):
+				let alert = UIAlertController(title: "Error", message: err.message, preferredStyle: .alert)
+				alert.addAction(.init(title: "Ok", style: .default, handler: { _ in self.stopEditing() }))
+				self.present(alert, animated: true, completion: nil)
+			case .cancelled:
+				print("cancelled write")
+			}
+			self.activityIndicator?.stopAnimating()
+		}
 	}
 	
 	@IBAction func saveGCDTapHandler(_ sender: UIButton) {
+		latestSaving = .gcd
 		restrictEditing()
 		activityIndicator?.startAnimating()
 		
@@ -176,8 +199,15 @@ extension ProfileViewController {
 	
 	private func cancelEditing() {
 		stopEditing()
-		gcdManager.cancel(.write)
 		activityIndicator?.stopAnimating()
+		
+		switch latestSaving {
+		case .gcd:
+			gcdManager.cancel(.write)
+		default:
+			return
+		}
+		
 		GCDManager().get() { status in
 			switch status {
 			case .success(let data):
@@ -325,5 +355,11 @@ extension ProfileViewController: UITextFieldDelegate {
 			enableSaveButtons()
 		}
 		return true
+	}
+}
+
+extension ProfileViewController {
+	enum LatestSavingType {
+		case none, gcd, operations
 	}
 }

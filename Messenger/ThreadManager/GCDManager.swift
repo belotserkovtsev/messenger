@@ -90,7 +90,7 @@ class GCDManager {
 				let text = try String(contentsOf: fileURL, encoding: .utf8).data(using: .utf8)
 				let image = UIImage(contentsOfFile: imageUrl.path)
 				
-				let storableData = try JSONDecoder().decode(ProfileDataStorable.self, from: text!)
+				let storableData = try JSONDecoder().decode(ProfileDataStorable.self, from: text ?? Data())
 				let presentableData: ProfileDataModel = .init(name: storableData.name, description: storableData.description, profilePicture: image)
 				
 				DispatchQueue.main.async {
@@ -144,9 +144,5 @@ class GCDManager {
 		let documentDirURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
 		let fileURL = documentDirURL.appendingPathComponent(fileName).appendingPathExtension(fileExtension)
 		return fileURL
-	}
-	
-	enum WorkItemType {
-		case write, read
 	}
 }
