@@ -10,9 +10,9 @@ import UIKit
 class ConversationsListTableViewCell: UITableViewCell {
 	
 	@IBOutlet weak var profilePictureView: UIView?
-	@IBOutlet weak var nameAndLastnameLabel: UILabel?
+	@IBOutlet weak var nameAndLastnameLabel: ThemeDependentUILabel?
 	@IBOutlet weak var lastMessageLabel: UILabel?
-	@IBOutlet weak var initialsLabel: UILabel?
+	@IBOutlet weak var initialsLabel: ThemeDependentUILabel?
 	@IBOutlet weak var unreadMessageIndicator: UIView?
 	@IBOutlet weak var isOnlineView: UIView?
 	@IBOutlet weak var isOnlineStrokeView: UIView?
@@ -23,7 +23,7 @@ class ConversationsListTableViewCell: UITableViewCell {
 		unreadMessageIndicator?.layer.cornerRadius = 14 / 2
 		isOnlineView?.layer.cornerRadius = 12 / 2
 		isOnlineStrokeView?.layer.cornerRadius = 16 / 2
-		isOnlineStrokeView?.backgroundColor = UIColor(named: "OnlineStroke")
+		isOnlineStrokeView?.backgroundColor = .white
 		
 		nameAndLastnameLabel?.text = data.name ?? "No name"
 		lastMessageLabel?.text = data.message ?? "No messages yet..."

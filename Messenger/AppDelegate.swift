@@ -13,6 +13,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		// Override point for customization after application launch.
+		if #available(iOS 13.0, *) { window?.overrideUserInterfaceStyle = .light }
+		
+		let theme = ThemeManager.currentTheme
+		switch theme {
+		case .light:
+			LightTheme().apply()
+		case .night:
+			NightTheme().apply()
+		case .classic:
+			ClassicTheme().apply()
+		}
+		
 		return true
 	}
 }

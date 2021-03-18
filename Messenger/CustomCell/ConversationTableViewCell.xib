@@ -11,29 +11,51 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="98" id="KGk-i7-Jjw" customClass="ConversationTableViewCell" customModule="Messenger" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="306" height="98"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="140" id="KGk-i7-Jjw" customClass="ConversationTableViewCell" customModule="Messenger" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="339" height="140"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="306" height="98"/>
+                <rect key="frame" x="0.0" y="0.0" width="339" height="140"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AWF-OX-bhN">
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AWF-OX-bhN" customClass="IncomingMessageUIView" customModule="Messenger" customModuleProvider="target">
                         <rect key="frame" x="12" y="12" width="105.5" height="43.5"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hello world" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fkj-ID-Alo">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hello world" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fgF-jA-3TN">
                                 <rect key="frame" x="12" y="12" width="81.5" height="19.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t9l-Dh-oaL" customClass="OutgoingMessageUIView" customModule="Messenger" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="105.5" height="43.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hello world" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fkj-ID-Alo">
+                                        <rect key="frame" x="12" y="12" width="81.5" height="19.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemGrayColor"/>
+                                <constraints>
+                                    <constraint firstItem="Fkj-ID-Alo" firstAttribute="top" secondItem="t9l-Dh-oaL" secondAttribute="top" constant="12" id="kAG-e5-uQ8"/>
+                                    <constraint firstAttribute="bottom" secondItem="Fkj-ID-Alo" secondAttribute="bottom" constant="12" id="lqI-Go-BG0"/>
+                                    <constraint firstItem="Fkj-ID-Alo" firstAttribute="leading" secondItem="t9l-Dh-oaL" secondAttribute="leading" constant="12" id="msH-jd-i1g"/>
+                                    <constraint firstAttribute="trailing" secondItem="Fkj-ID-Alo" secondAttribute="trailing" constant="12" id="wCt-7X-2kz"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemGreenColor"/>
                         <constraints>
-                            <constraint firstItem="Fkj-ID-Alo" firstAttribute="top" secondItem="AWF-OX-bhN" secondAttribute="top" constant="12" id="6g8-OZ-Ros"/>
-                            <constraint firstItem="Fkj-ID-Alo" firstAttribute="leading" secondItem="AWF-OX-bhN" secondAttribute="leading" constant="12" id="Dr3-lQ-aih"/>
-                            <constraint firstAttribute="trailing" secondItem="Fkj-ID-Alo" secondAttribute="trailing" constant="12" id="L3a-b5-SDu"/>
-                            <constraint firstAttribute="bottom" secondItem="Fkj-ID-Alo" secondAttribute="bottom" constant="12" id="gvC-4e-Am4"/>
+                            <constraint firstItem="fgF-jA-3TN" firstAttribute="top" secondItem="AWF-OX-bhN" secondAttribute="top" constant="12" id="Dai-kU-lT7"/>
+                            <constraint firstAttribute="bottom" secondItem="fgF-jA-3TN" secondAttribute="bottom" constant="12" id="OTi-fp-28l"/>
+                            <constraint firstAttribute="bottom" secondItem="t9l-Dh-oaL" secondAttribute="bottom" id="Plo-H4-er3"/>
+                            <constraint firstItem="t9l-Dh-oaL" firstAttribute="top" secondItem="AWF-OX-bhN" secondAttribute="top" id="VJH-GB-ojn"/>
+                            <constraint firstAttribute="trailing" secondItem="fgF-jA-3TN" secondAttribute="trailing" constant="12" id="VKr-s2-IWB"/>
+                            <constraint firstItem="t9l-Dh-oaL" firstAttribute="leading" secondItem="AWF-OX-bhN" secondAttribute="leading" id="XIc-qC-qag"/>
+                            <constraint firstItem="fgF-jA-3TN" firstAttribute="leading" secondItem="AWF-OX-bhN" secondAttribute="leading" constant="12" id="qCz-Jh-poB"/>
+                            <constraint firstAttribute="trailing" secondItem="t9l-Dh-oaL" secondAttribute="trailing" id="ycJ-wp-gBW"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -47,15 +69,20 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="incomingMessageTextLabel" destination="fgF-jA-3TN" id="WXi-JK-eBw"/>
+                <outlet property="incomingMessageView" destination="AWF-OX-bhN" id="6iL-Jm-YiY"/>
                 <outlet property="leadingPaddingConstraint" destination="T0C-wX-lYF" id="zq2-K6-aLl"/>
-                <outlet property="messageTextLabel" destination="Fkj-ID-Alo" id="MVH-Yx-a5k"/>
-                <outlet property="messageView" destination="AWF-OX-bhN" id="6iL-Jm-YiY"/>
+                <outlet property="outgoingMessageTextLabel" destination="Fkj-ID-Alo" id="MVH-Yx-a5k"/>
+                <outlet property="outgoingMessageView" destination="t9l-Dh-oaL" id="L89-ef-2jO"/>
                 <outlet property="trailingPaddingConstraint" destination="5G5-ud-FSs" id="SN4-WU-SaQ"/>
             </connections>
-            <point key="canvasLocation" x="-89.855072463768124" y="143.97321428571428"/>
+            <point key="canvasLocation" x="-65.94202898550725" y="158.03571428571428"/>
         </tableViewCell>
     </objects>
     <resources>
+        <systemColor name="systemGrayColor">
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemGreenColor">
             <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
