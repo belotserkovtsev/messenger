@@ -37,8 +37,6 @@ class GCDManager {
 					try jsonData.write(to: profileDataBackupURL)
 				}
 				
-				sleep(3)
-				
 				try jsonData.write(to: userDataFileURL)
 				try imageData?.write(to: imageDataFileURL)
 				

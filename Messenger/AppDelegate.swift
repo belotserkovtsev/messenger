@@ -29,14 +29,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		case .classic:
 			ClassicTheme().apply()
 		}
+
 		
 		if UserDefaults.standard.bool(forKey: "isNthLaunch") {
 			return true
 		} else {
 			let profileData: ProfileDataModel = .init(name: "Your name here", description: "Tell us something about yourself", profilePicture: nil)
-			GCDManager().save(data: profileData, isFirstLaunch: true) { result in
-				print("ok")
-			}
+			GCDManager().save(data: profileData, isFirstLaunch: true) { result in }
 			UserDefaults.standard.set(true, forKey: "isNthLaunch")
 			return true
 		}

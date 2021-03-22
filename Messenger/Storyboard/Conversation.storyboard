@@ -18,29 +18,64 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="t3B-sY-oUE">
-                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="738"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oiY-mD-5W9" customClass="ThemeDependentUIView" customModule="Messenger" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="782" width="414" height="80"/>
+                                <subviews>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Text" translatesAutoresizingMaskIntoConstraints="NO" id="PD6-pP-xtl">
+                                        <rect key="frame" x="12" y="5" width="342" height="70"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <color key="textColor" systemColor="labelColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AOs-z6-cfV">
+                                        <rect key="frame" x="366" y="25" width="36" height="30"/>
+                                        <state key="normal" title="Send"/>
+                                        <connections>
+                                            <action selector="sendButtonHandler:" destination="Qhx-xU-qAC" eventType="touchUpInside" id="b5z-Dg-Yut"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="AOs-z6-cfV" firstAttribute="leading" secondItem="PD6-pP-xtl" secondAttribute="trailing" constant="12" id="Jhg-LI-pOm"/>
+                                    <constraint firstAttribute="trailing" secondItem="AOs-z6-cfV" secondAttribute="trailing" constant="12" id="L5V-Ha-L1L"/>
+                                    <constraint firstAttribute="bottom" secondItem="PD6-pP-xtl" secondAttribute="bottom" constant="5" id="RVz-jk-dgt"/>
+                                    <constraint firstItem="PD6-pP-xtl" firstAttribute="top" secondItem="oiY-mD-5W9" secondAttribute="top" constant="5" id="VuC-SO-q4S"/>
+                                    <constraint firstItem="AOs-z6-cfV" firstAttribute="centerY" secondItem="oiY-mD-5W9" secondAttribute="centerY" id="t4t-fl-RjY"/>
+                                    <constraint firstAttribute="height" constant="80" id="wfc-NU-9aw"/>
+                                    <constraint firstItem="PD6-pP-xtl" firstAttribute="leading" secondItem="oiY-mD-5W9" secondAttribute="leading" constant="12" id="zYD-FE-3TF"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="E1T-v2-xUT"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="t3B-sY-oUE" firstAttribute="trailing" secondItem="E1T-v2-xUT" secondAttribute="trailing" id="0Uq-Aa-vkR"/>
+                            <constraint firstItem="E1T-v2-xUT" firstAttribute="bottom" secondItem="oiY-mD-5W9" secondAttribute="bottom" id="B9x-eg-xKX"/>
+                            <constraint firstItem="oiY-mD-5W9" firstAttribute="top" secondItem="t3B-sY-oUE" secondAttribute="bottom" id="gJe-ua-8QM"/>
+                            <constraint firstItem="oiY-mD-5W9" firstAttribute="leading" secondItem="E1T-v2-xUT" secondAttribute="leading" id="mo2-hl-003"/>
                             <constraint firstItem="t3B-sY-oUE" firstAttribute="leading" secondItem="E1T-v2-xUT" secondAttribute="leading" id="qih-gE-rWQ"/>
-                            <constraint firstItem="t3B-sY-oUE" firstAttribute="top" secondItem="E1T-v2-xUT" secondAttribute="top" id="tlZ-sq-IHp"/>
-                            <constraint firstItem="E1T-v2-xUT" firstAttribute="bottom" secondItem="t3B-sY-oUE" secondAttribute="bottom" id="vvX-vV-SGY"/>
+                            <constraint firstItem="E1T-v2-xUT" firstAttribute="trailing" secondItem="oiY-mD-5W9" secondAttribute="trailing" id="yjw-Ko-qJS"/>
+                            <constraint firstItem="t3B-sY-oUE" firstAttribute="top" secondItem="E1T-v2-xUT" secondAttribute="top" id="zPg-3q-bp1"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="messageTextView" destination="PD6-pP-xtl" id="ZY5-vO-M3i"/>
                         <outlet property="tableView" destination="t3B-sY-oUE" id="4tH-gl-ON6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1iT-V2-oD0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1280" y="-16"/>
+            <point key="canvasLocation" x="-1281.1594202898552" y="-16.071428571428569"/>
         </scene>
     </scenes>
     <resources>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

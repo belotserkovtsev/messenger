@@ -6,11 +6,15 @@
 //
 
 import UIKit
+import Firebase
 
 class ConversationsListViewController: UIViewController {
 	
 	@IBOutlet weak var tableView: UITableView?
 	private let cellIdentifier = String(describing: ConversationsListTableViewCell.self)
+	private lazy var database = Firestore.firestore()
+	private lazy var reference = database.collection("channels")
+	private var channelsModel = ChannelDataModel()
 	
 	//MARK: Nav Bar Tap Handlers
 	@objc private func profileTapHandler() {
@@ -43,6 +47,31 @@ class ConversationsListViewController: UIViewController {
 		tableView?.rowHeight = 88
 		
 		tableView?.contentInset = UIEdgeInsets(top: -1, left: 0, bottom: 0, right: 0)
+		
+		reference.addSnapshotListener { [weak self] snapshot, error in
+			guard let documents = snapshot?.documents else { return }
+			var channels = [ChannelDataModel.Channel]()
+			for document in documents {
+				let documentData = document.data()
+				let id = document.documentID
+				if let name = documentData["name"] as? String, !name.isEmpty {
+					
+					let timestamp = documentData["lastActivity"] as? Timestamp
+					let lastMessage = documentData["lastMessage"] as? String
+					
+					let data = ChannelDataModel.Channel.init(id: id,
+															 name: name,
+															 lastMessage: lastMessage,
+															 lastActivity: timestamp?.dateValue(),
+															 online: true,
+															 hasUnreadMessages: false)
+					channels.append(data)
+				}
+				self?.channelsModel.reload(with: channels)
+				self?.tableView?.reloadData()
+				
+			}
+		}
 		
 	}
 	
@@ -101,46 +130,46 @@ class ConversationsListViewController: UIViewController {
 		
 		return newImage
 	}
-	
-	//MARK: Data
+}
+
+//MARK: Data
+extension ConversationsListViewController {
 	struct ChannelDataModel {
-		var channels: [Channel]
+		private(set) var channels = [Channel]()
+		
+		mutating func reload(with channels: [Channel]) {
+			self.channels = channels.sorted { left, right in
+				guard let leftLatestActivity = left.lastActivity else { return false }
+				guard let rigtLatestActivity = right.lastActivity else { return true }
+				return leftLatestActivity > rigtLatestActivity
+			}
+		}
 		
 		struct Channel {
-			var name: String?
-			var message: String?
-			var date: Date?
+			var id: String
+			var name: String
+			var lastMessage: String?
+			var lastActivity: Date?
 			var online: Bool
 			var hasUnreadMessages: Bool
 		}
 	}
-	
-	private var channelsData: ChannelDataModel = .init(channels:
-	[.init(name: "Egor Nosov", message: "What are you up to?", date: Date(), online: true, hasUnreadMessages: false),
-	 .init(name: "Alex Firsov", message: "I was trying to reach you but you were not ansering so i thought i would message you instead. Well, to be honest", date: Date(timeIntervalSinceNow: TimeInterval(-336_000)), online: true, hasUnreadMessages: false),
-	 .init(name: "Anastasia Bazueva", message: "Some bread, milk, youghurt and paper towels", date: Date(timeIntervalSinceNow: TimeInterval(-536_000)), online: true, hasUnreadMessages: true),
-	 .init(name: "Viktor", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false),
-	 .init(name: "Mikhail Romanov", message: nil, date: nil, online: true, hasUnreadMessages: false),
-	 .init(name: "belotserkovtsev", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false),
-	 .init(name: nil, message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: true),
-	 .init(name: "Andrey Bodrov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: true),
-	 .init(name: "Evgeniy Naumov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false),
-	 .init(name: "Sasha Smirnov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false)])
 }
 
 //MARK: UITableViewDataSource
 extension ConversationsListViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		channelsData.channels.count
+		channelsModel.channels.count
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let data = channelsData.channels[indexPath.row]
+		let data = channelsModel.channels[indexPath.row]
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
 				as? ConversationsListTableViewCell else { return UITableViewCell() }
 		cell.configure(with: data)
 		return cell
 	}
+	
 	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 		1
 	}
@@ -151,10 +180,19 @@ extension ConversationsListViewController: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let storyBoard : UIStoryboard = UIStoryboard(name: "Conversation", bundle: nil)
 		let conversation = storyBoard.instantiateViewController(withIdentifier: "ConversationViewController") as? ConversationViewController
-		conversation?.title = channelsData.channels[indexPath.row].name ?? "No name"
+		
+		conversation?.title = channelsModel.channels[indexPath.row].name
+		conversation?.setId(with: channelsModel.channels[indexPath.row].id)
+		
 		if let conversationViewController = conversation {
 			navigationController?.pushViewController(conversationViewController, animated: true)
 		}
 		tableView.deselectRow(at: indexPath, animated: true)
+	}
+	
+	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+		if (editingStyle == .delete) {
+			reference.document(channelsModel.channels[indexPath.row].id).delete()
+		}
 	}
 }

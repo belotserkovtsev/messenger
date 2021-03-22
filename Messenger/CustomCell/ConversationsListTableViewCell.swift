@@ -25,12 +25,12 @@ class ConversationsListTableViewCell: UITableViewCell {
 		isOnlineStrokeView?.layer.cornerRadius = 16 / 2
 		isOnlineStrokeView?.backgroundColor = .white
 		
-		nameAndLastnameLabel?.text = data.name ?? "No name"
-		lastMessageLabel?.text = data.message ?? "No messages yet..."
-		initialsLabel?.text = "\(data.name?.first?.uppercased() ?? "")"
+		nameAndLastnameLabel?.text = data.name 
+		lastMessageLabel?.text = data.lastMessage ?? "No messages yet..."
+		initialsLabel?.text = "\(data.name.first?.uppercased() ?? "")"
 		isOnlineView?.isHidden = !data.online
 		isOnlineStrokeView?.isHidden = !data.online
-		dateLabel?.text = date(for: data.date)
+		dateLabel?.text = date(for: data.lastActivity)
 		
 		if data.hasUnreadMessages {
 			setCellToUnread()
