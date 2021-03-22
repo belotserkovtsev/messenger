@@ -34,13 +34,15 @@ class ConversationsListViewController: UIViewController {
 		super.viewDidLoad()
 		tableView?.delegate = self
 		
-		title = "Tinkoff Chat"
+		title = "Channels"
 		setTrailingBarButtonItem()
 		setLeadingBarButtonItem()
 		
 		tableView?.register(UINib(nibName: String(describing: ConversationsListTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
 		tableView?.dataSource = self
 		tableView?.rowHeight = 88
+		
+		tableView?.contentInset = UIEdgeInsets(top: -1, left: 0, bottom: 0, right: 0)
 		
 	}
 	
@@ -101,10 +103,10 @@ class ConversationsListViewController: UIViewController {
 	}
 	
 	//MARK: Data
-	struct ChatsDataModel {
-		var chats: [[Chat]]
+	struct ChannelDataModel {
+		var channels: [Channel]
 		
-		struct Chat {
+		struct Channel {
 			var name: String?
 			var message: String?
 			var date: Date?
@@ -113,51 +115,34 @@ class ConversationsListViewController: UIViewController {
 		}
 	}
 	
-	private var chatsData: ChatsDataModel = .init(chats:
-		[[.init(name: "Egor Nosov", message: "What are you up to?", date: Date(), online: true, hasUnreadMessages: false),
-		.init(name: "Alex Firsov", message: "I was trying to reach you but you were not ansering so i thought i would message you instead. Well, to be honest", date: Date(timeIntervalSinceNow: TimeInterval(-336_000)), online: true, hasUnreadMessages: false),
-		.init(name: "Anastasia Bazueva", message: "Some bread, milk, youghurt and paper towels", date: Date(timeIntervalSinceNow: TimeInterval(-536_000)), online: true, hasUnreadMessages: true),
-		.init(name: "Viktor", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false),
-		.init(name: "Mikhail Romanov", message: nil, date: nil, online: true, hasUnreadMessages: false),
-		.init(name: "belotserkovtsev", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false),
-		.init(name: nil, message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: true),
-		.init(name: "Andrey Bodrov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: true),
-		.init(name: "Evgeniy Naumov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false),
-		.init(name: "Sasha Smirnov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false)],
-									   
-	   [.init(name: "Egor Nosov", message: "What are you up to?", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Alex Firsov", message: "I was trying to reach you but you were not ansering so i thought i would message you", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Anastasia Bazueva", message: "Some bread, milk, youghurt and paper towels", date: Date(), online: false, hasUnreadMessages: true),
-		.init(name: "Viktor Belfort", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Mikhail Romanov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Denver White", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Egor Nosov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Egor Nosov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Egor Nosov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Egor Nosov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false)]])
+	private var channelsData: ChannelDataModel = .init(channels:
+	[.init(name: "Egor Nosov", message: "What are you up to?", date: Date(), online: true, hasUnreadMessages: false),
+	 .init(name: "Alex Firsov", message: "I was trying to reach you but you were not ansering so i thought i would message you instead. Well, to be honest", date: Date(timeIntervalSinceNow: TimeInterval(-336_000)), online: true, hasUnreadMessages: false),
+	 .init(name: "Anastasia Bazueva", message: "Some bread, milk, youghurt and paper towels", date: Date(timeIntervalSinceNow: TimeInterval(-536_000)), online: true, hasUnreadMessages: true),
+	 .init(name: "Viktor", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false),
+	 .init(name: "Mikhail Romanov", message: nil, date: nil, online: true, hasUnreadMessages: false),
+	 .init(name: "belotserkovtsev", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false),
+	 .init(name: nil, message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: true),
+	 .init(name: "Andrey Bodrov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: true),
+	 .init(name: "Evgeniy Naumov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false),
+	 .init(name: "Sasha Smirnov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false)])
 }
 
 //MARK: UITableViewDataSource
 extension ConversationsListViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		chatsData.chats[section].count
-	}
-	
-	func numberOfSections(in tableView: UITableView) -> Int {
-		chatsData.chats.count
+		channelsData.channels.count
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let section = chatsData.chats[indexPath.section]
-		let data = section[indexPath.row]
+		let data = channelsData.channels[indexPath.row]
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
 				as? ConversationsListTableViewCell else { return UITableViewCell() }
 		cell.configure(with: data)
 		return cell
 	}
-	
-	func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		section == 0 ? "Online" : "History"
+	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+		1
 	}
 }
 
@@ -166,7 +151,7 @@ extension ConversationsListViewController: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let storyBoard : UIStoryboard = UIStoryboard(name: "Conversation", bundle: nil)
 		let conversation = storyBoard.instantiateViewController(withIdentifier: "ConversationViewController") as? ConversationViewController
-		conversation?.title = chatsData.chats[indexPath.section][indexPath.row].name ?? "No name"
+		conversation?.title = channelsData.channels[indexPath.row].name ?? "No name"
 		if let conversationViewController = conversation {
 			navigationController?.pushViewController(conversationViewController, animated: true)
 		}
