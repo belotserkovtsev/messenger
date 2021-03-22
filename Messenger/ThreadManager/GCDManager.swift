@@ -21,7 +21,7 @@ class GCDManager {
 		}
 	}
 	
-	func save(data: ProfileDataModel, completion: @escaping (ProfileDataCompletionStatus) -> ()) {
+	func save(data: ProfileDataModel, isFirstLaunch: Bool = false, completion: @escaping (ProfileDataCompletionStatus) -> ()) {
 		writeWorkItem = DispatchWorkItem {
 			do {
 				let userDataFileURL = try self.getUrl(for: "ProfileData", dot: "json")
@@ -31,6 +31,11 @@ class GCDManager {
 				
 				let jsonData = try JSONEncoder().encode(storableData)
 				let imageData = data.profilePicture?.jpegData(compressionQuality: 1)
+				
+				if isFirstLaunch {
+					let profileDataBackupURL = try self.getUrl(for: "ProfileDataBackup", dot: "json")
+					try jsonData.write(to: profileDataBackupURL)
+				}
 				
 				sleep(3)
 				
@@ -135,7 +140,7 @@ class GCDManager {
 			
 			
 		} catch {
-			print("error with writing to backup")
+			print("error with writing/reading to/from backup")
 		}
 		
 	}

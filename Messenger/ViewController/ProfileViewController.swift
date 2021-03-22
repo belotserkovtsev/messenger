@@ -137,14 +137,10 @@ extension ProfileViewController {
 	}
 	
 	private func disableSaveButton() {
-//		descriptionTextView?.isEditable = false
-//		nameTextField?.isEnabled = false
 		saveGCDButton?.isEnabled = false
 	}
 	
 	private func enableSaveButton() {
-//		descriptionTextView?.isEditable = true
-//		nameTextField?.isEnabled = true
 		saveGCDButton?.isEnabled = true
 	}
 	
