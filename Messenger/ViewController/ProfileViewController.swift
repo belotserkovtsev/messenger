@@ -107,7 +107,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 			self.activityIndicator?.stopAnimating()
 		}
 		
-		self.hideKeyboardWhenTappedAround()
+		let _ = self.hideKeyboardWhenTappedAround()
 		addGestureToImageView()
 		
 		nameTextField?.delegate = self

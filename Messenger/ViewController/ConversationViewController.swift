@@ -12,6 +12,9 @@ class ConversationViewController: UIViewController {
 	
 	@IBOutlet weak var tableView: UITableView?
 	@IBOutlet weak var messageTextView: UITextView?
+	@IBOutlet weak var messageTextViewWrapperView: UIView?
+	@IBOutlet weak var sendBarView: ThemeDependentUIView?
+	@IBOutlet weak var messageTextViewPlaceholderLabel: UILabel?
 	
 	private let cellIdentifier = String(describing: ConversationTableViewCell.self)
 	
@@ -51,9 +54,9 @@ class ConversationViewController: UIViewController {
 	//MARK: Lifecycle Methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		messageTextView?.layer.cornerRadius = 12
-		messageTextView?.layer.borderWidth = 1
-		messageTextView?.layer.borderColor = UIColor.themeBorder.cgColor
+		messageTextViewWrapperView?.layer.cornerRadius = 12
+		messageTextViewWrapperView?.layer.borderWidth = 1
+		messageTextViewWrapperView?.layer.borderColor = UIColor.themeBorder.cgColor
 		
 		tableView?.estimatedRowHeight = 10
 		tableView?.rowHeight = UITableView.automaticDimension
@@ -62,6 +65,14 @@ class ConversationViewController: UIViewController {
 		tableView?.dataSource = self
 		
 		tableView?.transform = CGAffineTransform(scaleX: 1, y: -1)
+		
+		NotificationCenter.default
+			.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+		NotificationCenter.default
+			.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+		
+		let gesture = self.hideKeyboardWhenTappedAround()
+		gesture.delegate = self
 		
 		reference.addSnapshotListener { [weak self] snapshot, error in
 			guard let documents = snapshot?.documents else { return }
@@ -80,6 +91,8 @@ class ConversationViewController: UIViewController {
 			self?.channelModel.reload(with: messages)
 			self?.tableView?.reloadData()
 		}
+		
+		messageTextView?.delegate = self
 	}
 	
 	func setId(with id: String) {
@@ -122,5 +135,66 @@ extension ConversationViewController: UITableViewDataSource {
 		cell.configure(with: data)
 		cell.contentView.transform = CGAffineTransform(scaleX: 1, y: -1)
 		return cell
+	}
+}
+
+//MARK: OBJC andlers
+extension ConversationViewController {
+	@objc private func keyboardWillShow(notification: NSNotification) {
+		if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+			if self.view.frame.origin.y == 0 {
+				self.view.frame.origin.y -= keyboardSize.height
+			}
+		}
+	}
+	
+	@objc private func keyboardWillHide(notification: NSNotification) {
+		if self.view.frame.origin.y != 0 {
+			self.view.frame.origin.y = 0
+		}
+	}
+}
+
+//MARK: TextView Delegate
+extension ConversationViewController: UITextViewDelegate {
+	func textViewDidChange(_ textView: UITextView) {
+		if let placeholder = messageTextViewPlaceholderLabel {
+			if textView.text.count > 0 && !placeholder.isHidden {
+				placeholder.isHidden = true
+			} else if textView.text.count == 0 && placeholder.isHidden {
+				placeholder.isHidden = false
+			}
+		}
+		
+		if textView.contentSize.height > 100 && !textView.isScrollEnabled {
+			let frame = textView.frame
+			textView.isScrollEnabled = true
+			let heightConstraint: NSLayoutConstraint = .init(item: textView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: frame.height)
+			heightConstraint.identifier = "height"
+			textView.addConstraint(heightConstraint)
+		}
+		
+		if textView.contentSize.height < 100 && textView.isScrollEnabled {
+			let heightConstraint = textView.constraints.first { constraint in
+				constraint.identifier == "height"
+			}
+			heightConstraint?.constant = textView.contentSize.height
+			textView.isScrollEnabled = false
+		}
+		
+		if textView.contentSize.height < 100 && !textView.isScrollEnabled {
+			textView.sizeToFit()
+			let heightConstraint = textView.constraints.first { constraint in
+				constraint.identifier == "height"
+			}
+			heightConstraint?.constant = textView.contentSize.height
+		}
+	}
+}
+
+extension ConversationViewController: UIGestureRecognizerDelegate {
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+		guard let tableView = self.tableView else { return false }
+		return touch.view?.isDescendant(of: tableView) == true
 	}
 }

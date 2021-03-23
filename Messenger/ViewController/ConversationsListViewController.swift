@@ -71,13 +71,14 @@ class ConversationsListViewController: UIViewController {
 					
 					let timestamp = documentData["lastActivity"] as? Timestamp
 					let lastMessage = documentData["lastMessage"] as? String
+					let hasRecentlyBeenActive = self?.hasRecentlyBeenActive(for: timestamp?.dateValue()) ?? false
 					
-					let data = ChannelDataModel.Channel.init(id: id,
-															 name: name,
-															 lastMessage: lastMessage,
-															 lastActivity: timestamp?.dateValue(),
-															 online: true,
-															 hasUnreadMessages: false)
+					let data = ChannelDataModel.Channel(id: id,
+														name: name,
+														lastMessage: lastMessage,
+														lastActivity: timestamp?.dateValue(),
+														online: hasRecentlyBeenActive,
+														hasUnreadMessages: false)
 					channels.append(data)
 				}
 				self?.channelsModel.reload(with: channels)
@@ -96,8 +97,26 @@ class ConversationsListViewController: UIViewController {
 			tableView?.backgroundColor = UIColor(white: 0.97, alpha: 1)
 		}
 	}
+	//MARK: UI Modifiers/Private methods
+	private func hasRecentlyBeenActive(for date: Date?) -> Bool {
+		guard let inputDate = date else { return false }
+		
+		let calendar = Calendar.current
+		let startOfNow = Date()
+		let startOfTimeStamp = inputDate
+		
+		let components = calendar.dateComponents([.minute], from: startOfNow, to: startOfTimeStamp)
+		let minuteComponent = components.minute
+		if let minute = minuteComponent {
+			if abs(minute) >= 10 {
+				return false
+			} else {
+				return true
+			}
+		}
+		return false
+	}
 	
-	//MARK: UI Modifiers
 	private func setTrailingBarButtonItem() {
 		if let profileItemImage = UIImage(named: "Plus"),
 		   let resizedProfileItemImage = resizeImage(image: profileItemImage, targetSize: CGSize(width: 22, height: 22))  {

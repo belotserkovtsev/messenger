@@ -32,6 +32,7 @@
 		848FAAA226000A860063368E /* UIImage+toString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848FAAA126000A860063368E /* UIImage+toString.swift */; };
 		848FAAA526000AB90063368E /* String+toUIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848FAAA426000AB90063368E /* String+toUIImage.swift */; };
 		848FAAA926000FA40063368E /* ProfileDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848FAAA826000FA40063368E /* ProfileDataModel.swift */; };
+		84904F60260A5D1000FEE634 /* String+lines.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84904F5F260A5D1000FEE634 /* String+lines.swift */; };
 		84AE8CD725EBD5150016C53E /* ConversationsList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84AE8CD625EBD5150016C53E /* ConversationsList.storyboard */; };
 		84AE8CDA25EBD57B0016C53E /* ConversationsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AE8CD925EBD57B0016C53E /* ConversationsListViewController.swift */; };
 		84CE067725EBF0FB005B8664 /* ConversationsListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CE067525EBF0FB005B8664 /* ConversationsListTableViewCell.swift */; };
@@ -79,6 +80,7 @@
 		848FAAA126000A860063368E /* UIImage+toString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+toString.swift"; sourceTree = "<group>"; };
 		848FAAA426000AB90063368E /* String+toUIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+toUIImage.swift"; sourceTree = "<group>"; };
 		848FAAA826000FA40063368E /* ProfileDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDataModel.swift; sourceTree = "<group>"; };
+		84904F5F260A5D1000FEE634 /* String+lines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+lines.swift"; sourceTree = "<group>"; };
 		84AE8CD625EBD5150016C53E /* ConversationsList.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ConversationsList.storyboard; sourceTree = "<group>"; };
 		84AE8CD925EBD57B0016C53E /* ConversationsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListViewController.swift; sourceTree = "<group>"; };
 		84CE067525EBF0FB005B8664 /* ConversationsListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListTableViewCell.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				848FAAA126000A860063368E /* UIImage+toString.swift */,
 				848FAAA426000AB90063368E /* String+toUIImage.swift */,
 				842CF320260A1FE80056DA13 /* UIViewController+showInputDialog.swift */,
+				84904F5F260A5D1000FEE634 /* String+lines.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -391,6 +394,7 @@
 				848FAA8825FF7B1F0063368E /* UIScrollView+scrollToBottom.swift in Sources */,
 				845A360925F576C500D9E3AA /* ThemeDependentUILabel.swift in Sources */,
 				848FAAA226000A860063368E /* UIImage+toString.swift in Sources */,
+				84904F60260A5D1000FEE634 /* String+lines.swift in Sources */,
 				848FAA9425FF97090063368E /* ProfileDataCompletionStatus.swift in Sources */,
 				848FAAA926000FA40063368E /* ProfileDataModel.swift in Sources */,
 				848FAA9825FF97460063368E /* Exception.swift in Sources */,
