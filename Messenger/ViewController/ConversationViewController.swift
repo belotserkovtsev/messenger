@@ -15,6 +15,7 @@ class ConversationViewController: UIViewController {
 	@IBOutlet weak var messageTextViewWrapperView: UIView?
 	@IBOutlet weak var sendBarView: ThemeDependentUIView?
 	@IBOutlet weak var messageTextViewPlaceholderLabel: UILabel?
+	@IBOutlet weak var sendButton: UIButton?
 	
 	private let cellIdentifier = String(describing: ConversationTableViewCell.self)
 	
@@ -164,6 +165,12 @@ extension ConversationViewController: UITextViewDelegate {
 			} else if textView.text.count == 0 && placeholder.isHidden {
 				placeholder.isHidden = false
 			}
+		}
+		
+		if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).count > 0 {
+			sendButton?.isEnabled = true
+		} else {
+			sendButton?.isEnabled = false
 		}
 		
 		if textView.contentSize.height > 100 && !textView.isScrollEnabled {

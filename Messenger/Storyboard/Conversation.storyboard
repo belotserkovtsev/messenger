@@ -34,7 +34,7 @@
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bqO-ZP-O6a">
+                                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bqO-ZP-O6a">
                                                 <rect key="frame" x="344" y="7" width="36" height="30"/>
                                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                                                 <state key="normal" title="Send"/>
@@ -87,6 +87,7 @@
                         <outlet property="messageTextViewPlaceholderLabel" destination="cOi-5m-eZC" id="qrZ-hV-gP1"/>
                         <outlet property="messageTextViewWrapperView" destination="iCX-EQ-JjZ" id="TQ1-4S-72p"/>
                         <outlet property="sendBarView" destination="oiY-mD-5W9" id="UsW-0a-DrR"/>
+                        <outlet property="sendButton" destination="bqO-ZP-O6a" id="Wgk-3K-iaa"/>
                         <outlet property="tableView" destination="t3B-sY-oUE" id="4tH-gl-ON6"/>
                     </connections>
                 </viewController>
