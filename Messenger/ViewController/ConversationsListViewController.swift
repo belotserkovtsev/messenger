@@ -33,6 +33,19 @@ class ConversationsListViewController: UIViewController {
 		}
 	}
 	
+	@objc private func addConversationTapHandler() {
+		showInputDialog(title: "Add channel",
+						subtitle: "Please enter a name of the channel you want to create.",
+						actionTitle: "Create",
+						cancelTitle: "Cancel",
+						inputPlaceholder: "Channel name",
+						inputKeyboardType: .default) { input in
+			
+			guard let channelName = input else { return }
+			self.reference.addDocument(data: ["name" : channelName])
+		}
+	}
+	
 	//MARK: Lifecycle Methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -40,7 +53,7 @@ class ConversationsListViewController: UIViewController {
 		
 		title = "Channels"
 		setTrailingBarButtonItem()
-		setLeadingBarButtonItem()
+		setLeadingBarButtonItems()
 		
 		tableView?.register(UINib(nibName: String(describing: ConversationsListTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
 		tableView?.dataSource = self
@@ -86,23 +99,36 @@ class ConversationsListViewController: UIViewController {
 	
 	//MARK: UI Modifiers
 	private func setTrailingBarButtonItem() {
-		if let profileItemImage = UIImage(named: "Profile"),
+		if let profileItemImage = UIImage(named: "Plus"),
 		   let resizedProfileItemImage = resizeImage(image: profileItemImage, targetSize: CGSize(width: 22, height: 22))  {
-			navigationItem.rightBarButtonItem = UIBarButtonItem(image: resizedProfileItemImage, style: .plain, target: self, action: #selector(profileTapHandler))
+			navigationItem.rightBarButtonItem = UIBarButtonItem(image: resizedProfileItemImage, style: .plain, target: self, action: #selector(addConversationTapHandler))
 			navigationItem.rightBarButtonItem?.tintColor = .gray
 		} else {
-			navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Profile", style: .plain, target: self, action: #selector(profileTapHandler))
+			navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Profile", style: .plain, target: self, action: #selector(addConversationTapHandler))
 		}
 	}
 	
-	private func setLeadingBarButtonItem() {
+	private func setLeadingBarButtonItems() {
+		var profile = UIBarButtonItem()
+		var settings = UIBarButtonItem()
+		
 		if let settingsItemImage = UIImage(named: "Settings"),
 		   let resizedSettingsItemImage = resizeImage(image: settingsItemImage, targetSize: CGSize(width: 22, height: 22))  {
-			navigationItem.leftBarButtonItem = UIBarButtonItem(image: resizedSettingsItemImage, style: .plain, target: self, action: #selector(settingsTapHandler))
-			navigationItem.leftBarButtonItem?.tintColor = .gray
+			settings = UIBarButtonItem(image: resizedSettingsItemImage, style: .plain, target: self, action: #selector(settingsTapHandler))
+			settings.tintColor = .gray
 		} else {
-			navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Settings", style: .plain, target: self, action: #selector(settingsTapHandler))
+			settings = UIBarButtonItem(title: "Settings", style: .plain, target: self, action: #selector(settingsTapHandler))
 		}
+		
+		if let profileItemImage = UIImage(named: "Profile"),
+		   let resizedProfileItemImage = resizeImage(image: profileItemImage, targetSize: CGSize(width: 22, height: 22))  {
+			profile = UIBarButtonItem(image: resizedProfileItemImage, style: .plain, target: self, action: #selector(profileTapHandler))
+			profile.tintColor = .gray
+		} else {
+			profile = UIBarButtonItem(title: "Profile", style: .plain, target: self, action: #selector(profileTapHandler))
+		}
+		
+		navigationItem.leftBarButtonItems = [settings, profile]
 	}
 	
 	private func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage? {

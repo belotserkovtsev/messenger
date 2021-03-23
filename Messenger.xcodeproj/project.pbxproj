@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		842CF321260A1FE80056DA13 /* UIViewController+showInputDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842CF320260A1FE80056DA13 /* UIViewController+showInputDialog.swift */; };
 		845A35FA25F1609700D9E3AA /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845A35F925F1609700D9E3AA /* ThemesViewController.swift */; };
 		845A35FD25F160E600D9E3AA /* Themes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 845A35FC25F160E600D9E3AA /* Themes.storyboard */; };
 		845A360225F53F7600D9E3AA /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845A360125F53F7600D9E3AA /* ThemeManager.swift */; };
@@ -51,6 +52,7 @@
 /* Begin PBXFileReference section */
 		2809E3B92AE84DDCB9B81138 /* Pods-Messenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Messenger.release.xcconfig"; path = "Target Support Files/Pods-Messenger/Pods-Messenger.release.xcconfig"; sourceTree = "<group>"; };
 		313D7B841EFABC50CCEB539D /* Pods_Messenger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Messenger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		842CF320260A1FE80056DA13 /* UIViewController+showInputDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+showInputDialog.swift"; sourceTree = "<group>"; };
 		845A35F925F1609700D9E3AA /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		845A35FC25F160E600D9E3AA /* Themes.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Themes.storyboard; sourceTree = "<group>"; };
 		845A360125F53F7600D9E3AA /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
@@ -120,7 +122,6 @@
 				B805B6233A8722CE12D12AEB /* Pods-Messenger.debug.xcconfig */,
 				2809E3B92AE84DDCB9B81138 /* Pods-Messenger.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -166,6 +167,7 @@
 				848FAA9B25FFDF5F0063368E /* UIViewController+hideKeyboard.swift */,
 				848FAAA126000A860063368E /* UIImage+toString.swift */,
 				848FAAA426000AB90063368E /* String+toUIImage.swift */,
+				842CF320260A1FE80056DA13 /* UIViewController+showInputDialog.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -381,6 +383,7 @@
 			files = (
 				845A361725F59E2400D9E3AA /* ThemeDependentUIView.swift in Sources */,
 				84CE067725EBF0FB005B8664 /* ConversationsListTableViewCell.swift in Sources */,
+				842CF321260A1FE80056DA13 /* UIViewController+showInputDialog.swift in Sources */,
 				8477A9F525D6946F005227FC /* ProfileViewController.swift in Sources */,
 				845A362225F5F39200D9E3AA /* ThemeProtocol.swift in Sources */,
 				845A361A25F5A2BF00D9E3AA /* ThemeDependentUIButton.swift in Sources */,

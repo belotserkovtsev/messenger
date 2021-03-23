@@ -41,9 +41,12 @@ extension ThemeProtocol {
 				.backgroundColor = mainButtonsBackgroundColor
 			
 			//Text views
-			UITextView.appearance().backgroundColor = mainViewsBackgroundColor
-			UITextView.appearance().textColor = mainFontsColor
-			UITextField.appearance().textColor = mainFontsColor
+			UITextView.appearance()
+				.backgroundColor = mainViewsBackgroundColor
+			UITextView.appearance()
+				.textColor = mainFontsColor
+			UITextField.appearance(whenContainedInInstancesOf: [ProfileViewController.self])
+				.textColor = mainFontsColor
 			
 			//Activity
 			UIActivityIndicatorView.appearance().color = mainFontsColor

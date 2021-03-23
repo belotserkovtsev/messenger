@@ -16,10 +16,11 @@ class ConversationViewController: UIViewController {
 	private let cellIdentifier = String(describing: ConversationTableViewCell.self)
 	
 	private var channelId: String?
+	private var cachedName: String?
 	private var channelModel = ConversationDataModel()
 	
 	private lazy var database = Firestore.firestore()
-	private lazy var reference = database.collection("channels/\(channelId!)/messages")
+	private lazy var reference = database.collection("channels/\(channelId ?? " ")/messages")
 	
 	@IBAction func sendButtonHandler(_ sender: UIButton) {
 		guard let text = messageTextView?.text.trimmingCharacters(in: .whitespacesAndNewlines),
@@ -28,8 +29,22 @@ class ConversationViewController: UIViewController {
 			return
 		}
 		
-		reference.addDocument(data: ["content" : text, "created" : Timestamp(), "senderId" : id, "senderName" : "Bogdan"])
-		messageTextView?.text = ""
+		if let profileName = cachedName {
+			self.messageTextView?.text = ""
+			reference.addDocument(data: ["content" : text, "created" : Timestamp(), "senderId" : id, "senderName" : profileName])
+		} else {
+			GCDManager().get { result in
+				switch result {
+				case .success(let data):
+					guard let profileName = data?.name else { break }
+					self.messageTextView?.text = ""
+					self.cachedName = profileName
+					self.reference.addDocument(data: ["content" : text, "created" : Timestamp(), "senderId" : id, "senderName" : profileName])
+				default:
+					break
+				}
+			}
+		}
 	}
 	
 	
