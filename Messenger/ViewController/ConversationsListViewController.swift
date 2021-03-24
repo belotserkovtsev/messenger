@@ -12,8 +12,7 @@ class ConversationsListViewController: UIViewController {
 	
 	@IBOutlet weak var tableView: UITableView?
 	private let cellIdentifier = String(describing: ConversationsListTableViewCell.self)
-	private lazy var database = Firestore.firestore()
-	private lazy var reference = database.collection("channels")
+	private var firestoreManager = FirestoreManager(path: "channels")
 	private var channelsModel = ChannelDataModel()
 	
 	// MARK: Nav Bar Tap Handlers
@@ -42,7 +41,7 @@ class ConversationsListViewController: UIViewController {
 						inputKeyboardType: .default) { input in
 			
 			guard let channelName = input else { return }
-			self.reference.addDocument(data: ["name": channelName])
+			self.firestoreManager.addDocumnent(data: ["name": channelName])
 		}
 	}
 	
@@ -61,7 +60,7 @@ class ConversationsListViewController: UIViewController {
 		
 		tableView?.contentInset = UIEdgeInsets(top: -1, left: 0, bottom: 0, right: 0)
 		
-		reference.addSnapshotListener { [weak self] snapshot, _ in
+		firestoreManager.addListener { [weak self] snapshot, _ in
 			guard let documents = snapshot?.documents else { return }
 			var channels = [ChannelDataModel.Channel]()
 			for document in documents {
@@ -238,7 +237,7 @@ extension ConversationsListViewController: UITableViewDelegate {
 	
 	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 		if editingStyle == .delete {
-			reference.document(channelsModel.channels[indexPath.row].id).delete()
+			firestoreManager.deleteDocument(id: channelsModel.channels[indexPath.row].id)
 		}
 	}
 }

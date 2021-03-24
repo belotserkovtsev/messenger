@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		842CF321260A1FE80056DA13 /* UIViewController+showInputDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842CF320260A1FE80056DA13 /* UIViewController+showInputDialog.swift */; };
+		843E895A260BA8080090F8F2 /* FirestoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E8959260BA8080090F8F2 /* FirestoreManager.swift */; };
 		845A35FA25F1609700D9E3AA /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845A35F925F1609700D9E3AA /* ThemesViewController.swift */; };
 		845A35FD25F160E600D9E3AA /* Themes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 845A35FC25F160E600D9E3AA /* Themes.storyboard */; };
 		845A360225F53F7600D9E3AA /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845A360125F53F7600D9E3AA /* ThemeManager.swift */; };
@@ -54,6 +55,7 @@
 		2809E3B92AE84DDCB9B81138 /* Pods-Messenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Messenger.release.xcconfig"; path = "Target Support Files/Pods-Messenger/Pods-Messenger.release.xcconfig"; sourceTree = "<group>"; };
 		313D7B841EFABC50CCEB539D /* Pods_Messenger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Messenger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		842CF320260A1FE80056DA13 /* UIViewController+showInputDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+showInputDialog.swift"; sourceTree = "<group>"; };
+		843E8959260BA8080090F8F2 /* FirestoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreManager.swift; sourceTree = "<group>"; };
 		845A35F925F1609700D9E3AA /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		845A35FC25F160E600D9E3AA /* Themes.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Themes.storyboard; sourceTree = "<group>"; };
 		845A360125F53F7600D9E3AA /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
@@ -127,6 +129,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		843E8958260BA7F30090F8F2 /* Firestore */ = {
+			isa = PBXGroup;
+			children = (
+				843E8959260BA8080090F8F2 /* FirestoreManager.swift */,
+			);
+			path = Firestore;
+			sourceTree = "<group>";
+		};
 		845A360025F53F4100D9E3AA /* Style */ = {
 			isa = PBXGroup;
 			children = (
@@ -196,6 +206,7 @@
 		8477A9EF25D6946F005227FC /* Messenger */ = {
 			isa = PBXGroup;
 			children = (
+				843E8958260BA7F30090F8F2 /* Firestore */,
 				848FAA9225FF96E70063368E /* Type */,
 				848FAA8B25FF88BA0063368E /* ThreadManager */,
 				845A362925F5FB8C00D9E3AA /* Extension */,
@@ -412,6 +423,7 @@
 				848FAA8825FF7B1F0063368E /* UIScrollView+scrollToBottom.swift in Sources */,
 				845A360925F576C500D9E3AA /* ThemeDependentUILabel.swift in Sources */,
 				848FAAA226000A860063368E /* UIImage+toString.swift in Sources */,
+				843E895A260BA8080090F8F2 /* FirestoreManager.swift in Sources */,
 				84904F60260A5D1000FEE634 /* String+lines.swift in Sources */,
 				848FAA9425FF97090063368E /* ProfileDataCompletionStatus.swift in Sources */,
 				848FAAA926000FA40063368E /* ProfileDataModel.swift in Sources */,

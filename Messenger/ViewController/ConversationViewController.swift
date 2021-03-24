@@ -23,8 +23,7 @@ class ConversationViewController: UIViewController {
 	private var cachedName: String?
 	private var channelModel = ConversationDataModel()
 	
-	private lazy var database = Firestore.firestore()
-	private lazy var reference = database.collection("channels/\(channelId ?? " ")/messages")
+	private lazy var firestoreManager = FirestoreManager(path: "channels/\(channelId ?? " ")/messages")
 	
 	// MARK: Gestures
 	@IBAction func sendButtonHandler(_ sender: UIButton) {
@@ -54,7 +53,7 @@ class ConversationViewController: UIViewController {
 		let gesture = self.hideKeyboardWhenTappedAround()
 		gesture.delegate = self
 		
-		reference.addSnapshotListener { [weak self] snapshot, _ in
+		firestoreManager.addListener { [weak self] snapshot, _ in
 			guard let documents = snapshot?.documents else { return }
 			var messages = [ConversationDataModel.Message]()
 			for document in documents {
@@ -151,7 +150,7 @@ extension ConversationViewController {
 		
 		if let profileName = cachedName {
 			clearTextField()
-			reference.addDocument(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": isAnonymous ? "Anonymous" : profileName])
+			firestoreManager.addDocumnent(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": isAnonymous ? "Anonymous" : profileName])
 		} else {
 			GCDManager().get { result in
 				switch result {
@@ -159,7 +158,7 @@ extension ConversationViewController {
 					guard let profileName = data?.name else { break }
 					self.clearTextField()
 					self.cachedName = profileName
-					self.reference.addDocument(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": isAnonymous ? "Anonymous" : profileName])
+					self.firestoreManager.addDocumnent(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": isAnonymous ? "Anonymous" : profileName])
 				default:
 					break
 				}
