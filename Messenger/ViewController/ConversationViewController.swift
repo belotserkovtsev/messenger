@@ -26,6 +26,7 @@ class ConversationViewController: UIViewController {
 	private lazy var database = Firestore.firestore()
 	private lazy var reference = database.collection("channels/\(channelId ?? " ")/messages")
 	
+	// MARK: Gestures
 	@IBAction func sendButtonHandler(_ sender: UIButton) {
 		guard let text = messageTextView?.text.trimmingCharacters(in: .whitespacesAndNewlines),
 			  !text.isEmpty, let id = UIDevice.current.identifierForVendor?.uuidString else {
@@ -35,6 +36,7 @@ class ConversationViewController: UIViewController {
 		
 		if let profileName = cachedName {
 			self.messageTextView?.text = ""
+			fitTextView()
 			reference.addDocument(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": profileName])
 		} else {
 			GCDManager().get { result in
@@ -42,6 +44,7 @@ class ConversationViewController: UIViewController {
 				case .success(let data):
 					guard let profileName = data?.name else { break }
 					self.messageTextView?.text = ""
+					self.fitTextView()
 					self.cachedName = profileName
 					self.reference.addDocument(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": profileName])
 				default:
@@ -155,6 +158,18 @@ extension ConversationViewController {
 	}
 }
 
+// MARK: Private Methods
+extension ConversationViewController {
+	private func fitTextView() {
+		guard let textView = messageTextView else { return }
+		textView.sizeToFit()
+		let heightConstraint = textView.constraints.first { constraint in
+			constraint.identifier == "height"
+		}
+		heightConstraint?.constant = textView.contentSize.height
+	}
+}
+
 // MARK: TextView Delegate
 extension ConversationViewController: UITextViewDelegate {
 	func textViewDidChange(_ textView: UITextView) {
@@ -190,11 +205,7 @@ extension ConversationViewController: UITextViewDelegate {
 		}
 		
 		if textView.contentSize.height < 100 && !textView.isScrollEnabled {
-			textView.sizeToFit()
-			let heightConstraint = textView.constraints.first { constraint in
-				constraint.identifier == "height"
-			}
-			heightConstraint?.constant = textView.contentSize.height
+			fitTextView()
 		}
 	}
 }
