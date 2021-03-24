@@ -126,15 +126,23 @@ extension ConversationViewController: UITableViewDataSource {
 extension ConversationViewController {
 	@objc private func keyboardWillShow(notification: NSNotification) {
 		if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-			if self.view.frame.origin.y == 0 {
-				self.view.frame.origin.y -= keyboardSize.height
+			if additionalSafeAreaInsets.bottom == 0 {
+				UIView.animate(withDuration: 1) {
+					self.additionalSafeAreaInsets.bottom += keyboardSize.height
+					self.view.layoutIfNeeded()
+				}
+				
 			}
+			
 		}
 	}
 	
 	@objc private func keyboardWillHide(notification: NSNotification) {
-		if self.view.frame.origin.y != 0 {
-			self.view.frame.origin.y = 0
+		if additionalSafeAreaInsets.bottom != 0 {
+			UIView.animate(withDuration: 1) {
+				self.additionalSafeAreaInsets.bottom = 0
+				self.view.layoutIfNeeded()
+			}
 		}
 	}
 }
