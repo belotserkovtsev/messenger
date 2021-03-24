@@ -28,30 +28,7 @@ class ConversationViewController: UIViewController {
 	
 	// MARK: Gestures
 	@IBAction func sendButtonHandler(_ sender: UIButton) {
-		guard let text = messageTextView?.text.trimmingCharacters(in: .whitespacesAndNewlines),
-			  !text.isEmpty, let id = UIDevice.current.identifierForVendor?.uuidString else {
-			messageTextView?.text = ""
-			return
-		}
-		
-		if let profileName = cachedName {
-			self.messageTextView?.text = ""
-			fitTextView()
-			reference.addDocument(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": profileName])
-		} else {
-			GCDManager().get { result in
-				switch result {
-				case .success(let data):
-					guard let profileName = data?.name else { break }
-					self.messageTextView?.text = ""
-					self.fitTextView()
-					self.cachedName = profileName
-					self.reference.addDocument(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": profileName])
-				default:
-					break
-				}
-			}
-		}
+		sendMessage()
 	}
 	
 	// MARK: Lifecycle Methods
@@ -93,6 +70,11 @@ class ConversationViewController: UIViewController {
 			}
 			self?.channelModel.reload(with: messages)
 			self?.tableView?.reloadData()
+		}
+		
+		if #available(iOS 13.0, *) {
+			let interaction = UIContextMenuInteraction(delegate: self)
+			sendButton?.addInteraction(interaction)
 		}
 		
 		messageTextView?.delegate = self
@@ -160,13 +142,36 @@ extension ConversationViewController {
 
 // MARK: Private Methods
 extension ConversationViewController {
-	private func fitTextView() {
-		guard let textView = messageTextView else { return }
-		textView.sizeToFit()
-		let heightConstraint = textView.constraints.first { constraint in
-			constraint.identifier == "height"
+	private func sendMessage(anonymously isAnonymous: Bool = false) {
+		guard let text = messageTextView?.text.trimmingCharacters(in: .whitespacesAndNewlines),
+			  !text.isEmpty, let id = UIDevice.current.identifierForVendor?.uuidString else {
+			messageTextView?.text = ""
+			return
 		}
-		heightConstraint?.constant = textView.contentSize.height
+		
+		if let profileName = cachedName {
+			clearTextField()
+			reference.addDocument(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": isAnonymous ? "Anonymous" : profileName])
+		} else {
+			GCDManager().get { result in
+				switch result {
+				case .success(let data):
+					guard let profileName = data?.name else { break }
+					self.clearTextField()
+					self.cachedName = profileName
+					self.reference.addDocument(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": isAnonymous ? "Anonymous" : profileName])
+				default:
+					break
+				}
+			}
+		}
+	}
+	
+	private func clearTextField() {
+		guard let textview = messageTextView, let sendButton = sendButton else { return }
+		textview.text = ""
+		sendButton.isEnabled = false
+		textViewDidChange(textview)
 	}
 }
 
@@ -205,8 +210,14 @@ extension ConversationViewController: UITextViewDelegate {
 		}
 		
 		if textView.contentSize.height < 100 && !textView.isScrollEnabled {
-			fitTextView()
+			removeTextViewHeightConstraint()
 		}
+	}
+	
+	private func removeTextViewHeightConstraint() {
+		guard let textView = messageTextView else { return }
+		guard let heightConstraint = textView.constraints.first(where: { $0.identifier == "height" }) else { return }
+		textView.removeConstraint(heightConstraint)
 	}
 }
 
@@ -215,5 +226,23 @@ extension ConversationViewController: UIGestureRecognizerDelegate {
 	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
 		guard let tableView = self.tableView else { return false }
 		return touch.view?.isDescendant(of: tableView) == true
+	}
+}
+
+@available(iOS 13.0, *)
+extension ConversationViewController: UIContextMenuInteractionDelegate {
+	func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+		
+		let send = UIAction(title: "Send", image: UIImage(systemName: "paperplane")) { _ in
+			self.sendMessage()
+		}
+		
+		let sendAnon = UIAction(title: "Send anonymously", image: UIImage(systemName: "person.crop.circle.badge.questionmark")) { _ in
+			self.sendMessage(anonymously: true)
+		}
+		
+		return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+			UIMenu(title: "Send options", children: [send, sendAnon])
+		}
 	}
 }
