@@ -35,7 +35,7 @@ class ConversationViewController: UIViewController {
 		
 		if let profileName = cachedName {
 			self.messageTextView?.text = ""
-			reference.addDocument(data: ["content" : text, "created" : Timestamp(), "senderId" : id, "senderName" : profileName])
+			reference.addDocument(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": profileName])
 		} else {
 			GCDManager().get { result in
 				switch result {
@@ -43,7 +43,7 @@ class ConversationViewController: UIViewController {
 					guard let profileName = data?.name else { break }
 					self.messageTextView?.text = ""
 					self.cachedName = profileName
-					self.reference.addDocument(data: ["content" : text, "created" : Timestamp(), "senderId" : id, "senderName" : profileName])
+					self.reference.addDocument(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": profileName])
 				default:
 					break
 				}
@@ -51,8 +51,7 @@ class ConversationViewController: UIViewController {
 		}
 	}
 	
-	
-	//MARK: Lifecycle Methods
+	// MARK: Lifecycle Methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		messageTextViewWrapperView?.layer.cornerRadius = 12
@@ -75,7 +74,7 @@ class ConversationViewController: UIViewController {
 		let gesture = self.hideKeyboardWhenTappedAround()
 		gesture.delegate = self
 		
-		reference.addSnapshotListener { [weak self] snapshot, error in
+		reference.addSnapshotListener { [weak self] snapshot, _ in
 			guard let documents = snapshot?.documents else { return }
 			var messages = [ConversationDataModel.Message]()
 			for document in documents {
@@ -100,7 +99,7 @@ class ConversationViewController: UIViewController {
 		channelId = id
 	}
 	
-	//MARK: Data
+	// MARK: Data
 	struct ConversationDataModel {
 		private(set) var messages = [Message]()
 		
@@ -123,7 +122,7 @@ class ConversationViewController: UIViewController {
 	}
 }
 
-//MARK: UITableViewDataSource
+// MARK: UITableViewDataSource
 extension ConversationViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		channelModel.messages.count
@@ -139,7 +138,7 @@ extension ConversationViewController: UITableViewDataSource {
 	}
 }
 
-//MARK: OBJC andlers
+// MARK: OBJC andlers
 extension ConversationViewController {
 	@objc private func keyboardWillShow(notification: NSNotification) {
 		if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
@@ -156,7 +155,7 @@ extension ConversationViewController {
 	}
 }
 
-//MARK: TextView Delegate
+// MARK: TextView Delegate
 extension ConversationViewController: UITextViewDelegate {
 	func textViewDidChange(_ textView: UITextView) {
 		if let placeholder = messageTextViewPlaceholderLabel {
@@ -176,7 +175,8 @@ extension ConversationViewController: UITextViewDelegate {
 		if textView.contentSize.height > 100 && !textView.isScrollEnabled {
 			let frame = textView.frame
 			textView.isScrollEnabled = true
-			let heightConstraint: NSLayoutConstraint = .init(item: textView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: frame.height)
+			let heightConstraint: NSLayoutConstraint =
+				.init(item: textView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: frame.height)
 			heightConstraint.identifier = "height"
 			textView.addConstraint(heightConstraint)
 		}
@@ -199,6 +199,7 @@ extension ConversationViewController: UITextViewDelegate {
 	}
 }
 
+// MARK: UIGestureRecognizerDelegate
 extension ConversationViewController: UIGestureRecognizerDelegate {
 	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
 		guard let tableView = self.tableView else { return false }

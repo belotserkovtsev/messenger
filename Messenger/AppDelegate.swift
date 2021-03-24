@@ -12,12 +12,12 @@ import Firebase
 class AppDelegate: UIResponder, UIApplicationDelegate {
 	var window: UIWindow?
 	
-	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
 		FirebaseApp.configure()
 		return true
 	}
 	
-	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
 		if #available(iOS 13.0, *) { window?.overrideUserInterfaceStyle = .light }
 		
 		let theme = ThemeManager.currentTheme
@@ -30,15 +30,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			ClassicTheme().apply()
 		}
 
-		
 		if UserDefaults.standard.bool(forKey: "isNthLaunch") {
 			return true
 		} else {
 			let profileData: ProfileDataModel = .init(name: "Your name here", description: "Tell us something about yourself", profilePicture: nil)
-			GCDManager().save(data: profileData, isFirstLaunch: true) { result in }
+			GCDManager().save(data: profileData, isFirstLaunch: true) { _ in }
 			UserDefaults.standard.set(true, forKey: "isNthLaunch")
 			return true
 		}
 	}
 }
-

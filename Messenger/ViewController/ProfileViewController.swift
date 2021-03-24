@@ -32,7 +32,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 		}
 	}
 	
-	//MARK: Gestures
+	// MARK: Gestures
 	@IBAction func editTapHandler(_ sender: UIButton) {
 		if !isEditingProfile {
 			startEditing()
@@ -45,7 +45,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 		restrictEditing()
 		activityIndicator?.startAnimating()
 		
-		gcdManager.save(data:.init(name: nameTextField?.text,
+		gcdManager.save(data: .init(name: nameTextField?.text,
 									 description: descriptionTextView?.text,
 									 profilePicture: profilePicture)) { status in
 			switch status {
@@ -74,7 +74,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 		return false
 	}
 	
-	//MARK: Lifecycle
+	// MARK: Lifecycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		title = "Profile"
@@ -92,8 +92,8 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 			.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
 		
 		activityIndicator?.startAnimating()
-		GCDManager().get() { status in
-			switch status{
+		GCDManager().get { status in
+			switch status {
 			case .success(let data):
 				self.descriptionTextView?.text = data?.description ?? ""
 				self.nameTextField?.text = data?.name ?? ""
@@ -107,7 +107,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 			self.activityIndicator?.stopAnimating()
 		}
 		
-		let _ = self.hideKeyboardWhenTappedAround()
+		_ = self.hideKeyboardWhenTappedAround()
 		addGestureToImageView()
 		
 		nameTextField?.delegate = self
@@ -122,7 +122,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 	}
 }
 
-//MARK: Private methhods
+// MARK: Private methhods
 extension ProfileViewController {
 	func removeGestureFromImageView() {
 		if let gesture = profilePictureView?.gestureRecognizers?.first {
@@ -168,7 +168,7 @@ extension ProfileViewController {
 		
 		gcdManager.cancel(.write)
 		
-		GCDManager().get() { status in
+		GCDManager().get { status in
 			switch status {
 			case .success(let data):
 				self.descriptionTextView?.text = data?.description ?? ""
@@ -218,7 +218,7 @@ extension ProfileViewController {
 	}
 }
 
-//MARK: OBJC Handlers
+// MARK: OBJC Handlers
 extension ProfileViewController {
 	@objc func profilePictureTapHandler() {
 		let alert = UIAlertController(title: "Set profile picture", message: nil, preferredStyle: .actionSheet)
@@ -268,9 +268,9 @@ extension ProfileViewController {
 	}
 }
 
-//MARK: Image Picker Delegate
+// MARK: Image Picker Delegate
 extension ProfileViewController: UIImagePickerControllerDelegate {
-	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
 		if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
 			profilePicture = image
 			startEditing(withSelection: false)
@@ -281,7 +281,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate {
 	}
 	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-		dismiss(animated: true, completion:nil)
+		dismiss(animated: true, completion: nil)
 	}
 	
 	func presentImagePicker(with sourceType: UIImagePickerController.SourceType) {
@@ -293,7 +293,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate {
 	}
 }
 
-//MARK: TextView Delegate
+// MARK: TextView Delegate
 extension ProfileViewController: UITextViewDelegate {
 	func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
 		let currentText = textView.text ?? ""

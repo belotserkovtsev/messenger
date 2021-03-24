@@ -21,7 +21,7 @@ class GCDManager {
 		}
 	}
 	
-	func save(data: ProfileDataModel, isFirstLaunch: Bool = false, completion: @escaping (ProfileDataCompletionStatus) -> ()) {
+	func save(data: ProfileDataModel, isFirstLaunch: Bool = false, completion: @escaping (ProfileDataCompletionStatus) -> Void) {
 		writeWorkItem = DispatchWorkItem {
 			do {
 				let userDataFileURL = try self.getUrl(for: "ProfileData", dot: "json")
@@ -39,7 +39,6 @@ class GCDManager {
 				
 				try jsonData.write(to: userDataFileURL)
 				try imageData?.write(to: imageDataFileURL)
-				
 				
 				if let isCancelled = self.writeWorkItem?.isCancelled {
 					if isCancelled {
@@ -77,7 +76,7 @@ class GCDManager {
 		}
 	}
 	
-	func get(completion: @escaping (ProfileDataCompletionStatus) -> ()) {
+	func get(completion: @escaping (ProfileDataCompletionStatus) -> Void) {
 		readWorkItem = DispatchWorkItem {
 			do {
 				let fileURL = try self.getUrl(for: "ProfileData", dot: "json")
@@ -113,7 +112,7 @@ class GCDManager {
 		
 	}
 	
-	//MARK: Private methods
+	// MARK: Private methods
 	
 	private func restoreFromBackup() {
 		do {
@@ -135,7 +134,6 @@ class GCDManager {
 			} else {
 				try FileManager().removeItem(at: imageURL)
 			}
-			
 			
 		} catch {
 			print("error with writing/reading to/from backup")

@@ -58,7 +58,6 @@ class ThemesViewController: UIViewController {
 			}
 		}
 		
-		
 		title = "Themes"
 		
 		let nightThemeTap = UITapGestureRecognizer(target: self, action: #selector(nightThemeTouchHandler))
@@ -76,7 +75,6 @@ class ThemesViewController: UIViewController {
 		} else {
 			setSelection(for: .light)
 		}
-		
 		
 		themeDelegate = ThemeManager()
 //		themeHandler = ThemeManager().didSelectTheme(_:)

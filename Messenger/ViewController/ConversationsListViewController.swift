@@ -16,7 +16,7 @@ class ConversationsListViewController: UIViewController {
 	private lazy var reference = database.collection("channels")
 	private var channelsModel = ChannelDataModel()
 	
-	//MARK: Nav Bar Tap Handlers
+	// MARK: Nav Bar Tap Handlers
 	@objc private func profileTapHandler() {
 		let storyBoard = UIStoryboard(name: "Profile", bundle: nil)
 		let profile = storyBoard.instantiateViewController(withIdentifier: "ProfileViewController") as? ProfileViewController
@@ -42,11 +42,11 @@ class ConversationsListViewController: UIViewController {
 						inputKeyboardType: .default) { input in
 			
 			guard let channelName = input else { return }
-			self.reference.addDocument(data: ["name" : channelName])
+			self.reference.addDocument(data: ["name": channelName])
 		}
 	}
 	
-	//MARK: Lifecycle Methods
+	// MARK: Lifecycle Methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		tableView?.delegate = self
@@ -61,7 +61,7 @@ class ConversationsListViewController: UIViewController {
 		
 		tableView?.contentInset = UIEdgeInsets(top: -1, left: 0, bottom: 0, right: 0)
 		
-		reference.addSnapshotListener { [weak self] snapshot, error in
+		reference.addSnapshotListener { [weak self] snapshot, _ in
 			guard let documents = snapshot?.documents else { return }
 			var channels = [ChannelDataModel.Channel]()
 			for document in documents {
@@ -90,6 +90,7 @@ class ConversationsListViewController: UIViewController {
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
 		switch ThemeManager.currentTheme {
 		case .night:
 			tableView?.backgroundColor = .black
@@ -97,7 +98,7 @@ class ConversationsListViewController: UIViewController {
 			tableView?.backgroundColor = UIColor(white: 0.97, alpha: 1)
 		}
 	}
-	//MARK: UI Modifiers/Private methods
+	// MARK: UI Modifiers/Private methods
 	private func hasRecentlyBeenActive(for date: Date?) -> Bool {
 		guard let inputDate = date else { return false }
 		
@@ -119,7 +120,7 @@ class ConversationsListViewController: UIViewController {
 	
 	private func setTrailingBarButtonItem() {
 		if let profileItemImage = UIImage(named: "Plus"),
-		   let resizedProfileItemImage = resizeImage(image: profileItemImage, targetSize: CGSize(width: 22, height: 22))  {
+		   let resizedProfileItemImage = resizeImage(image: profileItemImage, targetSize: CGSize(width: 22, height: 22)) {
 			navigationItem.rightBarButtonItem = UIBarButtonItem(image: resizedProfileItemImage, style: .plain, target: self, action: #selector(addConversationTapHandler))
 			navigationItem.rightBarButtonItem?.tintColor = .gray
 		} else {
@@ -132,7 +133,7 @@ class ConversationsListViewController: UIViewController {
 		var settings = UIBarButtonItem()
 		
 		if let settingsItemImage = UIImage(named: "Settings"),
-		   let resizedSettingsItemImage = resizeImage(image: settingsItemImage, targetSize: CGSize(width: 22, height: 22))  {
+		   let resizedSettingsItemImage = resizeImage(image: settingsItemImage, targetSize: CGSize(width: 22, height: 22)) {
 			settings = UIBarButtonItem(image: resizedSettingsItemImage, style: .plain, target: self, action: #selector(settingsTapHandler))
 			settings.tintColor = .gray
 		} else {
@@ -140,7 +141,7 @@ class ConversationsListViewController: UIViewController {
 		}
 		
 		if let profileItemImage = UIImage(named: "Profile"),
-		   let resizedProfileItemImage = resizeImage(image: profileItemImage, targetSize: CGSize(width: 22, height: 22))  {
+		   let resizedProfileItemImage = resizeImage(image: profileItemImage, targetSize: CGSize(width: 22, height: 22)) {
 			profile = UIBarButtonItem(image: resizedProfileItemImage, style: .plain, target: self, action: #selector(profileTapHandler))
 			profile.tintColor = .gray
 		} else {
@@ -153,15 +154,15 @@ class ConversationsListViewController: UIViewController {
 	private func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage? {
 		let size = image.size
 		
-		let widthRatio  = targetSize.width  / size.width
+		let widthRatio  = targetSize.width / size.width
 		let heightRatio = targetSize.height / size.height
 		
 		// Figure out what our orientation is, and use that to form the rectangle
 		var newSize: CGSize
-		if(widthRatio > heightRatio) {
+		if widthRatio > heightRatio {
 			newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
 		} else {
-			newSize = CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
+			newSize = CGSize(width: size.width * widthRatio, height: size.height * widthRatio)
 		}
 		
 		// This is the rect that we've calculated out and this is what is actually used below
@@ -177,7 +178,7 @@ class ConversationsListViewController: UIViewController {
 	}
 }
 
-//MARK: Data
+// MARK: Data
 extension ConversationsListViewController {
 	struct ChannelDataModel {
 		private(set) var channels = [Channel]()
@@ -201,7 +202,7 @@ extension ConversationsListViewController {
 	}
 }
 
-//MARK: UITableViewDataSource
+// MARK: UITableViewDataSource
 extension ConversationsListViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		channelsModel.channels.count
@@ -220,10 +221,10 @@ extension ConversationsListViewController: UITableViewDataSource {
 	}
 }
 
-//MARK: UITableViewDelegate
+// MARK: UITableViewDelegate
 extension ConversationsListViewController: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let storyBoard : UIStoryboard = UIStoryboard(name: "Conversation", bundle: nil)
+		let storyBoard: UIStoryboard = UIStoryboard(name: "Conversation", bundle: nil)
 		let conversation = storyBoard.instantiateViewController(withIdentifier: "ConversationViewController") as? ConversationViewController
 		
 		conversation?.title = channelsModel.channels[indexPath.row].name
@@ -236,7 +237,7 @@ extension ConversationsListViewController: UITableViewDelegate {
 	}
 	
 	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-		if (editingStyle == .delete) {
+		if editingStyle == .delete {
 			reference.document(channelsModel.channels[indexPath.row].id).delete()
 		}
 	}

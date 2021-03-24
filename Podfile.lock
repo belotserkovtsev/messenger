@@ -283,9 +283,11 @@ PODS:
   - nanopb/decode (2.30907.0)
   - nanopb/encode (2.30907.0)
   - PromisesObjC (1.2.12)
+  - SwiftLint (0.43.1)
 
 DEPENDENCIES:
   - Firebase/Firestore (= 7.8)
+  - SwiftLint
 
 SPEC REPOS:
   trunk:
@@ -302,6 +304,7 @@ SPEC REPOS:
     - leveldb-library
     - nanopb
     - PromisesObjC
+    - SwiftLint
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
@@ -317,7 +320,8 @@ SPEC CHECKSUMS:
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   nanopb: 59221d7f958fb711001e6a449489542d92ae113e
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
+  SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
 
-PODFILE CHECKSUM: a9196119c837a4148185caadb68e3d626223960d
+PODFILE CHECKSUM: dd74cd55702ce4e0f419032932fb385868d3d241
 
 COCOAPODS: 1.10.1
