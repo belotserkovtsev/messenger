@@ -39,6 +39,7 @@ class ThemesViewController: UIViewController {
 	}
 	
 	override func viewDidLoad() {
+		super.viewDidLoad()
 		nightThemeView?.layer.cornerRadius = 14
 		nightThemeView?.layer.borderWidth = 1
 		nightThemeView?.layer.borderColor = UIColor.themeBorder.cgColor
