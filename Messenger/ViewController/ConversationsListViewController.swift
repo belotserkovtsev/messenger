@@ -40,7 +40,13 @@ class ConversationsListViewController: UIViewController {
 						inputPlaceholder: "Channel name",
 						inputKeyboardType: .default) { input in
 			
-			guard let channelName = input else { return }
+			guard let channelName = input else {
+				let errorAlert = UIAlertController(title: "Error", message: "Unable to create channel with no name", preferredStyle: .alert)
+				errorAlert.addAction(.init(title: "Ok", style: .cancel))
+				self.present(errorAlert, animated: true)
+				return
+			}
+			
 			self.firestoreManager.addDocumnent(data: ["name": channelName])
 		}
 	}
