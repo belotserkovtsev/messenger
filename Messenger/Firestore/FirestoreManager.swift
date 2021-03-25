@@ -10,6 +10,7 @@ import Firebase
 
 class FirestoreManager {
 	private var path: String
+	private var snapshotListener: ListenerRegistration?
 	private lazy var database = Firestore.firestore()
 	private lazy var reference = database.collection(path)
 	
@@ -19,11 +20,11 @@ class FirestoreManager {
 	
 	init(path: String, listener: @escaping (QuerySnapshot?, Error?) -> Void) {
 		self.path = path
-		reference.addSnapshotListener(listener)
+		snapshotListener = reference.addSnapshotListener(listener)
 	}
 	
 	func addListener(listener: @escaping (QuerySnapshot?, Error?) -> Void) {
-		reference.addSnapshotListener(listener)
+		snapshotListener = reference.addSnapshotListener(listener)
 	}
 	
 	func addDocumnent(data: [String: Any]) {
@@ -32,5 +33,9 @@ class FirestoreManager {
 	
 	func deleteDocument(id: String) {
 		reference.document(id).delete()
+	}
+	
+	deinit {
+		snapshotListener?.remove()
 	}
 }
