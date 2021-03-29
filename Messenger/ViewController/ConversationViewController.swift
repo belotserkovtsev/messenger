@@ -21,7 +21,7 @@ class ConversationViewController: UIViewController {
 	
 	private var channelId: String?
 	private var cachedName: String?
-	private var channelModel = ConversationDataModel()
+	private var channelModel = ConversationModel()
 	
 	private lazy var firestoreManager = FirestoreManager(path: "channels/\(channelId ?? " ")/messages")
 	
@@ -54,21 +54,28 @@ class ConversationViewController: UIViewController {
 		gesture.delegate = self
 		
 		firestoreManager.addListener { [weak self] snapshot, _ in
-			guard let documents = snapshot?.documents else { return }
-			var messages = [ConversationDataModel.Message]()
-			for document in documents {
-				
-				if let content = document["content"] as? String, let created = document["created"] as? Timestamp,
-				   let senderId = document["senderId"] as? String, let senderName = document["senderName"] as? String {
+			DispatchQueue.global(qos: .userInitiated).async {
+				guard let documents = snapshot?.documents else { return }
+				var messages = [ConversationModel.Message]()
+				for document in documents {
 					
-					let isOutgoing = senderId == UIDevice.current.identifierForVendor?.uuidString
+					if let content = document["content"] as? String, let created = document["created"] as? Timestamp,
+					   let senderId = document["senderId"] as? String, let senderName = document["senderName"] as? String {
+						
+						let isOutgoing = senderId == UIDevice.current.identifierForVendor?.uuidString
+						
+						messages.append(.init(id: document.documentID, text: content,
+											  created: created.dateValue(), senderId: senderId,
+											  senderName: senderName, messageType: isOutgoing ? .outgoing : .incoming))
+					}
 					
-					messages.append(.init(text: content, created: created.dateValue(), senderId: senderId, senderName: senderName, messageType: isOutgoing ? .outgoing : .incoming))
 				}
 				
+				DispatchQueue.main.async {
+					self?.channelModel.reload(with: messages)
+					self?.tableView?.reloadData()
+				}
 			}
-			self?.channelModel.reload(with: messages)
-			self?.tableView?.reloadData()
 		}
 		
 		if #available(iOS 13.0, *) {
@@ -81,28 +88,6 @@ class ConversationViewController: UIViewController {
 	
 	func setId(with id: String) {
 		channelId = id
-	}
-	
-	// MARK: Data
-	struct ConversationDataModel {
-		private(set) var messages = [Message]()
-		
-		mutating func reload(with data: [Message]) {
-			messages = data.sorted { $0.created < $1.created }
-		}
-		
-		struct Message {
-			var text: String
-			var created: Date
-			var senderId: String
-			var senderName: String
-			
-			var messageType: MessageType
-		}
-		
-		enum MessageType {
-			case incoming, outgoing
-		}
 	}
 }
 

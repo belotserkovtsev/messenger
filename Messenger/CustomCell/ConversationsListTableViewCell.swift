@@ -18,7 +18,7 @@ class ConversationsListTableViewCell: UITableViewCell {
 	@IBOutlet weak var isOnlineStrokeView: UIView?
 	@IBOutlet weak var dateLabel: UILabel?
 	
-	func configure(with data: ConversationsListViewController.ChannelDataModel.Channel) {
+	func configure(with data: ChannelModel.Channel) {
 		profilePictureView?.layer.cornerRadius = 52 / 2
 		unreadMessageIndicator?.layer.cornerRadius = 14 / 2
 		isOnlineView?.layer.cornerRadius = 12 / 2
