@@ -19,11 +19,11 @@ class ConversationViewController: UIViewController {
 	
 	private let cellIdentifier = String(describing: ConversationTableViewCell.self)
 	
-	private var channelId: String?
-	private var cachedName: String?
+	private var channelData: ChannelModel.Channel?
+	private var cachedProfileName: String?
 	private var channelModel = ConversationModel()
 	
-	private lazy var firestoreManager = FirestoreManager(path: "channels/\(channelId ?? " ")/messages")
+	private lazy var firestoreManager = FirestoreManager(path: "channels/\(channelData?.id ?? " ")/messages")
 	
 	// MARK: Gestures
 	@IBAction func sendButtonHandler(_ sender: UIButton) {
@@ -75,6 +75,16 @@ class ConversationViewController: UIViewController {
 					self?.channelModel.reload(with: messages)
 					self?.tableView?.reloadData()
 				}
+				
+				CoreDataStack().performSave { context in
+					guard let channelData = self?.channelData else { return }
+					let channel = ChannelDB(for: channelData, in: context)
+					
+					messages.forEach { message in
+						let savebleMessage = MessageDB(for: message, in: context)
+						channel.addToMessages(savebleMessage)
+					}
+				}
 			}
 		}
 		
@@ -86,8 +96,8 @@ class ConversationViewController: UIViewController {
 		messageTextView?.delegate = self
 	}
 	
-	func setId(with id: String) {
-		channelId = id
+	func setChannelData(with data: ChannelModel.Channel) {
+		channelData = data
 	}
 }
 
@@ -141,7 +151,7 @@ extension ConversationViewController {
 			return
 		}
 		
-		if let profileName = cachedName {
+		if let profileName = cachedProfileName {
 			clearTextField()
 			firestoreManager.addDocumnent(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": isAnonymous ? "Anonymous" : profileName])
 		} else {
@@ -150,7 +160,7 @@ extension ConversationViewController {
 				case .success(let data):
 					guard let profileName = data?.name else { break }
 					self.clearTextField()
-					self.cachedName = profileName
+					self.cachedProfileName = profileName
 					self.firestoreManager.addDocumnent(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": isAnonymous ? "Anonymous" : profileName])
 				default:
 					break

@@ -11,7 +11,7 @@ import Firebase
 class FirestoreManager {
 	private var path: String
 	private var snapshotListener: ListenerRegistration?
-	private lazy var database = Firestore.firestore()
+	private(set) lazy var database = Firestore.firestore()
 	private lazy var reference = database.collection(path)
 	
 	init(path: String) {

@@ -12,7 +12,7 @@ class CoreDataStack {
 	private var storeURL: URL = {
 		guard let documentsURL = FileManager.default.urls(for: .documentDirectory,
 														  in: .userDomainMask).last else {
-			fatalError("url not found")
+			fatalError("unexpected error")
 		}
 		return documentsURL.appendingPathComponent("Chat.sqlite")
 	}()
@@ -22,7 +22,7 @@ class CoreDataStack {
 	
 	private lazy var managedObjectModel: NSManagedObjectModel = {
 		guard let modelURL = Bundle.main.url(forResource: dataModelName, withExtension: dataModelExtension),
-			  let managedObjectModel = NSManagedObjectModel(contentsOf: modelURL) else { fatalError("some error") }
+			  let managedObjectModel = NSManagedObjectModel(contentsOf: modelURL) else { fatalError("unexpected error") }
 		return managedObjectModel
 	}()
 	
@@ -30,12 +30,9 @@ class CoreDataStack {
 		let coordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
 		
 		do {
-			try coordinator.addPersistentStore(ofType: NSSQLiteStoreType,
-											   configurationName: nil,
-											   at: storeURL,
-											   options: nil)
+			try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: nil)
 		} catch {
-			fatalError("some error")
+			fatalError(error.localizedDescription)
 		}
 		
 		return coordinator
@@ -76,13 +73,19 @@ class CoreDataStack {
 	
 	private func performSave(in context: NSManagedObjectContext) {
 		context.performAndWait {
-			do {
-				try context.save()
-			} catch { assertionFailure(error.localizedDescription) }
+			do { try context.save() } catch { assertionFailure(error.localizedDescription) }
 		}
 		if let parent = context.parent { performSave(in: parent) }
 		
 		printDatabaseStatistics()
+	}
+	
+	func getChannel(for id: String) -> ChannelDB? {
+		guard let channels = try? mainContext.fetch(ChannelDB.fetchRequest()) as? [ChannelDB] else { return nil }
+		for channel in channels where channel.id == id {
+			return channel
+		}
+		return nil
 	}
 	
 	func printDatabaseStatistics() {
@@ -90,9 +93,9 @@ class CoreDataStack {
 			do {
 				let count = try self.mainContext.count(for: ChannelDB.fetchRequest())
 				print("\(count) каналов")
-				let array = try self.mainContext.fetch(ChannelDB.fetchRequest()) as? [ChannelDB] ?? []
-				array.forEach {
-					print($0.name ?? "")
+				let channels = try self.mainContext.fetch(ChannelDB.fetchRequest()) as? [ChannelDB] ?? []
+				channels.forEach {
+					print($0.about)
 				}
 			} catch {
 				fatalError(error.localizedDescription)

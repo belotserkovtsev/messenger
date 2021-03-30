@@ -73,7 +73,7 @@ class ConversationsListViewController: UIViewController {
 				for document in documents {
 					let documentData = document.data()
 					let id = document.documentID
-					if let name = documentData["name"] as? String, !name.isEmpty {
+					if let name = documentData["name"] as? String, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
 						
 						let timestamp = documentData["lastActivity"] as? Timestamp
 						let lastMessage = documentData["lastMessage"] as? String
@@ -219,7 +219,7 @@ extension ConversationsListViewController: UITableViewDelegate {
 		let conversation = storyBoard.instantiateViewController(withIdentifier: "ConversationViewController") as? ConversationViewController
 		
 		conversation?.title = channelsModel.channels[indexPath.row].name
-		conversation?.setId(with: channelsModel.channels[indexPath.row].id)
+		conversation?.setChannelData(with: channelsModel.channels[indexPath.row])
 		
 		if let conversationViewController = conversation {
 			navigationController?.pushViewController(conversationViewController, animated: true)
