@@ -24,6 +24,7 @@
 		845A362225F5F39200D9E3AA /* ThemeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845A362125F5F39200D9E3AA /* ThemeProtocol.swift */; };
 		845A362625F5F3AA00D9E3AA /* NightTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845A362525F5F3AA00D9E3AA /* NightTheme.swift */; };
 		845A362B25F5FBA700D9E3AA /* UIColor+as1ptImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845A362A25F5FBA700D9E3AA /* UIColor+as1ptImage.swift */; };
+		846C7C7C2614EA2E00224E1B /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846C7C7B2614EA2E00224E1B /* CoreDataManager.swift */; };
 		8477A9F125D6946F005227FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8477A9F025D6946F005227FC /* AppDelegate.swift */; };
 		8477A9F525D6946F005227FC /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8477A9F425D6946F005227FC /* ProfileViewController.swift */; };
 		8477A9F825D6946F005227FC /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8477A9F625D6946F005227FC /* Profile.storyboard */; };
@@ -76,6 +77,7 @@
 		845A362125F5F39200D9E3AA /* ThemeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeProtocol.swift; sourceTree = "<group>"; };
 		845A362525F5F3AA00D9E3AA /* NightTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightTheme.swift; sourceTree = "<group>"; };
 		845A362A25F5FBA700D9E3AA /* UIColor+as1ptImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+as1ptImage.swift"; sourceTree = "<group>"; };
+		846C7C7B2614EA2E00224E1B /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		8477A9ED25D6946F005227FC /* Messenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Messenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8477A9F025D6946F005227FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8477A9F425D6946F005227FC /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 		844F91B72611F31B0047807C /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				846C7C7B2614EA2E00224E1B /* CoreDataManager.swift */,
 				844F91C7261219D50047807C /* CoreDataStack.swift */,
 				844F91C32611FC170047807C /* Chat.xcdatamodeld */,
 			);
@@ -479,6 +482,7 @@
 				848FAA8825FF7B1F0063368E /* UIScrollView+scrollToBottom.swift in Sources */,
 				845A360925F576C500D9E3AA /* ThemeDependentUILabel.swift in Sources */,
 				848FAAA226000A860063368E /* UIImage+toString.swift in Sources */,
+				846C7C7C2614EA2E00224E1B /* CoreDataManager.swift in Sources */,
 				843E895A260BA8080090F8F2 /* FirestoreManager.swift in Sources */,
 				84904F60260A5D1000FEE634 /* String+lines.swift in Sources */,
 				848FAA9425FF97090063368E /* ProfileDataCompletionStatus.swift in Sources */,

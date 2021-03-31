@@ -20,6 +20,7 @@ class ConversationViewController: UIViewController {
 	private let cellIdentifier = String(describing: ConversationTableViewCell.self)
 	
 	private var channelData: ChannelModel.Channel?
+	private var coreDataStack = CoreDataManager.stack
 	private var cachedProfileName: String?
 	private var channelModel = ConversationModel()
 	
@@ -50,6 +51,8 @@ class ConversationViewController: UIViewController {
 		NotificationCenter.default
 			.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
 		
+//		coreDataStack.enableObservers()
+		
 		let gesture = self.hideKeyboardWhenTappedAround()
 		gesture.delegate = self
 		
@@ -60,7 +63,8 @@ class ConversationViewController: UIViewController {
 				for document in documents {
 					
 					if let content = document["content"] as? String, let created = document["created"] as? Timestamp,
-					   let senderId = document["senderId"] as? String, let senderName = document["senderName"] as? String {
+					   let senderId = document["senderId"] as? String, let senderName = document["senderName"] as? String,
+					   !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
 						
 						let isOutgoing = senderId == UIDevice.current.identifierForVendor?.uuidString
 						
@@ -76,7 +80,7 @@ class ConversationViewController: UIViewController {
 					self?.tableView?.reloadData()
 				}
 				
-				CoreDataStack().performSave { context in
+				self?.coreDataStack.performSave { context in
 					guard let channelData = self?.channelData else { return }
 					let channel = ChannelDB(for: channelData, in: context)
 					
@@ -99,6 +103,10 @@ class ConversationViewController: UIViewController {
 	func setChannelData(with data: ChannelModel.Channel) {
 		channelData = data
 	}
+	
+//	func setCoreDataStack(with stack: CoreDataStack) {
+//		coreDataStack = stack
+//	}
 }
 
 // MARK: UITableViewDataSource

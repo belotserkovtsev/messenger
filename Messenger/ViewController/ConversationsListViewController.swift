@@ -14,6 +14,7 @@ class ConversationsListViewController: UIViewController {
 	private let cellIdentifier = String(describing: ConversationsListTableViewCell.self)
 	private var firestoreManager = FirestoreManager(path: "channels")
 	private var channelsModel = ChannelModel()
+	private var coreDataStack = CoreDataManager.stack
 	
 	// MARK: Nav Bar Tap Handlers
 	@objc private func profileTapHandler() {
@@ -63,7 +64,6 @@ class ConversationsListViewController: UIViewController {
 		tableView?.register(UINib(nibName: String(describing: ConversationsListTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
 		tableView?.dataSource = self
 		tableView?.rowHeight = 88
-		
 		tableView?.contentInset = UIEdgeInsets(top: -1, left: 0, bottom: 0, right: 0)
 		
 		firestoreManager.addListener { [weak self] snapshot, _ in
@@ -94,7 +94,7 @@ class ConversationsListViewController: UIViewController {
 					self?.tableView?.reloadData()
 				}
 				
-				CoreDataStack().performSave { context in
+				self?.coreDataStack.performSave { context in
 					channels.forEach { channel in
 						_ = ChannelDB(for: channel, in: context)
 					}
@@ -220,6 +220,7 @@ extension ConversationsListViewController: UITableViewDelegate {
 		
 		conversation?.title = channelsModel.channels[indexPath.row].name
 		conversation?.setChannelData(with: channelsModel.channels[indexPath.row])
+//		conversation?.setCoreDataStack(with: coreDataStack)
 		
 		if let conversationViewController = conversation {
 			navigationController?.pushViewController(conversationViewController, animated: true)

@@ -9,6 +9,8 @@ import Foundation
 import CoreData
 
 class CoreDataStack {
+	var didUpdateDataBase: ((CoreDataStack) -> Void)?
+	
 	private var storeURL: URL = {
 		guard let documentsURL = FileManager.default.urls(for: .documentDirectory,
 														  in: .userDomainMask).last else {
@@ -77,7 +79,7 @@ class CoreDataStack {
 		}
 		if let parent = context.parent { performSave(in: parent) }
 		
-		printDatabaseStatistics()
+//		printDatabaseStatistics()
 	}
 	
 	func getChannel(for id: String) -> ChannelDB? {
@@ -100,6 +102,36 @@ class CoreDataStack {
 			} catch {
 				fatalError(error.localizedDescription)
 			}
+		}
+	}
+	
+	func enableObservers() {
+		let notificationCenter = NotificationCenter.default
+		notificationCenter.addObserver(self,
+									   selector: #selector(managedObjectContextObjectsDidChange(notification:)),
+									   name: NSNotification.Name.NSManagedObjectContextObjectsDidChange,
+									   object: mainContext)
+	}
+	
+	@objc
+	private func managedObjectContextObjectsDidChange(notification: NSNotification) {
+		guard let userInfo = notification.userInfo else { return }
+		
+		didUpdateDataBase?(self)
+		
+		if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>,
+		   inserts.count > 0 {
+			print("Добавлено объектов: ", inserts.count)
+		}
+		
+		if let updates = userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>,
+		   updates.count > 0 {
+			print("Обновлено объектов: ", updates.count)
+		}
+		
+		if let deletes = userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>,
+		   deletes.count > 0 {
+			print("Удалено объектов: ", deletes.count)
 		}
 	}
 }
