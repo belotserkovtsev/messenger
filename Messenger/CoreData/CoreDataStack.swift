@@ -82,12 +82,8 @@ class CoreDataStack {
 //		printDatabaseStatistics()
 	}
 	
-	func getChannel(for id: String) -> ChannelDB? {
-		guard let channels = try? mainContext.fetch(ChannelDB.fetchRequest()) as? [ChannelDB] else { return nil }
-		for channel in channels where channel.id == id {
-			return channel
-		}
-		return nil
+	func getMainContext() -> NSManagedObjectContext {
+		mainContext
 	}
 	
 	func printDatabaseStatistics() {

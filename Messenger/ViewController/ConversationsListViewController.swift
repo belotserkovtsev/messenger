@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 class ConversationsListViewController: UIViewController {
 	
@@ -15,6 +16,17 @@ class ConversationsListViewController: UIViewController {
 	private var firestoreManager = FirestoreManager(path: "channels")
 	private var channelsModel = ChannelModel()
 	private var coreDataStack = CoreDataManager.stack
+	private lazy var request: NSFetchRequest<ChannelDB> = {
+		let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+		let sortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
+		request.sortDescriptors = [sortDescriptor]
+		return request
+	}()
+	private lazy var fetchedResultsController: NSFetchedResultsController<ChannelDB> = {
+		let context = coreDataStack.getMainContext()
+		let frc = NSFetchedResultsController(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+		return frc
+	}()
 	
 	// MARK: Nav Bar Tap Handlers
 	@objc private func profileTapHandler() {
@@ -56,15 +68,23 @@ class ConversationsListViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		tableView?.delegate = self
+		fetchedResultsController.delegate = self
+		tableView?.dataSource = self
 		
 		title = "Channels"
 		setTrailingBarButtonItem()
 		setLeadingBarButtonItems()
 		
 		tableView?.register(UINib(nibName: String(describing: ConversationsListTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
-		tableView?.dataSource = self
+		
 		tableView?.rowHeight = 88
-		tableView?.contentInset = UIEdgeInsets(top: -1, left: 0, bottom: 0, right: 0)
+		tableView?.contentInset = UIEdgeInsets(top: -2, left: 0, bottom: 0, right: 0)
+		
+		do {
+			try fetchedResultsController.performFetch()
+		} catch {
+			fatalError("unable to perform cached fetch")
+		}
 		
 		firestoreManager.addListener { [weak self] snapshot, _ in
 			DispatchQueue.global(qos: .userInitiated).async {
@@ -74,11 +94,11 @@ class ConversationsListViewController: UIViewController {
 					let documentData = document.data()
 					let id = document.documentID
 					if let name = documentData["name"] as? String, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-						
+
 						let timestamp = documentData["lastActivity"] as? Timestamp
 						let lastMessage = documentData["lastMessage"] as? String
-						let hasRecentlyBeenActive = self?.hasRecentlyBeenActive(for: timestamp?.dateValue()) ?? false
-						
+						let hasRecentlyBeenActive = timestamp?.dateValue().hasPassedSinceNow(for: .minute, duration: 10) ?? false
+
 						let data = ChannelModel.Channel(id: id,
 														name: name,
 														lastMessage: lastMessage,
@@ -88,15 +108,14 @@ class ConversationsListViewController: UIViewController {
 						channels.append(data)
 					}
 				}
-			
-				DispatchQueue.main.async {
-					self?.channelsModel.reload(with: channels)
-					self?.tableView?.reloadData()
-				}
-				
+
 				self?.coreDataStack.performSave { context in
+					var managedObjects = [NSManagedObject]()
 					channels.forEach { channel in
-						_ = ChannelDB(for: channel, in: context)
+						managedObjects.append(ChannelDB(for: channel, in: context) as NSManagedObject)
+					}
+					do { try context.obtainPermanentIDs(for: managedObjects) } catch {
+						fatalError("Unable to get permanent ids for managed objects")
 					}
 				}
 			}
@@ -113,26 +132,8 @@ class ConversationsListViewController: UIViewController {
 			tableView?.backgroundColor = UIColor(white: 0.97, alpha: 1)
 		}
 	}
-	// MARK: UI Modifiers/Private methods
-	private func hasRecentlyBeenActive(for date: Date?) -> Bool {
-		guard let inputDate = date else { return false }
-		
-		let calendar = Calendar.current
-		let startOfNow = Date()
-		let startOfTimeStamp = inputDate
-		
-		let components = calendar.dateComponents([.minute], from: startOfNow, to: startOfTimeStamp)
-		let minuteComponent = components.minute
-		if let minute = minuteComponent {
-			if abs(minute) >= 10 {
-				return false
-			} else {
-				return true
-			}
-		}
-		return false
-	}
 	
+	// MARK: UI Modifiers/Private methods
 	private func setTrailingBarButtonItem() {
 		if let profileItemImage = UIImage(named: "Plus"),
 		   let resizedProfileItemImage = resizeImage(image: profileItemImage, targetSize: CGSize(width: 22, height: 22)) {
@@ -196,14 +197,17 @@ class ConversationsListViewController: UIViewController {
 // MARK: UITableViewDataSource
 extension ConversationsListViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		channelsModel.channels.count
+		guard let sections = fetchedResultsController.sections else { fatalError("no sections found") }
+		let sectionsInfo = sections[section]
+		return sectionsInfo.numberOfObjects
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let data = channelsModel.channels[indexPath.row]
+		let data = fetchedResultsController.object(at: indexPath)
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
 				as? ConversationsListTableViewCell else { return UITableViewCell() }
-		cell.configure(with: data)
+		let configurableCell = ChannelModel.Channel(for: data)
+		cell.configure(with: configurableCell)
 		return cell
 	}
 	
@@ -220,7 +224,6 @@ extension ConversationsListViewController: UITableViewDelegate {
 		
 		conversation?.title = channelsModel.channels[indexPath.row].name
 		conversation?.setChannelData(with: channelsModel.channels[indexPath.row])
-//		conversation?.setCoreDataStack(with: coreDataStack)
 		
 		if let conversationViewController = conversation {
 			navigationController?.pushViewController(conversationViewController, animated: true)
@@ -231,6 +234,47 @@ extension ConversationsListViewController: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 		if editingStyle == .delete {
 			firestoreManager.deleteDocument(id: channelsModel.channels[indexPath.row].id)
+		}
+	}
+}
+
+// MARK: FetchResultsController Delegate
+extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
+	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		print("begin update")
+		tableView?.beginUpdates()
+	}
+	
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		print("end update")
+		tableView?.endUpdates()
+	}
+	
+	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+		switch type {
+		case .insert:
+			if let newIndexPath = newIndexPath {
+				print("inserting")
+				tableView?.insertRows(at: [newIndexPath], with: .automatic)
+			}
+		case .move:
+			if let newIndexPath = newIndexPath, let indexPath = indexPath {
+				print("moving")
+				tableView?.deleteRows(at: [indexPath], with: .automatic)
+				tableView?.insertRows(at: [newIndexPath], with: .automatic)
+			}
+		case .update:
+			if let indexPath = indexPath {
+				print("updating")
+				tableView?.reloadRows(at: [indexPath], with: .automatic)
+			}
+		case .delete:
+			if let indexPath = indexPath {
+				print("deleting")
+				tableView?.deleteRows(at: [indexPath], with: .automatic)
+			}
+		default:
+			break
 		}
 	}
 }
