@@ -6,13 +6,16 @@
 //
 
 import UIKit
+import Firebase
 
 class ConversationsListViewController: UIViewController {
 	
 	@IBOutlet weak var tableView: UITableView?
 	private let cellIdentifier = String(describing: ConversationsListTableViewCell.self)
+	private var firestoreManager = FirestoreManager(path: "channels")
+	private var channelsModel = ChannelDataModel()
 	
-	//MARK: Nav Bar Tap Handlers
+	// MARK: Nav Bar Tap Handlers
 	@objc private func profileTapHandler() {
 		let storyBoard = UIStoryboard(name: "Profile", bundle: nil)
 		let profile = storyBoard.instantiateViewController(withIdentifier: "ProfileViewController") as? ProfileViewController
@@ -29,22 +32,70 @@ class ConversationsListViewController: UIViewController {
 		}
 	}
 	
-	//MARK: Lifecycle Methods
+	@objc private func addConversationTapHandler() {
+		showInputDialog(title: "Add channel",
+						subtitle: "Please enter a name of the channel you want to create.",
+						actionTitle: "Create",
+						cancelTitle: "Cancel",
+						inputPlaceholder: "Channel name",
+						inputKeyboardType: .default) { input in
+			
+			guard let channelName = input else {
+				let errorAlert = UIAlertController(title: "Error", message: "Unable to create channel with no name", preferredStyle: .alert)
+				errorAlert.addAction(.init(title: "Ok", style: .cancel))
+				self.present(errorAlert, animated: true)
+				return
+			}
+			
+			self.firestoreManager.addDocumnent(data: ["name": channelName])
+		}
+	}
+	
+	// MARK: Lifecycle Methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		tableView?.delegate = self
 		
-		title = "Tinkoff Chat"
+		title = "Channels"
 		setTrailingBarButtonItem()
-		setLeadingBarButtonItem()
+		setLeadingBarButtonItems()
 		
 		tableView?.register(UINib(nibName: String(describing: ConversationsListTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
 		tableView?.dataSource = self
 		tableView?.rowHeight = 88
 		
+		tableView?.contentInset = UIEdgeInsets(top: -1, left: 0, bottom: 0, right: 0)
+		
+		firestoreManager.addListener { [weak self] snapshot, _ in
+			guard let documents = snapshot?.documents else { return }
+			var channels = [ChannelDataModel.Channel]()
+			for document in documents {
+				let documentData = document.data()
+				let id = document.documentID
+				if let name = documentData["name"] as? String, !name.isEmpty {
+					
+					let timestamp = documentData["lastActivity"] as? Timestamp
+					let lastMessage = documentData["lastMessage"] as? String
+					let hasRecentlyBeenActive = self?.hasRecentlyBeenActive(for: timestamp?.dateValue()) ?? false
+					
+					let data = ChannelDataModel.Channel(id: id,
+														name: name,
+														lastMessage: lastMessage,
+														lastActivity: timestamp?.dateValue(),
+														online: hasRecentlyBeenActive,
+														hasUnreadMessages: false)
+					channels.append(data)
+				}
+				self?.channelsModel.reload(with: channels)
+				self?.tableView?.reloadData()
+				
+			}
+		}
+		
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
 		switch ThemeManager.currentTheme {
 		case .night:
 			tableView?.backgroundColor = .black
@@ -52,40 +103,71 @@ class ConversationsListViewController: UIViewController {
 			tableView?.backgroundColor = UIColor(white: 0.97, alpha: 1)
 		}
 	}
+	// MARK: UI Modifiers/Private methods
+	private func hasRecentlyBeenActive(for date: Date?) -> Bool {
+		guard let inputDate = date else { return false }
+		
+		let calendar = Calendar.current
+		let startOfNow = Date()
+		let startOfTimeStamp = inputDate
+		
+		let components = calendar.dateComponents([.minute], from: startOfNow, to: startOfTimeStamp)
+		let minuteComponent = components.minute
+		if let minute = minuteComponent {
+			if abs(minute) >= 10 {
+				return false
+			} else {
+				return true
+			}
+		}
+		return false
+	}
 	
-	//MARK: UI Modifiers
 	private func setTrailingBarButtonItem() {
-		if let profileItemImage = UIImage(named: "Profile"),
-		   let resizedProfileItemImage = resizeImage(image: profileItemImage, targetSize: CGSize(width: 22, height: 22))  {
-			navigationItem.rightBarButtonItem = UIBarButtonItem(image: resizedProfileItemImage, style: .plain, target: self, action: #selector(profileTapHandler))
+		if let profileItemImage = UIImage(named: "Plus"),
+		   let resizedProfileItemImage = resizeImage(image: profileItemImage, targetSize: CGSize(width: 22, height: 22)) {
+			navigationItem.rightBarButtonItem = UIBarButtonItem(image: resizedProfileItemImage, style: .plain, target: self, action: #selector(addConversationTapHandler))
 			navigationItem.rightBarButtonItem?.tintColor = .gray
 		} else {
-			navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Profile", style: .plain, target: self, action: #selector(profileTapHandler))
+			navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Profile", style: .plain, target: self, action: #selector(addConversationTapHandler))
 		}
 	}
 	
-	private func setLeadingBarButtonItem() {
+	private func setLeadingBarButtonItems() {
+		var profile = UIBarButtonItem()
+		var settings = UIBarButtonItem()
+		
 		if let settingsItemImage = UIImage(named: "Settings"),
-		   let resizedSettingsItemImage = resizeImage(image: settingsItemImage, targetSize: CGSize(width: 22, height: 22))  {
-			navigationItem.leftBarButtonItem = UIBarButtonItem(image: resizedSettingsItemImage, style: .plain, target: self, action: #selector(settingsTapHandler))
-			navigationItem.leftBarButtonItem?.tintColor = .gray
+		   let resizedSettingsItemImage = resizeImage(image: settingsItemImage, targetSize: CGSize(width: 22, height: 22)) {
+			settings = UIBarButtonItem(image: resizedSettingsItemImage, style: .plain, target: self, action: #selector(settingsTapHandler))
+			settings.tintColor = .gray
 		} else {
-			navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Settings", style: .plain, target: self, action: #selector(settingsTapHandler))
+			settings = UIBarButtonItem(title: "Settings", style: .plain, target: self, action: #selector(settingsTapHandler))
 		}
+		
+		if let profileItemImage = UIImage(named: "Profile"),
+		   let resizedProfileItemImage = resizeImage(image: profileItemImage, targetSize: CGSize(width: 22, height: 22)) {
+			profile = UIBarButtonItem(image: resizedProfileItemImage, style: .plain, target: self, action: #selector(profileTapHandler))
+			profile.tintColor = .gray
+		} else {
+			profile = UIBarButtonItem(title: "Profile", style: .plain, target: self, action: #selector(profileTapHandler))
+		}
+		
+		navigationItem.leftBarButtonItems = [settings, profile]
 	}
 	
 	private func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage? {
 		let size = image.size
 		
-		let widthRatio  = targetSize.width  / size.width
+		let widthRatio  = targetSize.width / size.width
 		let heightRatio = targetSize.height / size.height
 		
 		// Figure out what our orientation is, and use that to form the rectangle
 		var newSize: CGSize
-		if(widthRatio > heightRatio) {
+		if widthRatio > heightRatio {
 			newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
 		} else {
-			newSize = CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
+			newSize = CGSize(width: size.width * widthRatio, height: size.height * widthRatio)
 		}
 		
 		// This is the rect that we've calculated out and this is what is actually used below
@@ -99,77 +181,69 @@ class ConversationsListViewController: UIViewController {
 		
 		return newImage
 	}
-	
-	//MARK: Data
-	struct ChatsDataModel {
-		var chats: [[Chat]]
+}
+
+// MARK: Data
+extension ConversationsListViewController {
+	struct ChannelDataModel {
+		private(set) var channels = [Channel]()
 		
-		struct Chat {
-			var name: String?
-			var message: String?
-			var date: Date?
+		mutating func reload(with channels: [Channel]) {
+			self.channels = channels.sorted { left, right in
+				guard let leftLatestActivity = left.lastActivity else { return false }
+				guard let rigtLatestActivity = right.lastActivity else { return true }
+				return leftLatestActivity > rigtLatestActivity
+			}
+		}
+		
+		struct Channel {
+			var id: String
+			var name: String
+			var lastMessage: String?
+			var lastActivity: Date?
 			var online: Bool
 			var hasUnreadMessages: Bool
 		}
 	}
-	
-	private var chatsData: ChatsDataModel = .init(chats:
-		[[.init(name: "Egor Nosov", message: "What are you up to?", date: Date(), online: true, hasUnreadMessages: false),
-		.init(name: "Alex Firsov", message: "I was trying to reach you but you were not ansering so i thought i would message you instead. Well, to be honest", date: Date(timeIntervalSinceNow: TimeInterval(-336_000)), online: true, hasUnreadMessages: false),
-		.init(name: "Anastasia Bazueva", message: "Some bread, milk, youghurt and paper towels", date: Date(timeIntervalSinceNow: TimeInterval(-536_000)), online: true, hasUnreadMessages: true),
-		.init(name: "Viktor", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false),
-		.init(name: "Mikhail Romanov", message: nil, date: nil, online: true, hasUnreadMessages: false),
-		.init(name: "belotserkovtsev", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false),
-		.init(name: nil, message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: true),
-		.init(name: "Andrey Bodrov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: true),
-		.init(name: "Evgeniy Naumov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false),
-		.init(name: "Sasha Smirnov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: true, hasUnreadMessages: false)],
-									   
-	   [.init(name: "Egor Nosov", message: "What are you up to?", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Alex Firsov", message: "I was trying to reach you but you were not ansering so i thought i would message you", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Anastasia Bazueva", message: "Some bread, milk, youghurt and paper towels", date: Date(), online: false, hasUnreadMessages: true),
-		.init(name: "Viktor Belfort", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Mikhail Romanov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Denver White", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Egor Nosov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Egor Nosov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Egor Nosov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false),
-		.init(name: "Egor Nosov", message: "Amet enim do laborum tempor nisi aliqua ad adipisicing", date: Date(), online: false, hasUnreadMessages: false)]])
 }
 
-//MARK: UITableViewDataSource
+// MARK: UITableViewDataSource
 extension ConversationsListViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		chatsData.chats[section].count
-	}
-	
-	func numberOfSections(in tableView: UITableView) -> Int {
-		chatsData.chats.count
+		channelsModel.channels.count
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let section = chatsData.chats[indexPath.section]
-		let data = section[indexPath.row]
+		let data = channelsModel.channels[indexPath.row]
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
 				as? ConversationsListTableViewCell else { return UITableViewCell() }
 		cell.configure(with: data)
 		return cell
 	}
 	
-	func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		section == 0 ? "Online" : "History"
+	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+		1
 	}
 }
 
-//MARK: UITableViewDelegate
+// MARK: UITableViewDelegate
 extension ConversationsListViewController: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let storyBoard : UIStoryboard = UIStoryboard(name: "Conversation", bundle: nil)
+		let storyBoard: UIStoryboard = UIStoryboard(name: "Conversation", bundle: nil)
 		let conversation = storyBoard.instantiateViewController(withIdentifier: "ConversationViewController") as? ConversationViewController
-		conversation?.title = chatsData.chats[indexPath.section][indexPath.row].name ?? "No name"
+		
+		conversation?.title = channelsModel.channels[indexPath.row].name
+		conversation?.setId(with: channelsModel.channels[indexPath.row].id)
+		
 		if let conversationViewController = conversation {
 			navigationController?.pushViewController(conversationViewController, animated: true)
 		}
 		tableView.deselectRow(at: indexPath, animated: true)
+	}
+	
+	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+		if editingStyle == .delete {
+			firestoreManager.deleteDocument(id: channelsModel.channels[indexPath.row].id)
+		}
 	}
 }

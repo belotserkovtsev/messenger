@@ -21,15 +21,15 @@ class LightTheme: ThemeProtocol {
 	
 	var mainButtonsBackgroundColor: UIColor = .lightButton
 	
-	var conversationsListUITableViewSeparatorColor: UIColor? = nil
+	var conversationsListUITableViewSeparatorColor: UIColor?
 	
-	var conversationsListSelectedCellView: UIView? = nil
+	var conversationsListSelectedCellView: UIView?
 	
 	var conversationsListCellBackgroundColor: UIColor = .white
 	
-	var conversationUITableViewBackgroundColor: UIColor? = nil
+	var conversationUITableViewBackgroundColor: UIColor?
 	
-	var conversationCellBackgroundColor: UIColor? = nil
+	var conversationCellBackgroundColor: UIColor?
 	
 	var conversationCellIncomingBubbleBackgroundColor: UIColor = .lightIncomingBubble
 	
@@ -38,6 +38,5 @@ class LightTheme: ThemeProtocol {
 	var conversationCellIncomingBubbleTextColor: UIColor = .black
 	
 	var conversationCellOutgoingBubbleTextColor: UIColor = .white
-	
 	
 }

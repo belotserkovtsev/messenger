@@ -63,22 +63,10 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" id="N6d-U5-KiY"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
-                                        <state key="normal" title="Save GCD"/>
+                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="19"/>
+                                        <state key="normal" title="Save"/>
                                         <connections>
                                             <action selector="saveGCDTapHandler:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4oy-Xe-YKx"/>
-                                        </connections>
-                                    </button>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dOD-Gi-p8K" customClass="ThemeDependentUIButton" customModule="Messenger" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="40"/>
-                                        <color key="backgroundColor" systemColor="systemGray5Color"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="40" id="LBw-c9-K2R"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
-                                        <state key="normal" title="Save Operations"/>
-                                        <connections>
-                                            <action selector="saveOperationsTapHandler:" destination="BYZ-38-t0r" eventType="touchUpInside" id="V8j-lN-4z1"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -123,7 +111,6 @@
                         <outlet property="nameTextField" destination="eKX-iO-Zoc" id="Qh6-MQ-DrO"/>
                         <outlet property="profilePictureView" destination="xaV-ta-Rex" id="aLo-Sc-JKM"/>
                         <outlet property="saveGCDButton" destination="Eq8-WA-tQ6" id="tce-Op-PSj"/>
-                        <outlet property="saveOperationsButton" destination="dOD-Gi-p8K" id="C8c-mz-DLX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

@@ -6,12 +6,18 @@
 //
 
 import UIKit
+import Firebase
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 	var window: UIWindow?
 	
-	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+		FirebaseApp.configure()
+		return true
+	}
+	
+	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
 		if #available(iOS 13.0, *) { window?.overrideUserInterfaceStyle = .light }
 		
 		let theme = ThemeManager.currentTheme
@@ -23,23 +29,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		case .classic:
 			ClassicTheme().apply()
 		}
-		
+
 		if UserDefaults.standard.bool(forKey: "isNthLaunch") {
 			return true
 		} else {
-			// Форсы убрать не забыл. Так и хочу оставить, так как без этих файлов приложение работать будет не очень хорошо
-			let storableData: ProfileDataStorable = .init(name: "Your name here", description: "Tell us something about yourself")
-			let jsonData = try! JSONEncoder().encode(storableData)
-			
-			let documentDirURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-			let profileDataBackupURL = documentDirURL.appendingPathComponent("ProfileDataBackup").appendingPathExtension("json")
-			let profileDataURL = documentDirURL.appendingPathComponent("ProfileData").appendingPathExtension("json")
-			
-			try! jsonData.write(to: profileDataBackupURL)
-			try! jsonData.write(to: profileDataURL)
+			let profileData: ProfileDataModel = .init(name: "Your name here", description: "Tell us something about yourself", profilePicture: nil)
+			GCDManager().save(data: profileData, isFirstLaunch: true) { _ in }
 			UserDefaults.standard.set(true, forKey: "isNthLaunch")
 			return true
 		}
 	}
 }
-

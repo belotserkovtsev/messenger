@@ -18,19 +18,19 @@ class ConversationsListTableViewCell: UITableViewCell {
 	@IBOutlet weak var isOnlineStrokeView: UIView?
 	@IBOutlet weak var dateLabel: UILabel?
 	
-	func configure(with data: ConversationsListViewController.ChatsDataModel.Chat) {
+	func configure(with data: ConversationsListViewController.ChannelDataModel.Channel) {
 		profilePictureView?.layer.cornerRadius = 52 / 2
 		unreadMessageIndicator?.layer.cornerRadius = 14 / 2
 		isOnlineView?.layer.cornerRadius = 12 / 2
 		isOnlineStrokeView?.layer.cornerRadius = 16 / 2
 		isOnlineStrokeView?.backgroundColor = .white
 		
-		nameAndLastnameLabel?.text = data.name ?? "No name"
-		lastMessageLabel?.text = data.message ?? "No messages yet..."
-		initialsLabel?.text = "\(data.name?.first?.uppercased() ?? "")"
+		nameAndLastnameLabel?.text = data.name 
+		lastMessageLabel?.text = data.lastMessage ?? "No messages yet..."
+		initialsLabel?.text = "\(data.name.first?.uppercased() ?? "")"
 		isOnlineView?.isHidden = !data.online
 		isOnlineStrokeView?.isHidden = !data.online
-		dateLabel?.text = date(for: data.date)
+		dateLabel?.text = date(for: data.lastActivity)
 		
 		if data.hasUnreadMessages {
 			setCellToUnread()

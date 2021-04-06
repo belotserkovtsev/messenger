@@ -32,7 +32,7 @@ protocol ThemeProtocol {
 extension ThemeProtocol {
 	func apply() {
 		if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-			//Dependent objects
+			// Dependent objects
 			ThemeDependentUILabel.appearance()
 				.textColor = mainFontsColor
 			ThemeDependentUIView.appearance()
@@ -40,21 +40,24 @@ extension ThemeProtocol {
 			ThemeDependentUIButton.appearance()
 				.backgroundColor = mainButtonsBackgroundColor
 			
-			//Text views
-			UITextView.appearance().backgroundColor = mainViewsBackgroundColor
-			UITextView.appearance().textColor = mainFontsColor
-			UITextField.appearance().textColor = mainFontsColor
+			// Text views
+			UITextView.appearance()
+				.backgroundColor = mainViewsBackgroundColor
+			UITextView.appearance()
+				.textColor = mainFontsColor
+			UITextField.appearance(whenContainedInInstancesOf: [ProfileViewController.self])
+				.textColor = mainFontsColor
 			
-			//Activity
+			// Activity
 			UIActivityIndicatorView.appearance().color = mainFontsColor
 			
-			//Navbar
+			// Navbar
 			UINavigationBar.appearance()
 				.titleTextAttributes = [NSAttributedString.Key.foregroundColor: navigationBarTextColor]
 			UINavigationBar.appearance()
 				.barStyle = navigationBarStyle
 			
-			//Conversations
+			// Conversations
 			UITableViewCell.appearance(whenContainedInInstancesOf: [ConversationsListViewController.self])
 				.backgroundColor = conversationsListCellBackgroundColor
 			UITableViewCell.appearance(whenContainedInInstancesOf: [ConversationsListViewController.self])
@@ -63,7 +66,7 @@ extension ThemeProtocol {
 			UITableView.appearance(whenContainedInInstancesOf: [ConversationsListViewController.self])
 				.separatorColor = conversationsListUITableViewSeparatorColor
 			
-			//Conversation
+			// Conversation
 			UITableViewCell.appearance(whenContainedInInstancesOf: [ConversationViewController.self])
 				.backgroundColor = conversationCellBackgroundColor
 			UITableView.appearance(whenContainedInInstancesOf: [ConversationViewController.self])
