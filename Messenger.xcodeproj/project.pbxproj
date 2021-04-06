@@ -32,6 +32,7 @@
 		8477A9F825D6946F005227FC /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8477A9F625D6946F005227FC /* Profile.storyboard */; };
 		8477A9FA25D6946F005227FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8477A9F925D6946F005227FC /* Assets.xcassets */; };
 		8477A9FD25D6946F005227FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8477A9FB25D6946F005227FC /* LaunchScreen.storyboard */; };
+		848DEF98261C97C7008FF3F1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 848DEF97261C97C7008FF3F1 /* GoogleService-Info.plist */; };
 		848FAA8825FF7B1F0063368E /* UIScrollView+scrollToBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848FAA8725FF7B1F0063368E /* UIScrollView+scrollToBottom.swift */; };
 		848FAA8D25FF89070063368E /* GCDManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848FAA8C25FF89070063368E /* GCDManager.swift */; };
 		848FAA9425FF97090063368E /* ProfileDataCompletionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848FAA9325FF97090063368E /* ProfileDataCompletionStatus.swift */; };
@@ -89,6 +90,7 @@
 		8477A9F925D6946F005227FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8477A9FC25D6946F005227FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8477A9FE25D6946F005227FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		848DEF97261C97C7008FF3F1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		848FAA8725FF7B1F0063368E /* UIScrollView+scrollToBottom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+scrollToBottom.swift"; sourceTree = "<group>"; };
 		848FAA8C25FF89070063368E /* GCDManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDManager.swift; sourceTree = "<group>"; };
 		848FAA9325FF97090063368E /* ProfileDataCompletionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDataCompletionStatus.swift; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 		8477A9E425D6946E005227FC = {
 			isa = PBXGroup;
 			children = (
+				848DEF97261C97C7008FF3F1 /* GoogleService-Info.plist */,
 				8477A9EF25D6946F005227FC /* Messenger */,
 				8477A9EE25D6946F005227FC /* Products */,
 				721747BD57F62664C336849A /* Pods */,
@@ -402,6 +405,7 @@
 			files = (
 				8477A9FD25D6946F005227FC /* LaunchScreen.storyboard in Resources */,
 				84AE8CD725EBD5150016C53E /* ConversationsList.storyboard in Resources */,
+				848DEF98261C97C7008FF3F1 /* GoogleService-Info.plist in Resources */,
 				84CE068525ED78F7005B8664 /* ConversationTableViewCell.xib in Resources */,
 				8477A9FA25D6946F005227FC /* Assets.xcassets in Resources */,
 				84CE067F25ED77B1005B8664 /* Conversation.storyboard in Resources */,

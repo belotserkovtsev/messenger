@@ -80,11 +80,7 @@ class ConversationsListViewController: UIViewController {
 		tableView?.rowHeight = 88
 		tableView?.contentInset = UIEdgeInsets(top: -2, left: 0, bottom: 0, right: 0)
 		
-		do {
-			try fetchedResultsController.performFetch()
-		} catch {
-			fatalError("unable to perform cached fetch")
-		}
+		do { try fetchedResultsController.performFetch() } catch { fatalError("unable to perform cached fetch") }
 		
 		firestoreManager.addListener { [weak self] snapshot, _ in
 			DispatchQueue.global(qos: .userInitiated).async {
@@ -111,11 +107,42 @@ class ConversationsListViewController: UIViewController {
 
 				self?.coreDataStack.performSave { context in
 					var managedObjects = [NSManagedObject]()
-					channels.forEach { channel in
-						managedObjects.append(ChannelDB(for: channel, in: context) as NSManagedObject)
-					}
-					do { try context.obtainPermanentIDs(for: managedObjects) } catch {
-						fatalError("Unable to get permanent ids for managed objects")
+					var channelManagedObjects = [ChannelDB]()
+					let channelRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+					channelRequest.sortDescriptors = [NSSortDescriptor(key: "lastActivity", ascending: false)]
+					
+					do { channelManagedObjects = try context.fetch(channelRequest) } catch { fatalError("unable to fetch channel for messages") }
+					
+					if !channelManagedObjects.isEmpty {
+						
+						// check wether saved channels contain listener channels to create mismatched objects and update
+						// existing ones
+						for channel in channels {
+							if let channelManagedObject = channelManagedObjects.first(where: { $0.id == channel.id }) {
+								channelManagedObject.update(with: channel)
+							} else {
+								managedObjects.append(ChannelDB(for: channel, in: context))
+							}
+						}
+						
+						do { try context.obtainPermanentIDs(for: managedObjects) } catch {
+							fatalError("Unable to get permanent ids for managed objects")
+						}
+						
+						// check wether listener channels contain saved channels to delete mismatches
+						for channelManagedObject in channelManagedObjects {
+							if !channels.contains(where: { $0.id == channelManagedObject.id }) {
+								context.delete(channelManagedObject)
+							}
+						}
+						
+					} else {
+						for channel in channels {
+							managedObjects.append(ChannelDB(for: channel, in: context))
+						}
+						do { try context.obtainPermanentIDs(for: managedObjects) } catch {
+							fatalError("Unable to get permanent ids for managed objects")
+						}
 					}
 				}
 			}
@@ -221,9 +248,12 @@ extension ConversationsListViewController: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let storyBoard: UIStoryboard = UIStoryboard(name: "Conversation", bundle: nil)
 		let conversation = storyBoard.instantiateViewController(withIdentifier: "ConversationViewController") as? ConversationViewController
+	
+		let channelManagedObject = fetchedResultsController.object(at: indexPath)
+		let channel = ChannelModel.Channel(for: channelManagedObject)
 		
-		conversation?.title = channelsModel.channels[indexPath.row].name
-		conversation?.setChannelData(with: channelsModel.channels[indexPath.row])
+		conversation?.title = channel.name
+		conversation?.setChannelData(with: channel)
 		
 		if let conversationViewController = conversation {
 			navigationController?.pushViewController(conversationViewController, animated: true)
@@ -233,7 +263,8 @@ extension ConversationsListViewController: UITableViewDelegate {
 	
 	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 		if editingStyle == .delete {
-			firestoreManager.deleteDocument(id: channelsModel.channels[indexPath.row].id)
+			let channelManagedObject = fetchedResultsController.object(at: indexPath)
+			firestoreManager.deleteDocument(id: channelManagedObject.id!)
 		}
 	}
 }
@@ -250,7 +281,12 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
 		tableView?.endUpdates()
 	}
 	
-	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+	func controller(
+		_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+		didChange anObject: Any,
+		at indexPath: IndexPath?,
+		for type: NSFetchedResultsChangeType,
+		newIndexPath: IndexPath?) {
 		switch type {
 		case .insert:
 			if let newIndexPath = newIndexPath {
