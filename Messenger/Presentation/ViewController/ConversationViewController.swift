@@ -11,35 +11,19 @@ import CoreData
 
 class ConversationViewController: UIViewController {
 	
-	@IBOutlet weak var tableView: UITableView?
-	@IBOutlet weak var messageTextView: UITextView?
-	@IBOutlet weak var messageTextViewWrapperView: UIView?
-	@IBOutlet weak var sendBarView: ThemeDependentUIView?
-	@IBOutlet weak var messageTextViewPlaceholderLabel: UILabel?
-	@IBOutlet weak var sendButton: UIButton?
+	@IBOutlet weak var tableView: UITableView!
+	@IBOutlet weak var messageTextView: UITextView!
+	@IBOutlet weak var messageTextViewWrapperView: UIView!
+	@IBOutlet weak var sendBarView: ThemeDependentUIView!
+	@IBOutlet weak var messageTextViewPlaceholderLabel: UILabel!
+	@IBOutlet weak var sendButton: UIButton!
 	
 	private let cellIdentifier = String(describing: ConversationTableViewCell.self)
-	
-	private var channelData: ChannelModel.Channel?
-	private var coreDataStack = CoreDataManager.stack
 	private var cachedProfileName: String?
-//	private var conversationModel = ConversationModel()
 	
-	private lazy var firestoreManager = FirestoreManager(path: "channels/\(channelData?.id ?? " ")/messages")
-	
-	private lazy var request: NSFetchRequest<MessageDB> = {
-		let request: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
-		let sortDescriptor = NSSortDescriptor(key: "created", ascending: false)
-		let predicate = NSPredicate(format: "channel.id == %@", channelData!.id)
-		request.sortDescriptors = [sortDescriptor]
-		request.predicate = predicate
-		return request
-	}()
-	private lazy var fetchedResultsController: NSFetchedResultsController<MessageDB> = {
-		let context = coreDataStack.getMainContext()
-		let frc = NSFetchedResultsController(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-		return frc
-	}()
+	var backendService: IFirestoreService?
+	var persistenceService: IPersistenceConversationService?
+	private var conversationModel = ConversationModel()
 	
 	// MARK: Gestures
 	@IBAction func sendButtonHandler(_ sender: UIButton) {
@@ -49,7 +33,6 @@ class ConversationViewController: UIViewController {
 	// MARK: Lifecycle Methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		fetchedResultsController.delegate = self
 		messageTextViewWrapperView?.layer.cornerRadius = 12
 		messageTextViewWrapperView?.layer.borderWidth = 1
 		messageTextViewWrapperView?.layer.borderColor = UIColor.themeBorder.cgColor
@@ -57,11 +40,7 @@ class ConversationViewController: UIViewController {
 		tableView?.estimatedRowHeight = 10
 		tableView?.rowHeight = UITableView.automaticDimension
 		
-		do {
-			try fetchedResultsController.performFetch()
-		} catch {
-			fatalError("unable to perform cached fetch")
-		}
+		persistenceService?.fetch()
 		
 		tableView?.register(UINib(nibName: String(describing: ConversationTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
 		tableView?.dataSource = self
@@ -73,12 +52,10 @@ class ConversationViewController: UIViewController {
 		NotificationCenter.default
 			.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
 		
-//		coreDataStack.enableObservers()
-		
 		let gesture = self.hideKeyboardWhenTappedAround()
 		gesture.delegate = self
 		
-		firestoreManager.addListener { [weak self] snapshot, _ in
+		backendService?.addListener { [weak self] snapshot, _ in
 			DispatchQueue.global(qos: .userInitiated).async {
 				guard let documents = snapshot?.documents else { return }
 				var messages = [ConversationModel.Message]()
@@ -97,38 +74,7 @@ class ConversationViewController: UIViewController {
 					
 				}
 				
-//				DispatchQueue.main.async {
-//					self?.channelModel.reload(with: messages)
-//					self?.tableView?.reloadData()
-//				}
-				
-				self?.coreDataStack.performSave { context in
-					guard let channelData = self?.channelData else { return }
-					var messageManagedObjects = [NSManagedObject]()
-					let channelManagedObject: ChannelDB?
-					let channelRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
-					channelRequest.sortDescriptors = [NSSortDescriptor(key: "lastActivity", ascending: false)]
-					channelRequest.predicate = NSPredicate(format: "id == %@", channelData.id)
-					
-					do {
-						channelManagedObject = try context.fetch(channelRequest).first
-					} catch { fatalError("unable to fetch channel for messages") }
-					
-					guard let existingMessageManagedObjects = self?.fetchedResultsController.fetchedObjects else {
-						fatalError("unable to get saved messages")
-					}
-					
-					messages.forEach { message in
-						if !existingMessageManagedObjects.contains(where: { $0.id == message.id }) {
-							let messageManagedObject = MessageDB(for: message, in: context)
-							messageManagedObjects.append(messageManagedObject)
-							channelManagedObject?.addToMessages(messageManagedObject)
-						}
-					}
-					do { try context.obtainPermanentIDs(for: messageManagedObjects) } catch {
-						fatalError("Unable to get permanent ids for managed objects")
-					}
-				}
+				self?.persistenceService?.performSave(messages: messages)
 			}
 		}
 		
@@ -139,29 +85,21 @@ class ConversationViewController: UIViewController {
 		
 		messageTextView?.delegate = self
 	}
-	
-	func setChannelData(with data: ChannelModel.Channel) {
-		channelData = data
-	}
-	
-//	func setCoreDataStack(with stack: CoreDataStack) {
-//		coreDataStack = stack
-//	}
 }
 
 // MARK: UITableViewDataSource
 extension ConversationViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		guard let sections = fetchedResultsController.sections else { fatalError("no sections found") }
+		guard let sections = persistenceService?.sections else { fatalError("no sections found") }
 		let sectionsInfo = sections[section]
 		return sectionsInfo.numberOfObjects
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 //		let data = channelModel.messages[channelModel.messages.count - indexPath.row - 1]
-		let data = fetchedResultsController.object(at: indexPath)
+		
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-				as? ConversationTableViewCell else { return UITableViewCell() }
+				as? ConversationTableViewCell, let data = persistenceService?.object(at: indexPath) as? MessageDB else { return UITableViewCell() }
 		let configurableCell = ConversationModel.Message(for: data)
 		cell.configure(with: configurableCell)
 		cell.contentView.transform = CGAffineTransform(scaleX: 1, y: -1)
@@ -251,7 +189,7 @@ extension ConversationViewController {
 		
 		if let profileName = cachedProfileName {
 			clearTextField()
-			firestoreManager.addDocumnent(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": isAnonymous ? "Anonymous" : profileName])
+			backendService?.addDocumnent(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": isAnonymous ? "Anonymous" : profileName])
 		} else {
 			GCDManager().get { result in
 				switch result {
@@ -259,7 +197,7 @@ extension ConversationViewController {
 					guard let profileName = data?.name else { break }
 					self.clearTextField()
 					self.cachedProfileName = profileName
-					self.firestoreManager.addDocumnent(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": isAnonymous ? "Anonymous" : profileName])
+					self.backendService?.addDocumnent(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": isAnonymous ? "Anonymous" : profileName])
 				default:
 					break
 				}
@@ -344,5 +282,20 @@ extension ConversationViewController: UIContextMenuInteractionDelegate {
 		return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
 			UIMenu(title: "Send options", children: [send, sendAnon])
 		}
+	}
+}
+
+// MARK: Make
+extension ConversationViewController {
+	static func make(with id: String) -> ConversationViewController? {
+		let storyBoard: UIStoryboard = UIStoryboard(name: "Conversation", bundle: nil)
+		let vc = storyBoard.instantiateViewController(withIdentifier: "ConversationViewController") as? ConversationViewController
+		
+		let serviceAssembly = ServiceAssembly()
+		
+		vc?.backendService = serviceAssembly.conversationBackendService(for: id)
+		vc?.persistenceService = serviceAssembly.conversationPersistenceService(id: id, delegate: vc!)
+		
+		return vc
 	}
 }
