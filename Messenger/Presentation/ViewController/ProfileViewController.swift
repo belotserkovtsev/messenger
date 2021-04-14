@@ -18,7 +18,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 	@IBOutlet weak var activityIndicator: UIActivityIndicatorView?
 	
 	private var isEditingProfile = false
-	private var gcdManager = GCDManager()
+	private var fileService: IProfileFileService?
 	
 	private var profilePicture: UIImage? {
 		willSet {
@@ -45,9 +45,9 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 		restrictEditing()
 		activityIndicator?.startAnimating()
 		
-		gcdManager.save(data: .init(name: nameTextField?.text,
+		fileService?.write(data: .init(name: nameTextField?.text,
 									 description: descriptionTextView?.text,
-									 profilePicture: profilePicture)) { status in
+									 profilePicture: profilePicture), isFirstLaunch: false) { status in
 			switch status {
 			case .success:
 				print("success")
@@ -92,7 +92,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 			.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
 		
 		activityIndicator?.startAnimating()
-		GCDManager().get { status in
+		fileService?.read { status in
 			switch status {
 			case .success(let data):
 				self.descriptionTextView?.text = data?.description ?? ""
@@ -117,8 +117,8 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		
-		gcdManager.cancel(.write)
-		gcdManager.cancel(.read)
+		fileService?.cancel(.write)
+		fileService?.cancel(.read)
 	}
 }
 
@@ -166,9 +166,9 @@ extension ProfileViewController {
 		stopEditing()
 		activityIndicator?.stopAnimating()
 		
-		gcdManager.cancel(.write)
+		fileService?.cancel(.write)
 		
-		GCDManager().get { status in
+		fileService?.read { status in
 			switch status {
 			case .success(let data):
 				self.descriptionTextView?.text = data?.description ?? ""
@@ -223,7 +223,7 @@ extension ProfileViewController {
 	@objc func profilePictureTapHandler() {
 		let alert = UIAlertController(title: "Set profile picture", message: nil, preferredStyle: .actionSheet)
 		
-		switch ThemeManager.currentTheme {
+		switch ThemeService.currentTheme {
 		case .night:
 			if #available(iOS 13, *) {
 				alert.overrideUserInterfaceStyle = .dark
@@ -313,5 +313,19 @@ extension ProfileViewController: UITextFieldDelegate {
 			enableSaveButton()
 		}
 		return true
+	}
+}
+
+extension ProfileViewController {
+	static func make() -> ProfileViewController? {
+		let storyBoard: UIStoryboard = UIStoryboard(name: "Profile", bundle: nil)
+		guard let vc = storyBoard.instantiateViewController(withIdentifier: "Profile") as? ProfileViewController else {
+			return nil
+		}
+		
+		let serviceAssembly = ServiceAssembly()
+		vc.fileService = serviceAssembly.profileFileService
+		
+		return vc
 	}
 }

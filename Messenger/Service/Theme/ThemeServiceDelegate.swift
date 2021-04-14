@@ -7,6 +7,6 @@
 
 import UIKit
 
-protocol ThemeManagerDelegate {
+protocol ThemeServiceDelegate {
 	func didSelectTheme(_ theme: ThemeType)
 }

@@ -14,6 +14,14 @@ class ServiceAssembly {
 		FirestoreService(path: "channels")
 	}
 	
+	var profileFileService: IProfileFileService {
+		ProfileFileService()
+	}
+	
+	var initialSetupService: IInitialSetupService {
+		InitialSetupService()
+	}
+	
 	func conversationBackendService(for id: String) -> IFirestoreService {
 		FirestoreService(path: "channels/\(id)/messages")
 	}

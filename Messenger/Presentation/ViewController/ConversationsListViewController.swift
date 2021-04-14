@@ -20,8 +20,7 @@ class ConversationsListViewController: UIViewController {
 	
 	// MARK: Nav Bar Tap Handlers
 	@objc private func profileTapHandler() {
-		let storyBoard = UIStoryboard(name: "Profile", bundle: nil)
-		let profile = storyBoard.instantiateViewController(withIdentifier: "ProfileViewController") as? ProfileViewController
+		let profile = ProfileViewController.make()
 		if let profileViewController = profile {
 			navigationController?.pushViewController(profileViewController, animated: true)
 		}
@@ -73,7 +72,8 @@ class ConversationsListViewController: UIViewController {
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		switch ThemeManager.currentTheme {
+		let presentationAssembly = PresentationAssembly()
+		switch presentationAssembly.currentTheme {
 		case .night:
 			tableView.backgroundColor = .black
 		default:
@@ -191,12 +191,12 @@ extension ConversationsListViewController: UITableViewDelegate {
 // MARK: FetchResultsController Delegate
 extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
 	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		print("begin update")
+//		print("begin update")
 		tableView.beginUpdates()
 	}
 	
 	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		print("end update")
+//		print("end update")
 		tableView.endUpdates()
 	}
 	
@@ -209,23 +209,23 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
 		switch type {
 		case .insert:
 			if let newIndexPath = newIndexPath {
-				print("inserting")
+//				print("inserting")
 				tableView.insertRows(at: [newIndexPath], with: .automatic)
 			}
 		case .move:
 			if let newIndexPath = newIndexPath, let indexPath = indexPath {
-				print("moving")
+//				print("moving")
 				tableView.deleteRows(at: [indexPath], with: .automatic)
 				tableView.insertRows(at: [newIndexPath], with: .automatic)
 			}
 		case .update:
 			if let indexPath = indexPath {
-				print("updating")
+//				print("updating")
 				tableView.reloadRows(at: [indexPath], with: .automatic)
 			}
 		case .delete:
 			if let indexPath = indexPath {
-				print("deleting")
+//				print("deleting")
 				tableView.deleteRows(at: [indexPath], with: .automatic)
 			}
 		default:

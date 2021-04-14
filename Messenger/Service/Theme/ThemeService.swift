@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ThemeManager: ThemeManagerDelegate {
+class ThemeService: ThemeServiceDelegate {
 	
 	static var currentTheme: ThemeType {
 		let themeRawValue = UserDefaults.standard.integer(forKey: "theme")
@@ -26,19 +26,6 @@ class ThemeManager: ThemeManagerDelegate {
 			LightTheme().apply()
 		case .classic:
 			ClassicTheme().apply()
-		}
-	}
-}
-
-public extension UIWindow {
-	func reload() {
-		subviews.forEach { view in
-			view.removeFromSuperview()
-			addSubview(view)
-		}
-		subviews.forEach { view in
-			view.removeFromSuperview()
-			addSubview(view)
 		}
 	}
 }

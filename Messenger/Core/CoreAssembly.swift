@@ -11,4 +11,8 @@ class CoreAssembly {
 	var coreDataStack: CoreDataStack {
 		CoreDataStack.shared
 	}
+	
+	var userDefaults: UserDefaults {
+		UserDefaults.standard
+	}
 }

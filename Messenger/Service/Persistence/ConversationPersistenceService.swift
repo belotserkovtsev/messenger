@@ -9,8 +9,8 @@ import Foundation
 import CoreData
 
 class ConversationPersistenceService: IPersistenceConversationService {
-	let coreDataStack: CoreDataStack
-	let channelId: String
+	private let coreDataStack: CoreDataStack
+	private let channelId: String
 	
 	private lazy var request: NSFetchRequest<MessageDB> = {
 		let request: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
@@ -45,7 +45,6 @@ class ConversationPersistenceService: IPersistenceConversationService {
 	
 	func performSave(messages: [ConversationModel.Message]) {
 		coreDataStack.performSave { context in
-//								guard let channelData = self?.channelData else { return }
 			var messageManagedObjects = [NSManagedObject]()
 			let channelManagedObject: ChannelDB?
 			let channelRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
@@ -76,7 +75,6 @@ class ConversationPersistenceService: IPersistenceConversationService {
 	init(stack: CoreDataStack, id: String, delegate: NSFetchedResultsControllerDelegate) {
 		coreDataStack = stack
 		channelId = id
-		
 		fetchedResultsController.delegate = delegate
 	}
 }
