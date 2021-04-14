@@ -15,6 +15,14 @@ struct ConversationModel {
 		messages = data.sorted { $0.created < $1.created }
 	}
 	
+	mutating func append(message: Message) {
+		messages.append(message)
+	}
+	
+	mutating func clear() {
+		messages = [Message]()
+	}
+	
 	struct Message {
 		var id: String
 		var text: String

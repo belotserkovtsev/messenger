@@ -33,19 +33,19 @@ class ConversationViewController: UIViewController {
 	// MARK: Lifecycle Methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		messageTextViewWrapperView?.layer.cornerRadius = 12
-		messageTextViewWrapperView?.layer.borderWidth = 1
-		messageTextViewWrapperView?.layer.borderColor = UIColor.themeBorder.cgColor
+		messageTextViewWrapperView.layer.cornerRadius = 12
+		messageTextViewWrapperView.layer.borderWidth = 1
+		messageTextViewWrapperView.layer.borderColor = UIColor.themeBorder.cgColor
 		
-		tableView?.estimatedRowHeight = 10
-		tableView?.rowHeight = UITableView.automaticDimension
+		tableView.estimatedRowHeight = 10
+		tableView.rowHeight = UITableView.automaticDimension
 		
 		persistenceService?.fetch()
 		
-		tableView?.register(UINib(nibName: String(describing: ConversationTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
-		tableView?.dataSource = self
+		tableView.register(UINib(nibName: String(describing: ConversationTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
+		tableView.dataSource = self
 		
-		tableView?.transform = CGAffineTransform(scaleX: 1, y: -1)
+		tableView.transform = CGAffineTransform(scaleX: 1, y: -1)
 		
 		NotificationCenter.default
 			.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -55,35 +55,12 @@ class ConversationViewController: UIViewController {
 		let gesture = self.hideKeyboardWhenTappedAround()
 		gesture.delegate = self
 		
-		backendService?.addListener { [weak self] snapshot, _ in
-			DispatchQueue.global(qos: .userInitiated).async {
-				guard let documents = snapshot?.documents else { return }
-				var messages = [ConversationModel.Message]()
-				for document in documents {
-					
-					if let content = document["content"] as? String, let created = document["created"] as? Timestamp,
-					   let senderId = document["senderId"] as? String, let senderName = document["senderName"] as? String,
-					   !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-						
-						let isOutgoing = senderId == UIDevice.current.identifierForVendor?.uuidString
-						
-						messages.append(.init(id: document.documentID, text: content,
-											  created: created.dateValue(), senderId: senderId,
-											  senderName: senderName, messageType: isOutgoing ? .outgoing : .incoming))
-					}
-					
-				}
-				
-				self?.persistenceService?.performSave(messages: messages)
-			}
-		}
-		
 		if #available(iOS 13.0, *) {
 			let interaction = UIContextMenuInteraction(delegate: self)
-			sendButton?.addInteraction(interaction)
+			sendButton.addInteraction(interaction)
 		}
 		
-		messageTextView?.delegate = self
+		messageTextView.delegate = self
 	}
 }
 
@@ -96,8 +73,6 @@ extension ConversationViewController: UITableViewDataSource {
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//		let data = channelModel.messages[channelModel.messages.count - indexPath.row - 1]
-		
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
 				as? ConversationTableViewCell, let data = persistenceService?.object(at: indexPath) as? MessageDB else { return UITableViewCell() }
 		let configurableCell = ConversationModel.Message(for: data)
@@ -111,12 +86,12 @@ extension ConversationViewController: UITableViewDataSource {
 extension ConversationViewController: NSFetchedResultsControllerDelegate {
 	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		print("begin update")
-		tableView?.beginUpdates()
+		tableView.beginUpdates()
 	}
 	
 	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		print("end update")
-		tableView?.endUpdates()
+		tableView.endUpdates()
 	}
 	
 	func controller(
@@ -129,23 +104,23 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
 		case .insert:
 			if let newIndexPath = newIndexPath {
 				print("inserting")
-				tableView?.insertRows(at: [newIndexPath], with: .automatic)
+				tableView.insertRows(at: [newIndexPath], with: .automatic)
 			}
 		case .move:
 			if let newIndexPath = newIndexPath, let indexPath = indexPath {
 				print("moving")
-				tableView?.deleteRows(at: [indexPath], with: .automatic)
-				tableView?.insertRows(at: [newIndexPath], with: .automatic)
+				tableView.deleteRows(at: [indexPath], with: .automatic)
+				tableView.insertRows(at: [newIndexPath], with: .automatic)
 			}
 		case .update:
 			if let indexPath = indexPath {
 				print("updating")
-				tableView?.reloadRows(at: [indexPath], with: .automatic)
+				tableView.reloadRows(at: [indexPath], with: .automatic)
 			}
 		case .delete:
 			if let indexPath = indexPath {
 				print("deleting")
-				tableView?.deleteRows(at: [indexPath], with: .automatic)
+				tableView.deleteRows(at: [indexPath], with: .automatic)
 			}
 		default:
 			break
@@ -181,9 +156,9 @@ extension ConversationViewController {
 // MARK: Private Methods
 extension ConversationViewController {
 	private func sendMessage(anonymously isAnonymous: Bool = false) {
-		guard let text = messageTextView?.text.trimmingCharacters(in: .whitespacesAndNewlines),
-			  !text.isEmpty, let id = UIDevice.current.identifierForVendor?.uuidString else {
-			messageTextView?.text = ""
+		let text = messageTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+		guard !text.isEmpty, let id = UIDevice.current.identifierForVendor?.uuidString else {
+			messageTextView.text = ""
 			return
 		}
 		
@@ -225,9 +200,9 @@ extension ConversationViewController: UITextViewDelegate {
 		}
 		
 		if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).count > 0 {
-			sendButton?.isEnabled = true
+			sendButton.isEnabled = true
 		} else {
-			sendButton?.isEnabled = false
+			sendButton.isEnabled = false
 		}
 		
 		if textView.contentSize.height > 100 && !textView.isScrollEnabled {
@@ -289,12 +264,37 @@ extension ConversationViewController: UIContextMenuInteractionDelegate {
 extension ConversationViewController {
 	static func make(with id: String) -> ConversationViewController? {
 		let storyBoard: UIStoryboard = UIStoryboard(name: "Conversation", bundle: nil)
-		let vc = storyBoard.instantiateViewController(withIdentifier: "ConversationViewController") as? ConversationViewController
+		guard let vc = storyBoard.instantiateViewController(withIdentifier: "ConversationViewController") as? ConversationViewController else {
+			return nil
+		}
 		
 		let serviceAssembly = ServiceAssembly()
 		
-		vc?.backendService = serviceAssembly.conversationBackendService(for: id)
-		vc?.persistenceService = serviceAssembly.conversationPersistenceService(id: id, delegate: vc!)
+		vc.backendService = serviceAssembly.conversationBackendService(for: id)
+		vc.persistenceService = serviceAssembly.conversationPersistenceService(id: id, delegate: vc)
+		
+		vc.backendService?.addListener { snapshot, _ in
+			DispatchQueue.global(qos: .userInitiated).async {
+				guard let documents = snapshot?.documents else { return }
+				vc.conversationModel.clear()
+				for document in documents {
+					
+					if let content = document["content"] as? String, let created = document["created"] as? Timestamp,
+					   let senderId = document["senderId"] as? String, let senderName = document["senderName"] as? String,
+					   !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+						
+						let isOutgoing = senderId == UIDevice.current.identifierForVendor?.uuidString
+						
+						vc.conversationModel.append(message: .init(id: document.documentID, text: content,
+											  created: created.dateValue(), senderId: senderId,
+											  senderName: senderName, messageType: isOutgoing ? .outgoing : .incoming))
+					}
+					
+				}
+				
+				vc.persistenceService?.performSave(messages: vc.conversationModel.messages)
+			}
+		}
 		
 		return vc
 	}

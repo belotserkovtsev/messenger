@@ -18,6 +18,14 @@ struct ChannelModel {
 		}
 	}
 	
+	mutating func append(channel: Channel) {
+		channels.append(channel)
+	}
+	
+	mutating func clear() {
+		channels = [Channel]()
+	}
+	
 	struct Channel {
 		var id: String
 		var name: String

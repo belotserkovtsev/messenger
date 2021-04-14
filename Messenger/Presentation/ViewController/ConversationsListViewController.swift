@@ -16,7 +16,7 @@ class ConversationsListViewController: UIViewController {
 	
 	var backendService: IFirestoreService?
 	var persistenceService: IPersistenceConversationsService?
-	let channelsModel = ChannelModel()
+	var channelsModel = ChannelModel()
 	
 	// MARK: Nav Bar Tap Handlers
 	@objc private func profileTapHandler() {
@@ -56,17 +56,17 @@ class ConversationsListViewController: UIViewController {
 	// MARK: Lifecycle Methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		tableView?.delegate = self
-		tableView?.dataSource = self
+		tableView.delegate = self
+		tableView.dataSource = self
 		
 		title = "Channels"
 		setTrailingBarButtonItem()
 		setLeadingBarButtonItems()
 		
-		tableView?.register(UINib(nibName: String(describing: ConversationsListTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
+		tableView.register(UINib(nibName: String(describing: ConversationsListTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
 		
-		tableView?.rowHeight = 88
-		tableView?.contentInset = UIEdgeInsets(top: -2, left: 0, bottom: 0, right: 0)
+		tableView.rowHeight = 88
+		tableView.contentInset = UIEdgeInsets(top: -2, left: 0, bottom: 0, right: 0)
 		
 		persistenceService?.fetch()
 	}
@@ -75,9 +75,9 @@ class ConversationsListViewController: UIViewController {
 		super.viewWillAppear(animated)
 		switch ThemeManager.currentTheme {
 		case .night:
-			tableView?.backgroundColor = .black
+			tableView.backgroundColor = .black
 		default:
-			tableView?.backgroundColor = UIColor(white: 0.97, alpha: 1)
+			tableView.backgroundColor = UIColor(white: 0.97, alpha: 1)
 		}
 	}
 	
@@ -192,12 +192,12 @@ extension ConversationsListViewController: UITableViewDelegate {
 extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
 	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		print("begin update")
-		tableView?.beginUpdates()
+		tableView.beginUpdates()
 	}
 	
 	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		print("end update")
-		tableView?.endUpdates()
+		tableView.endUpdates()
 	}
 	
 	func controller(
@@ -236,20 +236,22 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
 
 // MARK: Make
 extension ConversationsListViewController {
-	static func make() -> ConversationsListViewController {
+	static func make() -> ConversationsListViewController? {
 		let storyBoard: UIStoryboard = UIStoryboard(name: "ConversationsList", bundle: nil)
-		let vc = storyBoard.instantiateViewController(withIdentifier: "ConversationsList") as? ConversationsListViewController
+		guard let vc = storyBoard.instantiateViewController(withIdentifier: "ConversationsList") as? ConversationsListViewController else {
+			return nil
+		}
 		
 		let serviceAssembly = ServiceAssembly()
-		vc?.backendService = serviceAssembly.conversationsBackendService
+		vc.backendService = serviceAssembly.conversationsBackendService
 		
-		let persistenceService = serviceAssembly.conversationsPersistenceService(delegate: vc!)
-		vc?.persistenceService = persistenceService
+		let persistenceService = serviceAssembly.conversationsPersistenceService(delegate: vc)
+		vc.persistenceService = persistenceService
 		
-		vc?.backendService?.addListener { snapshot, _ in
+		vc.backendService?.addListener { snapshot, _ in
 			DispatchQueue.global(qos: .userInitiated).async {
 				guard let documents = snapshot?.documents else { return }
-				var channels = [ChannelModel.Channel]()
+				vc.channelsModel.clear()
 				for document in documents {
 					let documentData = document.data()
 					let id = document.documentID
@@ -265,14 +267,14 @@ extension ConversationsListViewController {
 														lastActivity: timestamp?.dateValue(),
 														online: hasRecentlyBeenActive,
 														hasUnreadMessages: false)
-						channels.append(data)
+						vc.channelsModel.append(channel: data)
 					}
 				}
 				
-				vc?.persistenceService?.performSave(channels: channels)
+				vc.persistenceService?.performSave(channels: vc.channelsModel.channels)
 			}
 		}
 		
-		return vc!
+		return vc
 	}
 }

@@ -207,8 +207,8 @@
 		843E8958260BA7F30090F8F2 /* Firestore */ = {
 			isa = PBXGroup;
 			children = (
-				8412A17D2625CE4500B4C52C /* IFirestoreService.swift */,
 				843E8959260BA8080090F8F2 /* FirestoreService.swift */,
+				8412A17D2625CE4500B4C52C /* IFirestoreService.swift */,
 			);
 			path = Firestore;
 			sourceTree = "<group>";
