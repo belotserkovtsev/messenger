@@ -1,0 +1,31 @@
+//
+//  ConversationModel.swift
+//  Messenger
+//
+//  Created by belotserkovtsev on 29.03.2021.
+//
+
+import Foundation
+
+// MARK: Data
+struct ConversationModel {
+	private(set) var messages = [Message]()
+	
+	mutating func reload(with data: [Message]) {
+		messages = data.sorted { $0.created < $1.created }
+	}
+	
+	struct Message {
+		var id: String
+		var text: String
+		var created: Date
+		var senderId: String
+		var senderName: String
+		
+		var messageType: MessageType
+	}
+	
+	enum MessageType {
+		case incoming, outgoing
+	}
+}

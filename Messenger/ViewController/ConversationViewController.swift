@@ -19,11 +19,12 @@ class ConversationViewController: UIViewController {
 	
 	private let cellIdentifier = String(describing: ConversationTableViewCell.self)
 	
-	private var channelId: String?
-	private var cachedName: String?
-	private var channelModel = ConversationDataModel()
+	private var channelData: ChannelModel.Channel?
+	private var coreDataStack = CoreDataManager.stack
+	private var cachedProfileName: String?
+	private var channelModel = ConversationModel()
 	
-	private lazy var firestoreManager = FirestoreManager(path: "channels/\(channelId ?? " ")/messages")
+	private lazy var firestoreManager = FirestoreManager(path: "channels/\(channelData?.id ?? " ")/messages")
 	
 	// MARK: Gestures
 	@IBAction func sendButtonHandler(_ sender: UIButton) {
@@ -50,25 +51,45 @@ class ConversationViewController: UIViewController {
 		NotificationCenter.default
 			.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
 		
+//		coreDataStack.enableObservers()
+		
 		let gesture = self.hideKeyboardWhenTappedAround()
 		gesture.delegate = self
 		
 		firestoreManager.addListener { [weak self] snapshot, _ in
-			guard let documents = snapshot?.documents else { return }
-			var messages = [ConversationDataModel.Message]()
-			for document in documents {
-				
-				if let content = document["content"] as? String, let created = document["created"] as? Timestamp,
-				   let senderId = document["senderId"] as? String, let senderName = document["senderName"] as? String {
+			DispatchQueue.global(qos: .userInitiated).async {
+				guard let documents = snapshot?.documents else { return }
+				var messages = [ConversationModel.Message]()
+				for document in documents {
 					
-					let isOutgoing = senderId == UIDevice.current.identifierForVendor?.uuidString
+					if let content = document["content"] as? String, let created = document["created"] as? Timestamp,
+					   let senderId = document["senderId"] as? String, let senderName = document["senderName"] as? String,
+					   !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+						
+						let isOutgoing = senderId == UIDevice.current.identifierForVendor?.uuidString
+						
+						messages.append(.init(id: document.documentID, text: content,
+											  created: created.dateValue(), senderId: senderId,
+											  senderName: senderName, messageType: isOutgoing ? .outgoing : .incoming))
+					}
 					
-					messages.append(.init(text: content, created: created.dateValue(), senderId: senderId, senderName: senderName, messageType: isOutgoing ? .outgoing : .incoming))
 				}
 				
+				DispatchQueue.main.async {
+					self?.channelModel.reload(with: messages)
+					self?.tableView?.reloadData()
+				}
+				
+				self?.coreDataStack.performSave { context in
+					guard let channelData = self?.channelData else { return }
+					let channel = ChannelDB(for: channelData, in: context)
+					
+					messages.forEach { message in
+						let savebleMessage = MessageDB(for: message, in: context)
+						channel.addToMessages(savebleMessage)
+					}
+				}
 			}
-			self?.channelModel.reload(with: messages)
-			self?.tableView?.reloadData()
 		}
 		
 		if #available(iOS 13.0, *) {
@@ -79,31 +100,13 @@ class ConversationViewController: UIViewController {
 		messageTextView?.delegate = self
 	}
 	
-	func setId(with id: String) {
-		channelId = id
+	func setChannelData(with data: ChannelModel.Channel) {
+		channelData = data
 	}
 	
-	// MARK: Data
-	struct ConversationDataModel {
-		private(set) var messages = [Message]()
-		
-		mutating func reload(with data: [Message]) {
-			messages = data.sorted { $0.created < $1.created }
-		}
-		
-		struct Message {
-			var text: String
-			var created: Date
-			var senderId: String
-			var senderName: String
-			
-			var messageType: MessageType
-		}
-		
-		enum MessageType {
-			case incoming, outgoing
-		}
-	}
+//	func setCoreDataStack(with stack: CoreDataStack) {
+//		coreDataStack = stack
+//	}
 }
 
 // MARK: UITableViewDataSource
@@ -156,7 +159,7 @@ extension ConversationViewController {
 			return
 		}
 		
-		if let profileName = cachedName {
+		if let profileName = cachedProfileName {
 			clearTextField()
 			firestoreManager.addDocumnent(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": isAnonymous ? "Anonymous" : profileName])
 		} else {
@@ -165,7 +168,7 @@ extension ConversationViewController {
 				case .success(let data):
 					guard let profileName = data?.name else { break }
 					self.clearTextField()
-					self.cachedName = profileName
+					self.cachedProfileName = profileName
 					self.firestoreManager.addDocumnent(data: ["content": text, "created": Timestamp(), "senderId": id, "senderName": isAnonymous ? "Anonymous" : profileName])
 				default:
 					break

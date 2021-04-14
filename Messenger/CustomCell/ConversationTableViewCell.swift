@@ -16,7 +16,7 @@ class ConversationTableViewCell: UITableViewCell {
 	@IBOutlet var leadingPaddingConstraint: NSLayoutConstraint?
 	@IBOutlet weak var fromLabel: ThemeDependentUILabel?
 	
-	func configure(with data: ConversationViewController.ConversationDataModel.Message) {
+	func configure(with data: ConversationModel.Message) {
 		incomingMessageView?.layer.cornerRadius = 12
 		outgoingMessageView?.layer.cornerRadius = 12
 		

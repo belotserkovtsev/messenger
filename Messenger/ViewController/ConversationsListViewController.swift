@@ -13,7 +13,8 @@ class ConversationsListViewController: UIViewController {
 	@IBOutlet weak var tableView: UITableView?
 	private let cellIdentifier = String(describing: ConversationsListTableViewCell.self)
 	private var firestoreManager = FirestoreManager(path: "channels")
-	private var channelsModel = ChannelDataModel()
+	private var channelsModel = ChannelModel()
+	private var coreDataStack = CoreDataManager.stack
 	
 	// MARK: Nav Bar Tap Handlers
 	@objc private func profileTapHandler() {
@@ -63,32 +64,41 @@ class ConversationsListViewController: UIViewController {
 		tableView?.register(UINib(nibName: String(describing: ConversationsListTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
 		tableView?.dataSource = self
 		tableView?.rowHeight = 88
-		
 		tableView?.contentInset = UIEdgeInsets(top: -1, left: 0, bottom: 0, right: 0)
 		
 		firestoreManager.addListener { [weak self] snapshot, _ in
-			guard let documents = snapshot?.documents else { return }
-			var channels = [ChannelDataModel.Channel]()
-			for document in documents {
-				let documentData = document.data()
-				let id = document.documentID
-				if let name = documentData["name"] as? String, !name.isEmpty {
-					
-					let timestamp = documentData["lastActivity"] as? Timestamp
-					let lastMessage = documentData["lastMessage"] as? String
-					let hasRecentlyBeenActive = self?.hasRecentlyBeenActive(for: timestamp?.dateValue()) ?? false
-					
-					let data = ChannelDataModel.Channel(id: id,
+			DispatchQueue.global(qos: .userInitiated).async {
+				guard let documents = snapshot?.documents else { return }
+				var channels = [ChannelModel.Channel]()
+				for document in documents {
+					let documentData = document.data()
+					let id = document.documentID
+					if let name = documentData["name"] as? String, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+						
+						let timestamp = documentData["lastActivity"] as? Timestamp
+						let lastMessage = documentData["lastMessage"] as? String
+						let hasRecentlyBeenActive = self?.hasRecentlyBeenActive(for: timestamp?.dateValue()) ?? false
+						
+						let data = ChannelModel.Channel(id: id,
 														name: name,
 														lastMessage: lastMessage,
 														lastActivity: timestamp?.dateValue(),
 														online: hasRecentlyBeenActive,
 														hasUnreadMessages: false)
-					channels.append(data)
+						channels.append(data)
+					}
 				}
-				self?.channelsModel.reload(with: channels)
-				self?.tableView?.reloadData()
+			
+				DispatchQueue.main.async {
+					self?.channelsModel.reload(with: channels)
+					self?.tableView?.reloadData()
+				}
 				
+				self?.coreDataStack.performSave { context in
+					channels.forEach { channel in
+						_ = ChannelDB(for: channel, in: context)
+					}
+				}
 			}
 		}
 		
@@ -183,30 +193,6 @@ class ConversationsListViewController: UIViewController {
 	}
 }
 
-// MARK: Data
-extension ConversationsListViewController {
-	struct ChannelDataModel {
-		private(set) var channels = [Channel]()
-		
-		mutating func reload(with channels: [Channel]) {
-			self.channels = channels.sorted { left, right in
-				guard let leftLatestActivity = left.lastActivity else { return false }
-				guard let rigtLatestActivity = right.lastActivity else { return true }
-				return leftLatestActivity > rigtLatestActivity
-			}
-		}
-		
-		struct Channel {
-			var id: String
-			var name: String
-			var lastMessage: String?
-			var lastActivity: Date?
-			var online: Bool
-			var hasUnreadMessages: Bool
-		}
-	}
-}
-
 // MARK: UITableViewDataSource
 extension ConversationsListViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -233,7 +219,8 @@ extension ConversationsListViewController: UITableViewDelegate {
 		let conversation = storyBoard.instantiateViewController(withIdentifier: "ConversationViewController") as? ConversationViewController
 		
 		conversation?.title = channelsModel.channels[indexPath.row].name
-		conversation?.setId(with: channelsModel.channels[indexPath.row].id)
+		conversation?.setChannelData(with: channelsModel.channels[indexPath.row])
+//		conversation?.setCoreDataStack(with: coreDataStack)
 		
 		if let conversationViewController = conversation {
 			navigationController?.pushViewController(conversationViewController, animated: true)
