@@ -26,11 +26,11 @@ class ServiceAssembly {
 		FirestoreService(path: "channels/\(id)/messages")
 	}
 	
-	func conversationsPersistenceService(delegate: NSFetchedResultsControllerDelegate) -> IPersistenceConversationsService {
+	func conversationsPersistenceService(delegate: NSFetchedResultsControllerDelegate) -> IPersistenceService {
 		ConversationsPersistenceService(stack: CoreAssembly().coreDataStack, delegate: delegate)
 	}
 	
-	func conversationPersistenceService(id: String, delegate: NSFetchedResultsControllerDelegate) -> IPersistenceConversationService {
+	func conversationPersistenceService(id: String, delegate: NSFetchedResultsControllerDelegate) -> IPersistenceService {
 		ConversationPersistenceService(stack: CoreAssembly().coreDataStack, id: id, delegate: delegate)
 	}
 }

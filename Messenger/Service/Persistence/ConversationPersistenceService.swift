@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-class ConversationPersistenceService: IPersistenceConversationService {
+class ConversationPersistenceService: IPersistenceService {
 	private let coreDataStack: CoreDataStack
 	private let channelId: String
 	
@@ -43,7 +43,8 @@ class ConversationPersistenceService: IPersistenceConversationService {
 		do { try fetchedResultsController.performFetch() } catch { fatalError("unable to perform cached fetch") }
 	}
 	
-	func performSave(messages: [ConversationModel.Message]) {
+	func performSave<DataModelType>(data: [DataModelType]) {
+		guard let data = data as? [ConversationModel.Message] else { fatalError("unable to process data") }
 		coreDataStack.performSave { context in
 			var messageManagedObjects = [NSManagedObject]()
 			let channelManagedObject: ChannelDB?
@@ -59,7 +60,7 @@ class ConversationPersistenceService: IPersistenceConversationService {
 				fatalError("unable to get saved messages")
 			}
 			
-			messages.forEach { message in
+			data.forEach { message in
 				if !existingMessageManagedObjects.contains(where: { $0.id == message.id }) {
 					let messageManagedObject = MessageDB(for: message, in: context)
 					messageManagedObjects.append(messageManagedObject)

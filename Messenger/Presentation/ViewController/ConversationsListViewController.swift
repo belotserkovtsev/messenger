@@ -15,7 +15,7 @@ class ConversationsListViewController: UIViewController {
 	private let cellIdentifier = String(describing: ConversationsListTableViewCell.self)
 	
 	var backendService: IFirestoreService?
-	var persistenceService: IPersistenceConversationsService?
+	var persistenceService: IPersistenceService?
 	var channelsModel = ChannelModel()
 	
 	// MARK: Nav Bar Tap Handlers
@@ -271,7 +271,7 @@ extension ConversationsListViewController {
 					}
 				}
 				
-				vc.persistenceService?.performSave(channels: vc.channelsModel.channels)
+				vc.persistenceService?.performSave(data: vc.channelsModel.channels)
 			}
 		}
 		

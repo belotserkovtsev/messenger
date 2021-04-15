@@ -22,7 +22,7 @@ class ConversationViewController: UIViewController {
 	private var cachedProfileName: String?
 	
 	var backendService: IFirestoreService?
-	var persistenceService: IPersistenceConversationService?
+	var persistenceService: IPersistenceService?
 	private var conversationModel = ConversationModel()
 	
 	// MARK: Gestures
@@ -292,7 +292,7 @@ extension ConversationViewController {
 					
 				}
 				
-				vc.persistenceService?.performSave(messages: vc.conversationModel.messages)
+				vc.persistenceService?.performSave(data: vc.conversationModel.messages)
 			}
 		}
 		

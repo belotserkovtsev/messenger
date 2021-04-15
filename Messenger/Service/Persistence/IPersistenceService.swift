@@ -13,4 +13,5 @@ protocol IPersistenceService {
 	var fetchedObjects: [NSManagedObject]? { get }
 	func fetch()
 	func object(at indexPath: IndexPath) -> NSManagedObject
+	func performSave<DataModelType>(data: [DataModelType])
 }

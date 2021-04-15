@@ -19,7 +19,7 @@ extension ChannelDB {
 		self.hasUnreadMessages = hasUnreadMessages
 	}
 	
-	convenience init(for data: ChannelModel.Channel, in context: NSManagedObjectContext) {
+	convenience init(for data: IChannel, in context: NSManagedObjectContext) {
 		self.init(context: context)
 		self.id = data.id
 		self.name = data.name
@@ -28,7 +28,7 @@ extension ChannelDB {
 		self.hasUnreadMessages = data.hasUnreadMessages
 	}
 	
-	func update(with data: ChannelModel.Channel) {
+	func update(with data: IChannel) {
 		lastMessage = data.lastMessage
 		lastActivity = data.lastActivity
 		hasUnreadMessages = data.hasUnreadMessages
@@ -56,7 +56,7 @@ extension MessageDB {
 		self.senderName = senderName
 	}
 	
-	convenience init(for data: ConversationModel.Message, in context: NSManagedObjectContext) {
+	convenience init(for data: IMessage, in context: NSManagedObjectContext) {
 		self.init(context: context)
 		
 		self.id = data.id

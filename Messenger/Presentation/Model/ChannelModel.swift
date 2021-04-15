@@ -26,7 +26,7 @@ struct ChannelModel {
 		channels = [Channel]()
 	}
 	
-	struct Channel {
+	struct Channel: IChannel {
 		var id: String
 		var name: String
 		var lastMessage: String?

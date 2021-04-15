@@ -8,7 +8,9 @@
 import UIKit
 import CoreData
 
-class ConversationsPersistenceService: IPersistenceConversationsService {
+class ConversationsPersistenceService: IPersistenceService {
+	typealias DataModelType = ChannelModel.Channel
+	
 	private let coreDataStack: CoreDataStack
 	
 	private lazy var request: NSFetchRequest<ChannelDB> = {
@@ -40,7 +42,8 @@ class ConversationsPersistenceService: IPersistenceConversationsService {
 		do { try fetchedResultsController.performFetch() } catch { fatalError("unable to perform cached fetch") }
 	}
 	
-	func performSave(channels: [ChannelModel.Channel]) {
+	func performSave<DataModelType>(data: [DataModelType]) {
+		guard let data = data as? [ChannelModel.Channel] else { return }
 		coreDataStack.performSave { context in
 			var managedObjects = [NSManagedObject]()
 			var channelManagedObjects = [ChannelDB]()
@@ -53,7 +56,7 @@ class ConversationsPersistenceService: IPersistenceConversationsService {
 				
 				// check wether saved channels contain listener channels to create mismatched objects and update
 				// existing ones
-				for channel in channels {
+				for channel in data {
 					if let channelManagedObject = channelManagedObjects.first(where: { $0.id == channel.id }) {
 						channelManagedObject.update(with: channel)
 					} else {
@@ -67,13 +70,13 @@ class ConversationsPersistenceService: IPersistenceConversationsService {
 				
 				// check wether listener channels contain saved channels to delete mismatches
 				for channelManagedObject in channelManagedObjects {
-					if !channels.contains(where: { $0.id == channelManagedObject.id }) {
+					if !data.contains(where: { $0.id == channelManagedObject.id }) {
 						context.delete(channelManagedObject)
 					}
 				}
 				
 			} else {
-				for channel in channels {
+				for channel in data {
 					managedObjects.append(ChannelDB(for: channel, in: context))
 				}
 				do { try context.obtainPermanentIDs(for: managedObjects) } catch {
