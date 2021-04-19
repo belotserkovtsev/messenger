@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 
 class CoreDataManager: CoreDataStack {
 	static let stack = CoreDataManager()

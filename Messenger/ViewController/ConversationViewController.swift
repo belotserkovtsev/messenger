@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 class ConversationViewController: UIViewController {
 	
@@ -22,9 +23,23 @@ class ConversationViewController: UIViewController {
 	private var channelData: ChannelModel.Channel?
 	private var coreDataStack = CoreDataManager.stack
 	private var cachedProfileName: String?
-	private var channelModel = ConversationModel()
+//	private var conversationModel = ConversationModel()
 	
 	private lazy var firestoreManager = FirestoreManager(path: "channels/\(channelData?.id ?? " ")/messages")
+	
+	private lazy var request: NSFetchRequest<MessageDB> = {
+		let request: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
+		let sortDescriptor = NSSortDescriptor(key: "created", ascending: false)
+		let predicate = NSPredicate(format: "channel.id == %@", channelData!.id)
+		request.sortDescriptors = [sortDescriptor]
+		request.predicate = predicate
+		return request
+	}()
+	private lazy var fetchedResultsController: NSFetchedResultsController<MessageDB> = {
+		let context = coreDataStack.getMainContext()
+		let frc = NSFetchedResultsController(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+		return frc
+	}()
 	
 	// MARK: Gestures
 	@IBAction func sendButtonHandler(_ sender: UIButton) {
@@ -34,12 +49,19 @@ class ConversationViewController: UIViewController {
 	// MARK: Lifecycle Methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		fetchedResultsController.delegate = self
 		messageTextViewWrapperView?.layer.cornerRadius = 12
 		messageTextViewWrapperView?.layer.borderWidth = 1
 		messageTextViewWrapperView?.layer.borderColor = UIColor.themeBorder.cgColor
 		
 		tableView?.estimatedRowHeight = 10
 		tableView?.rowHeight = UITableView.automaticDimension
+		
+		do {
+			try fetchedResultsController.performFetch()
+		} catch {
+			fatalError("unable to perform cached fetch")
+		}
 		
 		tableView?.register(UINib(nibName: String(describing: ConversationTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
 		tableView?.dataSource = self
@@ -75,18 +97,36 @@ class ConversationViewController: UIViewController {
 					
 				}
 				
-				DispatchQueue.main.async {
-					self?.channelModel.reload(with: messages)
-					self?.tableView?.reloadData()
-				}
+//				DispatchQueue.main.async {
+//					self?.channelModel.reload(with: messages)
+//					self?.tableView?.reloadData()
+//				}
 				
 				self?.coreDataStack.performSave { context in
 					guard let channelData = self?.channelData else { return }
-					let channel = ChannelDB(for: channelData, in: context)
+					var messageManagedObjects = [NSManagedObject]()
+					let channelManagedObject: ChannelDB?
+					let channelRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+					channelRequest.sortDescriptors = [NSSortDescriptor(key: "lastActivity", ascending: false)]
+					channelRequest.predicate = NSPredicate(format: "id == %@", channelData.id)
+					
+					do {
+						channelManagedObject = try context.fetch(channelRequest).first
+					} catch { fatalError("unable to fetch channel for messages") }
+					
+					guard let existingMessageManagedObjects = self?.fetchedResultsController.fetchedObjects else {
+						fatalError("unable to get saved messages")
+					}
 					
 					messages.forEach { message in
-						let savebleMessage = MessageDB(for: message, in: context)
-						channel.addToMessages(savebleMessage)
+						if !existingMessageManagedObjects.contains(where: { $0.id == message.id }) {
+							let messageManagedObject = MessageDB(for: message, in: context)
+							messageManagedObjects.append(messageManagedObject)
+							channelManagedObject?.addToMessages(messageManagedObject)
+						}
+					}
+					do { try context.obtainPermanentIDs(for: messageManagedObjects) } catch {
+						fatalError("Unable to get permanent ids for managed objects")
 					}
 				}
 			}
@@ -112,16 +152,66 @@ class ConversationViewController: UIViewController {
 // MARK: UITableViewDataSource
 extension ConversationViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		channelModel.messages.count
+		guard let sections = fetchedResultsController.sections else { fatalError("no sections found") }
+		let sectionsInfo = sections[section]
+		return sectionsInfo.numberOfObjects
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let data = channelModel.messages[channelModel.messages.count - indexPath.row - 1]
+//		let data = channelModel.messages[channelModel.messages.count - indexPath.row - 1]
+		let data = fetchedResultsController.object(at: indexPath)
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
 				as? ConversationTableViewCell else { return UITableViewCell() }
-		cell.configure(with: data)
+		let configurableCell = ConversationModel.Message(for: data)
+		cell.configure(with: configurableCell)
 		cell.contentView.transform = CGAffineTransform(scaleX: 1, y: -1)
 		return cell
+	}
+}
+
+// MARK: FetchResultsController Delegate
+extension ConversationViewController: NSFetchedResultsControllerDelegate {
+	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		print("begin update")
+		tableView?.beginUpdates()
+	}
+	
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		print("end update")
+		tableView?.endUpdates()
+	}
+	
+	func controller(
+		_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+		didChange anObject: Any,
+		at indexPath: IndexPath?,
+		for type: NSFetchedResultsChangeType,
+		newIndexPath: IndexPath?) {
+		switch type {
+		case .insert:
+			if let newIndexPath = newIndexPath {
+				print("inserting")
+				tableView?.insertRows(at: [newIndexPath], with: .automatic)
+			}
+		case .move:
+			if let newIndexPath = newIndexPath, let indexPath = indexPath {
+				print("moving")
+				tableView?.deleteRows(at: [indexPath], with: .automatic)
+				tableView?.insertRows(at: [newIndexPath], with: .automatic)
+			}
+		case .update:
+			if let indexPath = indexPath {
+				print("updating")
+				tableView?.reloadRows(at: [indexPath], with: .automatic)
+			}
+		case .delete:
+			if let indexPath = indexPath {
+				print("deleting")
+				tableView?.deleteRows(at: [indexPath], with: .automatic)
+			}
+		default:
+			break
+		}
 	}
 }
 

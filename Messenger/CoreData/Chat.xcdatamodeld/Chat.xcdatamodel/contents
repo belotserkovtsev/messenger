@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20C69" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20D91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="ChannelDB" representedClassName="ChannelDB" syncable="YES" codeGenerationType="class">
         <attribute name="hasUnreadMessages" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="String"/>
@@ -27,7 +27,7 @@
         </uniquenessConstraints>
     </entity>
     <elements>
-        <element name="ChannelDB" positionX="-63" positionY="-18" width="128" height="133"/>
+        <element name="ChannelDB" positionX="-63" positionY="-18" width="128" height="119"/>
         <element name="MessageDB" positionX="149.5047607421875" positionY="300.408447265625" width="128" height="133"/>
     </elements>
 </model>

@@ -28,6 +28,12 @@ extension ChannelDB {
 		self.hasUnreadMessages = data.hasUnreadMessages
 	}
 	
+	func update(with data: ChannelModel.Channel) {
+		lastMessage = data.lastMessage
+		lastActivity = data.lastActivity
+		hasUnreadMessages = data.hasUnreadMessages
+	}
+	
 	var about: String {
 		let description = "\(String(describing: name)) \n"
 		let messages = self.messages?.allObjects
