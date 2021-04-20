@@ -33,4 +33,9 @@ class ServiceAssembly {
 	func conversationPersistenceService(id: String, delegate: NSFetchedResultsControllerDelegate) -> IPersistenceService {
 		ConversationPersistenceService(stack: CoreAssembly().coreDataStack, id: id, delegate: delegate)
 	}
+	
+	var avatarService: IAvatarService {
+		let coreAssembly = CoreAssembly()
+		return AvatarService(network: coreAssembly.networkTask)
+	}
 }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct ProfileDataModel {
+struct ProfileModel {
 	var name: String?
 	var description: String?
 	var profilePicture: UIImage?

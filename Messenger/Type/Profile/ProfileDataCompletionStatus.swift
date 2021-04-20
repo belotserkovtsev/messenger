@@ -8,7 +8,7 @@
 import Foundation
 
 enum ProfileDataCompletionStatus {
-	case success(data: ProfileDataModel?)
+	case success(data: ProfileModel?)
 	case failure(error: Exception)
 	case cancelled
 }

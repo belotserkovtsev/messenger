@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ProfileDataStorable: Codable {
+struct ProfileModelStorable: Codable {
 	var name: String?
 	var description: String?
 }

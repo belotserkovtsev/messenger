@@ -9,5 +9,5 @@ import Foundation
 
 protocol IProfileFileService: IFileService {
 	func read(completion: @escaping (ProfileDataCompletionStatus) -> Void)
-	func write(data: ProfileDataModel, isFirstLaunch: Bool, completion: @escaping (ProfileDataCompletionStatus) -> Void)
+	func write(data: ProfileModel, isFirstLaunch: Bool, completion: @escaping (ProfileDataCompletionStatus) -> Void)
 }
