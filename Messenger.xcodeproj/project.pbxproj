@@ -85,6 +85,7 @@
 		84F54498262EE81E007778B5 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F54497262EE81E007778B5 /* NetworkError.swift */; };
 		84F5449B262EEF5D007778B5 /* AvatarError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F5449A262EEF5D007778B5 /* AvatarError.swift */; };
 		84F544A4262EF915007778B5 /* AvatarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F544A3262EF915007778B5 /* AvatarDelegate.swift */; };
+		84F544A7262F1691007778B5 /* ThemeDependentUICollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F544A6262F1691007778B5 /* ThemeDependentUICollectionView.swift */; };
 		AD28F88B098B70032CBF1125 /* Pods_Messenger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 313D7B841EFABC50CCEB539D /* Pods_Messenger.framework */; };
 /* End PBXBuildFile section */
 
@@ -171,6 +172,7 @@
 		84F54497262EE81E007778B5 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		84F5449A262EEF5D007778B5 /* AvatarError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarError.swift; sourceTree = "<group>"; };
 		84F544A3262EF915007778B5 /* AvatarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarDelegate.swift; sourceTree = "<group>"; };
+		84F544A6262F1691007778B5 /* ThemeDependentUICollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeDependentUICollectionView.swift; sourceTree = "<group>"; };
 		B805B6233A8722CE12D12AEB /* Pods-Messenger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Messenger.debug.xcconfig"; path = "Target Support Files/Pods-Messenger/Pods-Messenger.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -333,6 +335,7 @@
 				845A361925F5A2BF00D9E3AA /* ThemeDependentUIButton.swift */,
 				84F11C7D25F8DAE900D26CED /* IncomingMessageUIView.swift */,
 				84F11C8025F8DB1E00D26CED /* OutgoingMessageUIView.swift */,
+				84F544A6262F1691007778B5 /* ThemeDependentUICollectionView.swift */,
 			);
 			path = Control;
 			sourceTree = "<group>";
@@ -733,6 +736,7 @@
 				84F54493262DF098007778B5 /* ImageSelectionCollectionViewCell.swift in Sources */,
 				84F54484262DBCF6007778B5 /* IAvatarService.swift in Sources */,
 				848FAA9F25FFEE700063368E /* ProfileModelStorable.swift in Sources */,
+				84F544A7262F1691007778B5 /* ThemeDependentUICollectionView.swift in Sources */,
 				8412A1772625C8FA00B4C52C /* CoreAssembly.swift in Sources */,
 				84F5448B262DC989007778B5 /* PixabayData.swift in Sources */,
 				847765702628C1B0008DAD84 /* IChannel.swift in Sources */,

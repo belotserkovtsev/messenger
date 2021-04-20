@@ -86,6 +86,6 @@ class NetworkTask: INetworkTask {
 	}
 	
 	deinit {
-		cancel()
+		task?.cancel()
 	}
 }

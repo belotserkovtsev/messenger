@@ -8,7 +8,7 @@
 import UIKit
 
 class ImageSelectionViewController: UIViewController {
-	@IBOutlet var collectionView: UICollectionView!
+	@IBOutlet var collectionView: ThemeDependentUICollectionView!
 	@IBOutlet var activityIndicator: UIActivityIndicatorView!
 	
 	private let reuseIdentifier = "ImageCell"
