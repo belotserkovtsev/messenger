@@ -25,7 +25,6 @@ class ImageSelectionCollectionViewCell: UICollectionViewCell {
 		}
 		
 		activityIndicator.startAnimating()
-        // Initialization code
     }
 	
 	func configure(width: CGFloat, height: CGFloat, image: UIImage?) {
@@ -36,7 +35,6 @@ class ImageSelectionCollectionViewCell: UICollectionViewCell {
 		} else {
 			activityIndicator.startAnimating()
 		}
-//		contentView.backgroundColor = .red
 		self.height.constant = height
 		self.width.constant = width
 	}

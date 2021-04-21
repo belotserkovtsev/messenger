@@ -73,17 +73,17 @@ extension ImageSelectionViewController {
 		
 		let serviceAssmbly = ServiceAssembly()
 		vc.avatarService = serviceAssmbly.avatarService
-		vc.avatarService?.getAvatars(count: {
-			vc.dataModel.willLoad(count: $0)
-			vc.activityIndicator.stopAnimating()
-			vc.collectionView.reloadData()
-		}, completion: { result in
+		vc.avatarService?.getAvatars(count: { [weak vc] in
+			vc?.dataModel.willLoad(count: $0)
+			vc?.activityIndicator.stopAnimating()
+			vc?.collectionView.reloadData()
+		}, completion: { [weak vc] result in
 			switch result {
 			case .success(let (image, index)):
-				vc.dataModel.update(with: image, at: index)
-				vc.collectionView.reloadData()
+				vc?.dataModel.update(with: image, at: index)
+				vc?.collectionView.reloadData()
 			case .failure(let err):
-				vc.handle(error: err)
+				vc?.handle(error: err)
 			}
 		})
 		return vc

@@ -14,28 +14,28 @@ class AvatarService: IAvatarService {
 	
 	func getAvatars(count: ((Int) -> Void)?, completion: ((Result<(UIImage, Int), AvatarError>) -> Void)?) {
 		guard let requestURL = requestURL else { return }
-		network.get(url: requestURL, headers: nil) { (result: Result<PixabayData, NetworkError>) in
+		network.get(url: requestURL, headers: nil) { [weak self] (result: Result<PixabayData, NetworkError>) in
 			switch result {
 			case .success(let data):
-				self.dataModel = data.hits
+				self?.dataModel = data.hits
 				count?(data.hits.count)
-				self.getImagesFromCollectedURLs(completion: completion)
+				self?.getImagesFromCollectedURLs(completion: completion)
 			case .failure(let error):
-				self.handleNetworkError(error: error, at: nil, completion: completion)
+				self?.handleNetworkError(error: error, at: nil, completion: completion)
 			}
 		}
 	}
 	
 	private func getImagesFromCollectedURLs(completion: ((Result<(UIImage, Int), AvatarError>) -> Void)?) {
 		for i in dataModel.indices {
-			network.get(url: dataModel[i].webformatURL, headers: nil) { (result: Result<Data, NetworkError>) in
+			network.get(url: dataModel[i].webformatURL, headers: nil) { [weak self] (result: Result<Data, NetworkError>) in
 				switch result {
 				case .success(let data):
 					if let image = UIImage(data: data) {
 						completion?(.success((image, i)))
 					}
 				case .failure(let error):
-					self.handleNetworkError(error: error, at: i, completion: completion)
+					self?.handleNetworkError(error: error, at: i, completion: completion)
 				}
 			}
 		}
