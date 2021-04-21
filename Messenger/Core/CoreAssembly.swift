@@ -17,6 +17,6 @@ class CoreAssembly {
 	}
 	
 	var networkTask: INetworkTask {
-		NetworkTask()
+		NetworkTask(session: .init(configuration: .default))
 	}
 }

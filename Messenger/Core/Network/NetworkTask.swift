@@ -9,7 +9,7 @@ import Foundation
 
 class NetworkTask: INetworkTask {
 	var tasks = [URLSessionTask]()
-	let session = URLSession.shared
+	let session: URLSession
 	
 	func get<T: Decodable>(url: URL, headers: [String: String]?, completion: ((Result<T, NetworkError>) -> Void)?) {
 		var request = URLRequest(url: url, timeoutInterval: 5)
@@ -71,7 +71,7 @@ class NetworkTask: INetworkTask {
 				}
 				return
 			}
-			sleep(1)
+//			sleep(1)
 			DispatchQueue.main.async {
 				completion?(.success(data))
 			}
@@ -82,10 +82,11 @@ class NetworkTask: INetworkTask {
 	}
 	
 	func cancel() {
-		for task in tasks {
-			task.cancel()
-		}
 		session.invalidateAndCancel()
+	}
+	
+	init(session: URLSession) {
+		self.session = session
 	}
 	
 	deinit {
