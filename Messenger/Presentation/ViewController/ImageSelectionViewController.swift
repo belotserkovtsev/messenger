@@ -94,8 +94,8 @@ extension ImageSelectionViewController: UICollectionViewDelegateFlowLayout {
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-		guard let image = dataModel.image(for: indexPath) else { return }
-		avatarDelegate?.didSelectAvatar(image: image)
+		let image = dataModel.image(for: indexPath)
 		dismiss(animated: true, completion: nil)
+		avatarDelegate?.didSelectAvatar(image: image)
 	}
 }

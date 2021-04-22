@@ -325,7 +325,13 @@ extension ProfileViewController: UITextFieldDelegate {
 }
 
 extension ProfileViewController: AvatarDelegate {
-	func didSelectAvatar(image: UIImage) {
+	func didSelectAvatar(image: UIImage?) {
+		guard let image = image else {
+			let alert = UIAlertController(title: "Error", message: "Unable to load selected image", preferredStyle: .alert)
+			alert.addAction(.init(title: "Ok", style: .default, handler: nil))
+			present(alert, animated: true, completion: nil)
+			return
+		}
 		profilePicture = image
 		startEditing(withSelection: false)
 		enableSaveButton()

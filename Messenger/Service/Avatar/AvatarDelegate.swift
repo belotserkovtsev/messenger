@@ -8,5 +8,5 @@
 import UIKit
 
 protocol AvatarDelegate: class {
-	func didSelectAvatar(image: UIImage)
+	func didSelectAvatar(image: UIImage?)
 }

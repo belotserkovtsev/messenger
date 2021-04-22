@@ -13,7 +13,10 @@ class AvatarService: IAvatarService {
 	var dataModel = [PixabayData.Image]()
 	
 	func getAvatars(count: ((Int) -> Void)?, completion: ((Result<(UIImage, Int), AvatarError>) -> Void)?) {
-		guard let requestURL = requestURL else { return }
+		guard let requestURL = requestURL else {
+			completion?(.failure(.unableToLoadAny))
+			return
+		}
 		network.get(url: requestURL, headers: nil) { [weak self] (result: Result<PixabayData, NetworkError>) in
 			switch result {
 			case .success(let data):
@@ -33,6 +36,8 @@ class AvatarService: IAvatarService {
 				case .success(let data):
 					if let image = UIImage(data: data) {
 						completion?(.success((image, i)))
+					} else {
+						completion?(.failure(.unableToLoad(at: i)))
 					}
 				case .failure(let error):
 					self?.handleNetworkError(error: error, at: i, completion: completion)
