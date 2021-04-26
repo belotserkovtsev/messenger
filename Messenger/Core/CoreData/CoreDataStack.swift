@@ -9,8 +9,7 @@ import Foundation
 import CoreData
 
 class CoreDataStack {
-	var didUpdateDataBase: ((CoreDataStack) -> Void)?
-	
+	static let shared = CoreDataStack()
 	private var storeURL: URL = {
 		guard let documentsURL = FileManager.default.urls(for: .documentDirectory,
 														  in: .userDomainMask).last else {
@@ -112,8 +111,6 @@ class CoreDataStack {
 	@objc
 	private func managedObjectContextObjectsDidChange(notification: NSNotification) {
 		guard let userInfo = notification.userInfo else { return }
-		
-		didUpdateDataBase?(self)
 		
 		if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>,
 		   inserts.count > 0 {

@@ -8,7 +8,7 @@
 import UIKit
 
 class ThemesViewController: UIViewController {
-	var themeDelegate: ThemeManagerDelegate?
+	var themeDelegate: ThemeServiceDelegate?
 //	var themeHandler: ((ThemeType) -> ())?
 	
 	@IBOutlet weak var nightThemeView: UIView?
@@ -76,7 +76,7 @@ class ThemesViewController: UIViewController {
 			setSelection(for: .light)
 		}
 		
-		themeDelegate = ThemeManager()
+		themeDelegate = ThemeService()
 //		themeHandler = ThemeManager().didSelectTheme(_:)
 	}
 	

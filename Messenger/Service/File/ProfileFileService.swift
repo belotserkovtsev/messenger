@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GCDManager {
+class ProfileFileService: IProfileFileService {
 	
 	private var writeWorkItem: DispatchWorkItem?
 	private var readWorkItem: DispatchWorkItem?
@@ -21,11 +21,11 @@ class GCDManager {
 		}
 	}
 	
-	func save(data: ProfileDataModel, isFirstLaunch: Bool = false, completion: @escaping (ProfileDataCompletionStatus) -> Void) {
+	func write(data: ProfileDataModel, isFirstLaunch: Bool, completion: @escaping (ProfileDataCompletionStatus) -> Void) {
 		writeWorkItem = DispatchWorkItem {
 			do {
-				let userDataFileURL = try self.getUrl(for: "ProfileData", dot: "json")
-				let imageDataFileURL = try self.getUrl(for: "ProfileImage", dot: "png")
+				let userDataFileURL = try self.url(for: "ProfileData", dot: "json")
+				let imageDataFileURL = try self.url(for: "ProfileImage", dot: "png")
 				
 				let storableData: ProfileDataStorable = .init(name: data.name, description: data.description)
 				
@@ -33,7 +33,7 @@ class GCDManager {
 				let imageData = data.profilePicture?.jpegData(compressionQuality: 1)
 				
 				if isFirstLaunch {
-					let profileDataBackupURL = try self.getUrl(for: "ProfileDataBackup", dot: "json")
+					let profileDataBackupURL = try self.url(for: "ProfileDataBackup", dot: "json")
 					try jsonData.write(to: profileDataBackupURL)
 				}
 				
@@ -48,8 +48,8 @@ class GCDManager {
 						self.writeWorkItem = nil
 						self.restoreFromBackup()
 					} else {
-						let backupDataURL = try self.getUrl(for: "ProfileDataBackup", dot: "json")
-						let backupImageURL = try self.getUrl(for: "ProfileImageBackup", dot: "png")
+						let backupDataURL = try self.url(for: "ProfileDataBackup", dot: "json")
+						let backupImageURL = try self.url(for: "ProfileImageBackup", dot: "png")
 						
 						let jsonBackupData = jsonData
 						try jsonBackupData.write(to: backupDataURL)
@@ -76,11 +76,11 @@ class GCDManager {
 		}
 	}
 	
-	func get(completion: @escaping (ProfileDataCompletionStatus) -> Void) {
+	func read(completion: @escaping (ProfileDataCompletionStatus) -> Void) {
 		readWorkItem = DispatchWorkItem {
 			do {
-				let fileURL = try self.getUrl(for: "ProfileData", dot: "json")
-				let imageUrl = try self.getUrl(for: "ProfileImage", dot: "png")
+				let fileURL = try self.url(for: "ProfileData", dot: "json")
+				let imageUrl = try self.url(for: "ProfileImage", dot: "png")
 				
 				if let isCancelled = self.readWorkItem?.isCancelled, isCancelled {
 					DispatchQueue.main.async {
@@ -114,13 +114,13 @@ class GCDManager {
 	
 	// MARK: Private methods
 	
-	private func restoreFromBackup() {
+	internal func restoreFromBackup() {
 		do {
-			let backupDataURL = try getUrl(for: "ProfileDataBackup", dot: "json")
-			let backupImageURL = try getUrl(for: "ProfileImageBackup", dot: "png")
+			let backupDataURL = try url(for: "ProfileDataBackup", dot: "json")
+			let backupImageURL = try url(for: "ProfileImageBackup", dot: "png")
 			
-			let imageURL = try getUrl(for: "ProfileImage", dot: "png")
-			let dataURL = try getUrl(for: "ProfileData", dot: "json")
+			let imageURL = try url(for: "ProfileImage", dot: "png")
+			let dataURL = try url(for: "ProfileData", dot: "json")
 			
 			let profileData = try String(contentsOf: backupDataURL, encoding: .utf8).data(using: .utf8)
 			
@@ -141,7 +141,7 @@ class GCDManager {
 		
 	}
 	
-	private func getUrl(for fileName: String, dot fileExtension: String) throws -> URL {
+	internal func url(for fileName: String, dot fileExtension: String) throws -> URL {
 		let documentDirURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
 		let fileURL = documentDirURL.appendingPathComponent(fileName).appendingPathExtension(fileExtension)
 		return fileURL

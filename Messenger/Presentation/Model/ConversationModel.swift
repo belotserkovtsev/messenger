@@ -15,7 +15,15 @@ struct ConversationModel {
 		messages = data.sorted { $0.created < $1.created }
 	}
 	
-	struct Message {
+	mutating func append(message: Message) {
+		messages.append(message)
+	}
+	
+	mutating func clear() {
+		messages = [Message]()
+	}
+	
+	struct Message: IMessage {
 		var id: String
 		var text: String
 		var created: Date
@@ -23,9 +31,5 @@ struct ConversationModel {
 		var senderName: String
 		
 		var messageType: MessageType
-	}
-	
-	enum MessageType {
-		case incoming, outgoing
 	}
 }

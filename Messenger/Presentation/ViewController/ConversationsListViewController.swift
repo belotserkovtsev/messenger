@@ -11,27 +11,16 @@ import CoreData
 
 class ConversationsListViewController: UIViewController {
 	
-	@IBOutlet weak var tableView: UITableView?
+	@IBOutlet weak var tableView: UITableView!
 	private let cellIdentifier = String(describing: ConversationsListTableViewCell.self)
-	private var firestoreManager = FirestoreManager(path: "channels")
-	private var channelsModel = ChannelModel()
-	private var coreDataStack = CoreDataManager.stack
-	private lazy var request: NSFetchRequest<ChannelDB> = {
-		let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
-		let sortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
-		request.sortDescriptors = [sortDescriptor]
-		return request
-	}()
-	private lazy var fetchedResultsController: NSFetchedResultsController<ChannelDB> = {
-		let context = coreDataStack.getMainContext()
-		let frc = NSFetchedResultsController(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-		return frc
-	}()
+	
+	var backendService: IFirestoreService?
+	var persistenceService: IPersistenceService?
+	var channelsModel = ChannelModel()
 	
 	// MARK: Nav Bar Tap Handlers
 	@objc private func profileTapHandler() {
-		let storyBoard = UIStoryboard(name: "Profile", bundle: nil)
-		let profile = storyBoard.instantiateViewController(withIdentifier: "ProfileViewController") as? ProfileViewController
+		let profile = ProfileViewController.make()
 		if let profileViewController = profile {
 			navigationController?.pushViewController(profileViewController, animated: true)
 		}
@@ -59,104 +48,36 @@ class ConversationsListViewController: UIViewController {
 				self.present(errorAlert, animated: true)
 				return
 			}
-			
-			self.firestoreManager.addDocumnent(data: ["name": channelName])
+			self.backendService?.addDocumnent(data: ["name": channelName])
 		}
 	}
 	
 	// MARK: Lifecycle Methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		tableView?.delegate = self
-		fetchedResultsController.delegate = self
-		tableView?.dataSource = self
+		tableView.delegate = self
+		tableView.dataSource = self
 		
 		title = "Channels"
 		setTrailingBarButtonItem()
 		setLeadingBarButtonItems()
 		
-		tableView?.register(UINib(nibName: String(describing: ConversationsListTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
+		tableView.register(UINib(nibName: String(describing: ConversationsListTableViewCell.self), bundle: nil), forCellReuseIdentifier: cellIdentifier)
 		
-		tableView?.rowHeight = 88
-		tableView?.contentInset = UIEdgeInsets(top: -2, left: 0, bottom: 0, right: 0)
+		tableView.rowHeight = 88
+		tableView.contentInset = UIEdgeInsets(top: -2, left: 0, bottom: 0, right: 0)
 		
-		do { try fetchedResultsController.performFetch() } catch { fatalError("unable to perform cached fetch") }
-		
-		firestoreManager.addListener { [weak self] snapshot, _ in
-			DispatchQueue.global(qos: .userInitiated).async {
-				guard let documents = snapshot?.documents else { return }
-				var channels = [ChannelModel.Channel]()
-				for document in documents {
-					let documentData = document.data()
-					let id = document.documentID
-					if let name = documentData["name"] as? String, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-
-						let timestamp = documentData["lastActivity"] as? Timestamp
-						let lastMessage = documentData["lastMessage"] as? String
-						let hasRecentlyBeenActive = timestamp?.dateValue().hasPassedSinceNow(for: .minute, duration: 10) ?? false
-
-						let data = ChannelModel.Channel(id: id,
-														name: name,
-														lastMessage: lastMessage,
-														lastActivity: timestamp?.dateValue(),
-														online: hasRecentlyBeenActive,
-														hasUnreadMessages: false)
-						channels.append(data)
-					}
-				}
-
-				self?.coreDataStack.performSave { context in
-					var managedObjects = [NSManagedObject]()
-					var channelManagedObjects = [ChannelDB]()
-					let channelRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
-					channelRequest.sortDescriptors = [NSSortDescriptor(key: "lastActivity", ascending: false)]
-					
-					do { channelManagedObjects = try context.fetch(channelRequest) } catch { fatalError("unable to fetch channel for messages") }
-					
-					if !channelManagedObjects.isEmpty {
-						
-						// check wether saved channels contain listener channels to create mismatched objects and update
-						// existing ones
-						for channel in channels {
-							if let channelManagedObject = channelManagedObjects.first(where: { $0.id == channel.id }) {
-								channelManagedObject.update(with: channel)
-							} else {
-								managedObjects.append(ChannelDB(for: channel, in: context))
-							}
-						}
-						
-						do { try context.obtainPermanentIDs(for: managedObjects) } catch {
-							fatalError("Unable to get permanent ids for managed objects")
-						}
-						
-						// check wether listener channels contain saved channels to delete mismatches
-						for channelManagedObject in channelManagedObjects {
-							if !channels.contains(where: { $0.id == channelManagedObject.id }) {
-								context.delete(channelManagedObject)
-							}
-						}
-						
-					} else {
-						for channel in channels {
-							managedObjects.append(ChannelDB(for: channel, in: context))
-						}
-						do { try context.obtainPermanentIDs(for: managedObjects) } catch {
-							fatalError("Unable to get permanent ids for managed objects")
-						}
-					}
-				}
-			}
-		}
-		
+		persistenceService?.fetch()
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		switch ThemeManager.currentTheme {
+		let presentationAssembly = PresentationAssembly()
+		switch presentationAssembly.currentTheme {
 		case .night:
-			tableView?.backgroundColor = .black
+			tableView.backgroundColor = .black
 		default:
-			tableView?.backgroundColor = UIColor(white: 0.97, alpha: 1)
+			tableView.backgroundColor = UIColor(white: 0.97, alpha: 1)
 		}
 	}
 	
@@ -224,15 +145,15 @@ class ConversationsListViewController: UIViewController {
 // MARK: UITableViewDataSource
 extension ConversationsListViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		guard let sections = fetchedResultsController.sections else { fatalError("no sections found") }
+		guard let sections = persistenceService?.sections else { fatalError("no sections found") }
 		let sectionsInfo = sections[section]
 		return sectionsInfo.numberOfObjects
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let data = fetchedResultsController.object(at: indexPath)
+		let persistentObject = persistenceService?.object(at: indexPath)
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-				as? ConversationsListTableViewCell else { return UITableViewCell() }
+				as? ConversationsListTableViewCell, let data = persistentObject as? ChannelDB else { return UITableViewCell() }
 		let configurableCell = ChannelModel.Channel(for: data)
 		cell.configure(with: configurableCell)
 		return cell
@@ -246,14 +167,11 @@ extension ConversationsListViewController: UITableViewDataSource {
 // MARK: UITableViewDelegate
 extension ConversationsListViewController: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let storyBoard: UIStoryboard = UIStoryboard(name: "Conversation", bundle: nil)
-		let conversation = storyBoard.instantiateViewController(withIdentifier: "ConversationViewController") as? ConversationViewController
-	
-		let channelManagedObject = fetchedResultsController.object(at: indexPath)
+		guard let channelManagedObject = persistenceService?.object(at: indexPath) as? ChannelDB else { return }
 		let channel = ChannelModel.Channel(for: channelManagedObject)
 		
+		let conversation = ConversationViewController.make(with: channel.id)
 		conversation?.title = channel.name
-		conversation?.setChannelData(with: channel)
 		
 		if let conversationViewController = conversation {
 			navigationController?.pushViewController(conversationViewController, animated: true)
@@ -263,8 +181,9 @@ extension ConversationsListViewController: UITableViewDelegate {
 	
 	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 		if editingStyle == .delete {
-			let channelManagedObject = fetchedResultsController.object(at: indexPath)
-			firestoreManager.deleteDocument(id: channelManagedObject.id!)
+			if let channelManagedObject = persistenceService?.object(at: indexPath) as? ChannelDB, let id = channelManagedObject.id {
+				backendService?.deleteDocument(id: id)
+			}
 		}
 	}
 }
@@ -272,13 +191,13 @@ extension ConversationsListViewController: UITableViewDelegate {
 // MARK: FetchResultsController Delegate
 extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
 	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		print("begin update")
-		tableView?.beginUpdates()
+//		print("begin update")
+		tableView.beginUpdates()
 	}
 	
 	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		print("end update")
-		tableView?.endUpdates()
+//		print("end update")
+		tableView.endUpdates()
 	}
 	
 	func controller(
@@ -290,27 +209,72 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
 		switch type {
 		case .insert:
 			if let newIndexPath = newIndexPath {
-				print("inserting")
-				tableView?.insertRows(at: [newIndexPath], with: .automatic)
+//				print("inserting")
+				tableView.insertRows(at: [newIndexPath], with: .automatic)
 			}
 		case .move:
 			if let newIndexPath = newIndexPath, let indexPath = indexPath {
-				print("moving")
-				tableView?.deleteRows(at: [indexPath], with: .automatic)
-				tableView?.insertRows(at: [newIndexPath], with: .automatic)
+//				print("moving")
+				tableView.deleteRows(at: [indexPath], with: .automatic)
+				tableView.insertRows(at: [newIndexPath], with: .automatic)
 			}
 		case .update:
 			if let indexPath = indexPath {
-				print("updating")
-				tableView?.reloadRows(at: [indexPath], with: .automatic)
+//				print("updating")
+				tableView.reloadRows(at: [indexPath], with: .automatic)
 			}
 		case .delete:
 			if let indexPath = indexPath {
-				print("deleting")
-				tableView?.deleteRows(at: [indexPath], with: .automatic)
+//				print("deleting")
+				tableView.deleteRows(at: [indexPath], with: .automatic)
 			}
 		default:
 			break
 		}
+	}
+}
+
+// MARK: Make
+extension ConversationsListViewController {
+	static func make() -> ConversationsListViewController? {
+		let storyBoard: UIStoryboard = UIStoryboard(name: "ConversationsList", bundle: nil)
+		guard let vc = storyBoard.instantiateViewController(withIdentifier: "ConversationsList") as? ConversationsListViewController else {
+			return nil
+		}
+		
+		let serviceAssembly = ServiceAssembly()
+		vc.backendService = serviceAssembly.conversationsBackendService
+		
+		let persistenceService = serviceAssembly.conversationsPersistenceService(delegate: vc)
+		vc.persistenceService = persistenceService
+		
+		vc.backendService?.addListener { snapshot, _ in
+			DispatchQueue.global(qos: .userInitiated).async {
+				guard let documents = snapshot?.documents else { return }
+				vc.channelsModel.clear()
+				for document in documents {
+					let documentData = document.data()
+					let id = document.documentID
+					if let name = documentData["name"] as? String, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+						
+						let timestamp = documentData["lastActivity"] as? Timestamp
+						let lastMessage = documentData["lastMessage"] as? String
+						let hasRecentlyBeenActive = timestamp?.dateValue().hasPassedSinceNow(for: .minute, duration: 10) ?? false
+						
+						let data = ChannelModel.Channel(id: id,
+														name: name,
+														lastMessage: lastMessage,
+														lastActivity: timestamp?.dateValue(),
+														online: hasRecentlyBeenActive,
+														hasUnreadMessages: false)
+						vc.channelsModel.append(channel: data)
+					}
+				}
+				
+				vc.persistenceService?.performSave(data: vc.channelsModel.channels)
+			}
+		}
+		
+		return vc
 	}
 }

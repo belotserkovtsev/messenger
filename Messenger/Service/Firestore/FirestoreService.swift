@@ -8,17 +8,17 @@
 import Foundation
 import Firebase
 
-class FirestoreManager {
+class FirestoreService: IFirestoreService {
 	private var path: String
 	private var snapshotListener: ListenerRegistration?
-	private(set) lazy var database = Firestore.firestore()
+	private lazy var database = Firestore.firestore()
 	private lazy var reference = database.collection(path)
 	
-	init(path: String) {
+	required init(path: String) {
 		self.path = path
 	}
 	
-	init(path: String, listener: @escaping (QuerySnapshot?, Error?) -> Void) {
+	required init(path: String, listener: @escaping (QuerySnapshot?, Error?) -> Void) {
 		self.path = path
 		snapshotListener = reference.addSnapshotListener(listener)
 	}
