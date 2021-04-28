@@ -9,13 +9,13 @@ import UIKit
 
 class ProfileViewController: UIViewController, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
 	
-	@IBOutlet weak var profilePictureView: UIImageView?
-	@IBOutlet weak var editButton: ThemeDependentUIButton?
-	@IBOutlet weak var saveGCDButton: ThemeDependentUIButton?
-	@IBOutlet weak var initialsLabel: ThemeDependentUILabel?
-	@IBOutlet weak var descriptionTextView: UITextView?
-	@IBOutlet weak var nameTextField: UITextField?
-	@IBOutlet weak var activityIndicator: UIActivityIndicatorView?
+	@IBOutlet weak var profilePictureView: UIImageView!
+	@IBOutlet weak var editButton: ThemeDependentUIButton!
+	@IBOutlet weak var saveGCDButton: ThemeDependentUIButton!
+	@IBOutlet weak var initialsLabel: ThemeDependentUILabel!
+	@IBOutlet weak var descriptionTextView: UITextView!
+	@IBOutlet weak var nameTextField: UITextField!
+	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 	
 	private var isEditingProfile = false
 	var fileService: IProfileFileService?
@@ -23,11 +23,11 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 	private var profilePicture: UIImage? {
 		willSet {
 			if let img = newValue {
-				profilePictureView?.image = img
-				initialsLabel?.isHidden = true
+				profilePictureView.image = img
+				initialsLabel.isHidden = true
 			} else {
-				profilePictureView?.image = nil
-				initialsLabel?.isHidden = false
+				profilePictureView.image = nil
+				initialsLabel.isHidden = false
 			}
 		}
 	}
@@ -43,10 +43,10 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 	
 	@IBAction func saveGCDTapHandler(_ sender: UIButton) {
 		restrictEditing()
-		activityIndicator?.startAnimating()
+		activityIndicator.startAnimating()
 		
-		fileService?.write(data: .init(name: nameTextField?.text,
-									 description: descriptionTextView?.text,
+		fileService?.write(data: .init(name: nameTextField.text,
+									 description: descriptionTextView.text,
 									 profilePicture: profilePicture), isFirstLaunch: false) { status in
 			switch status {
 			case .success:
@@ -61,17 +61,16 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 			case .cancelled:
 				print("cancelled write")
 			}
-			self.activityIndicator?.stopAnimating()
+			self.activityIndicator.stopAnimating()
 		}
 	}
 	
 	func gestureRecognizer(_ gr: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-		if let bounds = profilePictureView?.bounds, let cornerRadius = profilePictureView?.layer.cornerRadius {
-			let bezierPath = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
-			let point = touch.location(in: profilePictureView)
-			return bezierPath.contains(point)
-		}
-		return false
+		let bounds = profilePictureView.bounds
+		let cornerRadius = profilePictureView.layer.cornerRadius
+		let bezierPath = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
+		let point = touch.location(in: profilePictureView)
+		return bezierPath.contains(point)
 	}
 	
 	// MARK: Lifecycle
@@ -79,24 +78,24 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 		super.viewDidLoad()
 		title = "Profile"
 		
-		profilePictureView?.layer.cornerRadius = view.frame.width * 0.5 / 2
-		editButton?.layer.cornerRadius = 14
-		saveGCDButton?.layer.cornerRadius = 14
+		profilePictureView.layer.cornerRadius = view.frame.width * 0.5 / 2
+		editButton.layer.cornerRadius = 14
+		saveGCDButton.layer.cornerRadius = 14
 		
-		profilePictureView?.isUserInteractionEnabled = true
-		nameTextField?.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+		profilePictureView.isUserInteractionEnabled = true
+		nameTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
 		
 		NotificationCenter.default
 			.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
 		NotificationCenter.default
 			.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
 		
-		activityIndicator?.startAnimating()
+		activityIndicator.startAnimating()
 		fileService?.read { status in
 			switch status {
 			case .success(let data):
-				self.descriptionTextView?.text = data?.description ?? ""
-				self.nameTextField?.text = data?.name ?? ""
+				self.descriptionTextView.text = data?.description ?? ""
+				self.nameTextField.text = data?.name ?? ""
 				self.profilePicture = data?.profilePicture
 				self.setInitialsLabel()
 			case .failure:
@@ -104,14 +103,14 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 			case .cancelled:
 				print("cancelled read")
 			}
-			self.activityIndicator?.stopAnimating()
+			self.activityIndicator.stopAnimating()
 		}
 		
 		_ = self.hideKeyboardWhenTappedAround()
 		addGestureToImageView()
 		
-		nameTextField?.delegate = self
-		descriptionTextView?.delegate = self
+		nameTextField.delegate = self
+		descriptionTextView.delegate = self
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
@@ -125,54 +124,55 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 // MARK: Private methhods
 extension ProfileViewController {
 	func removeGestureFromImageView() {
-		if let gesture = profilePictureView?.gestureRecognizers?.first {
-			profilePictureView?.removeGestureRecognizer(gesture)
+		if let gesture = profilePictureView.gestureRecognizers?.first {
+			profilePictureView.removeGestureRecognizer(gesture)
 		}
 	}
 	
 	func addGestureToImageView() {
 		let editTap = UITapGestureRecognizer(target: self, action: #selector(profilePictureTapHandler))
-		profilePictureView?.addGestureRecognizer(editTap)
+		profilePictureView.addGestureRecognizer(editTap)
 		editTap.delegate = self
 	}
 	
 	private func disableSaveButton() {
-		saveGCDButton?.isEnabled = false
+		saveGCDButton.isEnabled = false
 	}
 	
 	private func enableSaveButton() {
-		saveGCDButton?.isEnabled = true
+		saveGCDButton.isEnabled = true
+		animateShakeSaveButton(in: 10)
 	}
 	
 	private func makeTextViewsEditable() {
-		descriptionTextView?.isEditable = true
-		nameTextField?.isEnabled = true
+		descriptionTextView.isEditable = true
+		nameTextField.isEnabled = true
 	}
 	
 	private func makeTextViewsUneditable() {
-		descriptionTextView?.isEditable = false
-		nameTextField?.isEnabled = false
+		descriptionTextView.isEditable = false
+		nameTextField.isEnabled = false
 	}
 	
 	private func setInitialsLabel() {
-		if let letter = nameTextField?.text?.first {
-			initialsLabel?.text = String(letter).uppercased()
+		if let letter = nameTextField.text?.first {
+			initialsLabel.text = String(letter).uppercased()
 		} else {
-			initialsLabel?.text = ""
+			initialsLabel.text = ""
 		}
 	}
 	
 	private func cancelEditing() {
 		stopEditing()
-		activityIndicator?.stopAnimating()
+		activityIndicator.stopAnimating()
 		
 		fileService?.cancel(.write)
 		
 		fileService?.read { status in
 			switch status {
 			case .success(let data):
-				self.descriptionTextView?.text = data?.description ?? ""
-				self.nameTextField?.text = data?.name ?? ""
+				self.descriptionTextView.text = data?.description ?? ""
+				self.nameTextField.text = data?.name ?? ""
 				self.profilePicture = data?.profilePicture
 				self.setInitialsLabel()
 			case .failure(let err):
@@ -187,9 +187,9 @@ extension ProfileViewController {
 		restrictEditing()
 		
 		isEditingProfile = false
-		saveGCDButton?.isHidden = true
+		saveGCDButton.isHidden = true
 		addGestureToImageView()
-		editButton?.setTitle("Edit", for: .normal)
+		editButton.setTitle("Edit", for: .normal)
 	}
 	
 	private func restrictEditing() {
@@ -201,19 +201,49 @@ extension ProfileViewController {
 	private func startEditing(withSelection selection: Bool = true) {
 		isEditingProfile = true
 		
-		saveGCDButton?.isHidden = false
+		saveGCDButton.isHidden = false
 		
 		makeTextViewsEditable()
 		
-		editButton?.setTitle("Cancel", for: .normal)
+		editButton.setTitle("Cancel", for: .normal)
 		
 		if selection {
-			nameTextField?.becomeFirstResponder()
-			let newPosition = descriptionTextView?.endOfDocument
-			if let position = newPosition {
-				descriptionTextView?.selectedTextRange = descriptionTextView?
-					.textRange(from: position, to: position)
-			}
+			nameTextField.becomeFirstResponder()
+			let position = descriptionTextView.endOfDocument
+			descriptionTextView.selectedTextRange = descriptionTextView.textRange(from: position, to: position)
+		}
+	}
+	
+	// MARK: Animations
+	private func animateShakeSaveButton(in seconds: Double = 0) {
+		let initialPosition = saveGCDButton.layer.position
+		
+		let moveAnimation = CAKeyframeAnimation(keyPath: #keyPath(CALayer.position))
+		moveAnimation.values = [
+			initialPosition,
+			CGPoint(x: initialPosition.x, y: initialPosition.y + 2),
+			CGPoint(x: initialPosition.x - 2, y: initialPosition.y + 2)
+		]
+		moveAnimation.keyTimes = [0, 0.5, 1]
+		
+		let rotateAnimation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
+		rotateAnimation.values = [
+			0,
+			Double.pi / 100,
+			-1 * (Double.pi / 100),
+			0
+		]
+		rotateAnimation.keyTimes = [0, 0.3, 0.6, 1]
+		
+		let group = CAAnimationGroup()
+		group.animations = [moveAnimation, rotateAnimation]
+		group.autoreverses = true
+		group.repeatCount = 2
+		group.duration = 0.2
+		group.isRemovedOnCompletion = true
+		
+		DispatchQueue.main.asyncAfter(deadline: .now() + seconds) { [weak self] in
+			self?.saveGCDButton.layer.add(group, forKey: "animations")
 		}
 	}
 }
