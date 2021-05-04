@@ -18,7 +18,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 	@IBOutlet weak var activityIndicator: UIActivityIndicatorView?
 	
 	private var isEditingProfile = false
-	private var fileService: IProfileFileService?
+	var fileService: IProfileFileService?
 	
 	private var profilePicture: UIImage? {
 		willSet {
@@ -232,17 +232,25 @@ extension ProfileViewController {
 			break
 		}
 		
-		alert.addAction(UIAlertAction(title: "Library", style: .default, handler: { _ in
-			if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+		if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+			alert.addAction(UIAlertAction(title: "Library", style: .default, handler: { _ in
 				self.presentImagePicker(with: .photoLibrary)
-			}
-		}))
+			}))
+		}
 		
 		if UIImagePickerController.isSourceTypeAvailable(.camera) {
 			alert.addAction(UIAlertAction(title: "Take picture", style: .default, handler: { _ in
 				self.presentImagePicker(with: .camera)
 			}))
 		}
+		
+		alert.addAction(UIAlertAction(title: "Upload", style: .default, handler: { _ in
+//			print("Selected network")
+			if let vc = ImageSelectionViewController.make() {
+				vc.avatarDelegate = self
+				self.present(vc, animated: true, completion: nil)
+			}
+		}))
 		
 		alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
 		
@@ -316,16 +324,16 @@ extension ProfileViewController: UITextFieldDelegate {
 	}
 }
 
-extension ProfileViewController {
-	static func make() -> ProfileViewController? {
-		let storyBoard: UIStoryboard = UIStoryboard(name: "Profile", bundle: nil)
-		guard let vc = storyBoard.instantiateViewController(withIdentifier: "Profile") as? ProfileViewController else {
-			return nil
+extension ProfileViewController: AvatarDelegate {
+	func didSelectAvatar(image: UIImage?) {
+		guard let image = image else {
+			let alert = UIAlertController(title: "Error", message: "Unable to load selected image", preferredStyle: .alert)
+			alert.addAction(.init(title: "Ok", style: .default, handler: nil))
+			present(alert, animated: true, completion: nil)
+			return
 		}
-		
-		let serviceAssembly = ServiceAssembly()
-		vc.fileService = serviceAssembly.profileFileService
-		
-		return vc
+		profilePicture = image
+		startEditing(withSelection: false)
+		enableSaveButton()
 	}
 }

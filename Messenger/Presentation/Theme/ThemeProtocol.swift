@@ -39,6 +39,8 @@ extension ThemeProtocol {
 				.backgroundColor = mainViewsBackgroundColor
 			ThemeDependentUIButton.appearance()
 				.backgroundColor = mainButtonsBackgroundColor
+			ThemeDependentUICollectionView.appearance()
+				.backgroundColor = mainViewsBackgroundColor
 			
 			// Text views
 			UITextView.appearance()

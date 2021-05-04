@@ -15,4 +15,8 @@ class CoreAssembly {
 	var userDefaults: UserDefaults {
 		UserDefaults.standard
 	}
+	
+	var networkTask: INetworkTask {
+		NetworkTask(session: .init(configuration: .default))
+	}
 }

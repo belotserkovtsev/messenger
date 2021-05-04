@@ -21,13 +21,13 @@ class ProfileFileService: IProfileFileService {
 		}
 	}
 	
-	func write(data: ProfileDataModel, isFirstLaunch: Bool, completion: @escaping (ProfileDataCompletionStatus) -> Void) {
+	func write(data: ProfileModel, isFirstLaunch: Bool, completion: @escaping (ProfileDataCompletionStatus) -> Void) {
 		writeWorkItem = DispatchWorkItem {
 			do {
 				let userDataFileURL = try self.url(for: "ProfileData", dot: "json")
 				let imageDataFileURL = try self.url(for: "ProfileImage", dot: "png")
 				
-				let storableData: ProfileDataStorable = .init(name: data.name, description: data.description)
+				let storableData: ProfileModelStorable = .init(name: data.name, description: data.description)
 				
 				let jsonData = try JSONEncoder().encode(storableData)
 				let imageData = data.profilePicture?.jpegData(compressionQuality: 1)
@@ -92,8 +92,8 @@ class ProfileFileService: IProfileFileService {
 				let text = try String(contentsOf: fileURL, encoding: .utf8).data(using: .utf8)
 				let image = UIImage(contentsOfFile: imageUrl.path)
 				
-				let storableData = try JSONDecoder().decode(ProfileDataStorable.self, from: text ?? Data())
-				let presentableData: ProfileDataModel = .init(name: storableData.name, description: storableData.description, profilePicture: image)
+				let storableData = try JSONDecoder().decode(ProfileModelStorable.self, from: text ?? Data())
+				let presentableData: ProfileModel = .init(name: storableData.name, description: storableData.description, profilePicture: image)
 				
 				DispatchQueue.main.async {
 					completion(.success(data: presentableData))

@@ -16,7 +16,7 @@ class InitialSetupService: IInitialSetupService {
 			return
 		}
 		
-		let profileData: ProfileDataModel = .init(name: "Your name here", description: "Tell us something about yourself", profilePicture: nil)
+		let profileData: ProfileModel = .init(name: "Your name here", description: "Tell us something about yourself", profilePicture: nil)
 		profileFileService.write(data: profileData, isFirstLaunch: true) { _ in }
 		UserDefaults.standard.set(true, forKey: "isNthLaunch")
 	}
