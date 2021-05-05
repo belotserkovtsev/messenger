@@ -90,6 +90,9 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 		NotificationCenter.default
 			.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
 		
+		descriptionTextView.accessibilityIdentifier = "descriptionTextView"
+		nameTextField.accessibilityIdentifier = "nameTextField"
+		
 		activityIndicator.startAnimating()
 		fileService?.read { status in
 			switch status {

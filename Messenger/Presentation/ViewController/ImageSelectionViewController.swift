@@ -8,8 +8,8 @@
 import UIKit
 
 class ImageSelectionViewController: UIViewController {
-	@IBOutlet var collectionView: ThemeDependentUICollectionView!
-	@IBOutlet var activityIndicator: UIActivityIndicatorView!
+	@IBOutlet var collectionView: ThemeDependentUICollectionView?
+	@IBOutlet var activityIndicator: UIActivityIndicatorView?
 	
 	private let reuseIdentifier = "ImageCell"
 	private let sectionInsets = UIEdgeInsets(top: 50.0, left: 20.0, bottom: 50.0, right: 20.0)
@@ -23,26 +23,26 @@ class ImageSelectionViewController: UIViewController {
 	// MARK: Lifecycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		collectionView.dataSource = self
-		collectionView.delegate = self
-		activityIndicator.hidesWhenStopped = true
+		collectionView?.dataSource = self
+		collectionView?.delegate = self
+		activityIndicator?.hidesWhenStopped = true
 		
 		if #available(iOS 13.0, *) {
-			activityIndicator.style = .medium
+			activityIndicator?.style = .medium
 		} else {
-			activityIndicator.style = .gray
+			activityIndicator?.style = .gray
 		}
 		
-		activityIndicator.startAnimating()
+		activityIndicator?.startAnimating()
 		
-		collectionView.register(UINib(nibName: String(describing: ImageSelectionCollectionViewCell.self), bundle: nil), forCellWithReuseIdentifier: reuseIdentifier)
+		collectionView?.register(UINib(nibName: String(describing: ImageSelectionCollectionViewCell.self), bundle: nil), forCellWithReuseIdentifier: reuseIdentifier)
 	}
 	
 	func handle(error: AvatarError) {
 		switch error {
 		case .unableToLoad(let index):
 			dataModel.unableToLoad(at: index)
-			collectionView.reloadData()
+			collectionView?.reloadData()
 		case .unableToLoadAny:
 			let alert = UIAlertController(title: "Error", message: "Unable to load images. Please try again later", preferredStyle: .alert)
 			alert.addAction(.init(title: "Ok", style: .default) { _ in
