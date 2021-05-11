@@ -16,21 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
 		FirebaseApp.configure()
 		
-		guard let initialViewController = ConversationsListViewController.make() else { return true }
-		let navigationController = UINavigationController(rootViewController: initialViewController)
+		window = initialSetupService.launchSetup()
 		
-		self.window = UIWindow(frame: UIScreen.main.bounds)
-		self.window?.rootViewController = navigationController
-		self.window?.makeKeyAndVisible()
-		
-		if #available(iOS 13.0, *) { window?.overrideUserInterfaceStyle = .light }
-		
-		initialSetupService.anyLaunchSetup()
-		return true
-	}
-	
-	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-		initialSetupService.firstLaunchSetup()
 		return true
 	}
 	

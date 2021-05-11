@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="IoT-Mg-XOT">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--About App View Controller-->
+        <scene sceneID="zbP-Kf-3om">
+            <objects>
+                <viewController storyboardIdentifier="AboutApp" id="lHW-ja-AJ8" customClass="AboutAppViewController" customModule="Messenger" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="UzK-IY-187" customClass="ThemeDependentUIView" customModule="Messenger" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bde-HT-CEj" customClass="ThemeDependentUIButton" customModule="Messenger" customModuleProvider="target">
+                                <rect key="frame" x="117" y="802" width="180" height="60"/>
+                                <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="Fmx-xq-zMu"/>
+                                    <constraint firstAttribute="width" constant="180" id="zH0-m6-1IA"/>
+                                </constraints>
+                                <state key="normal" title="Nice"/>
+                                <connections>
+                                    <action selector="pushNextScreen:" destination="lHW-ja-AJ8" eventType="touchUpInside" id="raw-i7-WTV"/>
+                                </connections>
+                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="uvn-V1-D0q">
+                                <rect key="frame" x="43" y="404" width="328" height="98.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Messenger" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2RR-xM-NPH" customClass="ThemeDependentUILabel" customModule="Messenger" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="328" height="29"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Its a simple open source app which allows you to message your friends in channels" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="7eT-Sh-gNU">
+                                        <rect key="frame" x="0.0" y="49" width="328" height="49.5"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <color key="textColor" systemColor="labelColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="ibg-lw-fBr"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="uvn-V1-D0q" firstAttribute="centerX" secondItem="ibg-lw-fBr" secondAttribute="centerX" id="DEI-pp-xpA"/>
+                            <constraint firstItem="uvn-V1-D0q" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ibg-lw-fBr" secondAttribute="leading" constant="24" id="Eq1-3p-wcx"/>
+                            <constraint firstItem="bde-HT-CEj" firstAttribute="top" relation="greaterThanOrEqual" secondItem="uvn-V1-D0q" secondAttribute="bottom" constant="12" id="H33-w5-NiU"/>
+                            <constraint firstItem="bde-HT-CEj" firstAttribute="bottom" secondItem="ibg-lw-fBr" secondAttribute="bottom" id="J9V-Vl-YKh"/>
+                            <constraint firstItem="bde-HT-CEj" firstAttribute="centerX" secondItem="ibg-lw-fBr" secondAttribute="centerX" id="OfV-6v-Iki"/>
+                            <constraint firstItem="uvn-V1-D0q" firstAttribute="centerY" secondItem="ibg-lw-fBr" secondAttribute="centerY" id="QUm-uE-wN3"/>
+                            <constraint firstItem="ibg-lw-fBr" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="uvn-V1-D0q" secondAttribute="trailing" constant="24" id="X0D-DN-HMU"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="xSL-aM-Rl2"/>
+                    <connections>
+                        <outlet property="descriptionTextView" destination="7eT-Sh-gNU" id="f4g-6n-c5Y"/>
+                        <outlet property="nextButton" destination="bde-HT-CEj" id="HU2-ae-aU4"/>
+                        <outlet property="titleLabel" destination="2RR-xM-NPH" id="Vqp-XR-hAt"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ngK-cY-ggL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="960.86956521739137" y="123.88392857142857"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="SI8-5C-6Us">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="IoT-Mg-XOT" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="cUA-iE-jGg">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="9Rb-SA-zwq">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="lHW-ja-AJ8" kind="relationship" relationship="rootViewController" id="q0S-8O-t4w"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HIl-mN-vwm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="50.724637681159422" y="123.88392857142857"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray5Color">
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

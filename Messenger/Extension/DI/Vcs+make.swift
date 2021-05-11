@@ -89,3 +89,30 @@ extension ImageSelectionViewController {
 		return vc
 	}
 }
+
+extension AboutAppViewController {
+	static func make(at index: Int) -> UIViewController? {
+		let storyBoard: UIStoryboard = UIStoryboard(name: "AboutApp", bundle: nil)
+		guard let vc = storyBoard.instantiateViewController(withIdentifier: "AboutApp") as? AboutAppViewController
+		else { return nil }
+		
+		let presentationAssembly = PresentationAssembly()
+		let serviceAssembly = ServiceAssembly()
+		
+		vc.initialSetupService = serviceAssembly.initialSetupService
+		
+		if index == 0 {
+			vc.dataModel = presentationAssembly.onboardingDataSource[index]
+			vc.index = index
+			let navigationController = UINavigationController(rootViewController: vc)
+			navigationController.setNavigationBarHidden(true, animated: false)
+			return navigationController
+		} else if index < presentationAssembly.onboardingDataSource.count {
+			vc.dataModel = presentationAssembly.onboardingDataSource[index]
+			vc.index = index
+			return vc
+		} else {
+			return nil
+		}
+	}
+}

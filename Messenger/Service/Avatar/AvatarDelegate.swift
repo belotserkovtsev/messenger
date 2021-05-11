@@ -7,6 +7,6 @@
 
 import UIKit
 
-protocol AvatarDelegate: class {
+protocol AvatarDelegate: AnyObject {
 	func didSelectAvatar(image: UIImage?)
 }

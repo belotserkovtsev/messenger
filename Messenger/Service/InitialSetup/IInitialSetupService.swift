@@ -5,9 +5,10 @@
 //  Created by belotserkovtsev on 14.04.2021.
 //
 
-import Foundation
+import UIKit
 
 protocol IInitialSetupService {
-	func firstLaunchSetup()
-	func anyLaunchSetup()
+	var initialViewController: UIViewController? { get }
+	func launchSetup() -> UIWindow?
+	func completeOnboarding()
 }
