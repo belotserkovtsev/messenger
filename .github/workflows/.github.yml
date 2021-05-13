@@ -13,4 +13,4 @@ jobs:
         ruby-version: 2.7
         bundler-cache: true
     - name: Build
-      run: bundle exec fastlane doTests
+      run: bundle exec fastlane doCIStuff
