@@ -13,8 +13,13 @@ jobs:
         ruby-version: 2.7
         bundler-cache: true
     - name: Build
-      run: bundle exec fastlane devel
+      run: bundle exec fastlane doCIStuff
     - name: Invoke deployment hook
-      uses: distributhor/workflow-webhook@v1
-      env:
-        webhook_url: ${{ secrets.WEBHOOK_URL }}
+    - uses: sarisia/actions-status-discord@v1
+      if: always()
+      with:
+        webhook: ${{ secrets.WEBHOOK_URL }}
+        title: "Build"
+        description: "Building and testing successful"
+        color: 0x0000ff
+        username: GitHub

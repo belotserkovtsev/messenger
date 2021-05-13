@@ -1,6 +1,6 @@
 desc "Builds project"
 lane :buildProject do
-  scan(derived_data_path: "dd", build_for_testing: true, device: "iPhone 12 Pro")
+  scan(derived_data_path: "dd", build_for_testing: true, device: "iPhone 12 Pro", clean: true)
 end
 
 desc "Runs tests"

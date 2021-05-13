@@ -25,6 +25,11 @@ Builds project
 fastlane doTests
 ```
 Runs tests
+### devel
+```
+fastlane devel
+```
+Development CI Testing lane
 ### doCIStuff
 ```
 fastlane doCIStuff
