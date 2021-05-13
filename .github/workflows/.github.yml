@@ -20,6 +20,5 @@ jobs:
       with:
         webhook: ${{ secrets.WEBHOOK_URL }}
         title: "Build"
-        description: "Building and testing successful"
         color: 0x0000ff
         username: GitHub
