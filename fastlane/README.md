@@ -15,11 +15,21 @@ Install _fastlane_ using
 or alternatively using `brew install fastlane`
 
 # Available Actions
+### buildProject
+```
+fastlane buildProject
+```
+Builds project
 ### doTests
 ```
 fastlane doTests
 ```
 Runs tests
+### doCIStuff
+```
+fastlane doCIStuff
+```
+Does all the stuff needed for CI
 
 ----
 
