@@ -1,0 +1,4 @@
+desc "Runs tests"
+lane :doTests do
+  scan(clean: true)
+end
