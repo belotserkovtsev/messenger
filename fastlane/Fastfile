@@ -1,11 +1,11 @@
 desc "Builds project"
 lane :buildProject do
-  scan(derived_data_path: "dd", build_for_testing: true)
+  scan(derived_data_path: "dd", build_for_testing: true, device: "iPhone 12 Pro")
 end
 
 desc "Runs tests"
 lane :doTests do
-  scan(derived_data_path: "dd", test_without_building: true)
+  scan(derived_data_path: "dd", test_without_building: true, device: "iPhone 12 Pro")
 end
 
 desc "Does all the stuff needed for CI"
