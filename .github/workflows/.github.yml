@@ -13,9 +13,8 @@ jobs:
         ruby-version: 2.7
         bundler-cache: true
     - name: Build
-      run: bundle exec fastlane doCIStuff
+      run: bundle exec fastlane devel
     - name: Invoke deployment hook
       uses: distributhor/workflow-webhook@v1
       env:
         webhook_url: ${{ secrets.WEBHOOK_URL }}
-        data: '{ "Name": "belotserkovstev", "test" : "true" }'

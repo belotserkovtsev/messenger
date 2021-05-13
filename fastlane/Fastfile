@@ -8,6 +8,11 @@ lane :doTests do
   scan(derived_data_path: "dd", test_without_building: true, device: "iPhone 12 Pro")
 end
 
+desc "Development CI Testing lane"
+lane :devel do
+  scan()
+end
+
 desc "Does all the stuff needed for CI"
 lane :doCIStuff do
   buildProject
