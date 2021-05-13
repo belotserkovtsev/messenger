@@ -14,3 +14,8 @@ jobs:
         bundler-cache: true
     - name: Build
       run: bundle exec fastlane doCIStuff
+    - name: Invoke deployment hook
+      uses: distributhor/workflow-webhook@v1
+      env:
+        webhook_url: ${{ secrets.WEBHOOK_URL }}
+        data: '{ "Name": "belotserkovstev", "test" : "true" }'
