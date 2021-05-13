@@ -1,4 +1,4 @@
 desc "Runs tests"
 lane :doTests do
-  scan(clean: true)
+  scan()
 end
