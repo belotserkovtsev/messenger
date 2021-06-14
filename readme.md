@@ -16,6 +16,8 @@ The task was to create a simple channel-based messenger app with the minimum amo
 
 ## Usage
 
-<img src="./media/gif1.gif" height="700" />
-<img src="./media/gif2.gif" height="700" />
-<img src="./media/gif3.gif" height="700" />
+<span>
+<img src="./media/gif1.gif" width="33%" />
+<img src="./media/gif2.gif" width="33%" />
+<img src="./media/gif3.gif" width="33%" />
+</span>
